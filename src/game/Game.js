@@ -52,8 +52,8 @@ export class Game {
     // Attach click handler for on-screen debug pill and level completion buttons
     this.canvas.addEventListener('pointerdown', (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const scaleX = CANVAS_WIDTH / rect.width;
-      const scaleY = CANVAS_HEIGHT / rect.height;
+      const scaleX = 256 / rect.width;
+      const scaleY = 240 / rect.height;
       const canvasX = (e.clientX - rect.left) * scaleX;
       const canvasY = (e.clientY - rect.top) * scaleY;
 
@@ -94,11 +94,8 @@ export class Game {
   }
 
   async start() {
-    console.log('[Game] Preloading HD Princess Aria character & Honeywood Kingdom assets...');
-    await assetManager.preloadAriaAssets();
-    await preloadEnvironmentAssets();
+    console.log('[Game] Initializing 1985 Pixel Platformer engine...');
     this.player.setupAnimations();
-    console.log('[Game] Assets ready. Starting game loop.');
 
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
@@ -108,6 +105,13 @@ export class Game {
 
     this.lastTime = performance.now();
     requestAnimationFrame(this.loop);
+    console.log('[Game] Pixel engine ready. Loop running.');
+
+    // Preload legacy assets in background for story scenes
+    Promise.all([
+      assetManager.preloadAriaAssets(),
+      preloadEnvironmentAssets()
+    ]).catch(e => console.warn('[Game] Background preload:', e));
   }
 
   restartGame() {
@@ -313,117 +317,35 @@ export class Game {
     this.renderer.beginFrame();
 
     if (this.state === GAME_STATES.TITLE) {
-      this.titleScreen.draw(this.renderer.ctx, this.player);
-      animationDebug.draw(this.renderer.ctx, this.player, this.fps);
+      this.renderer.drawTitleScreen(this.titleScreen, this.player);
       this.renderer.endFrame();
       return;
     }
 
-    // 1. Draw Multi-Layer Parallax Background & Atmospheric Progression
-    this.renderer.drawBackground(this.camera, this.level);
-
-    const ctx = this.renderer.ctx;
-    const shake = this.camera.getShakeOffset();
-
-    ctx.save();
-    ctx.translate(-this.camera.x + shake.x, -this.camera.y + shake.y);
-
-    // 2. Draw Midground Landmark Props (Ancient Oaks, Ruin Arches, Wild Honeycombs)
-    this.renderer.drawMidgroundProps(this.level.midgroundProps, this.camera);
-
-    // 3. Draw World Platforms (Static & Moving)
-    this.renderer.drawPlatforms(this.level.platforms, this.camera);
-    this.level.movingPlatforms.forEach(mp => mp.draw(ctx));
-
-    // 4. Draw Detail Flora, Fungi & Signs
-    this.renderer.drawDetails(this.level.detailProps, this.camera);
-
-    // 5. Draw Checkpoints & Goal Beacon
-    if (this.level.checkpoints) {
-      this.renderer.drawCheckpoints(this.level.checkpoints);
-    } else {
-      this.renderer.drawCheckpoint(this.level.checkpoint);
-    }
-    this.renderer.drawGoal(this.level.goal, this.level.batboy);
-
-    // 6. Draw Collectibles (Royal Shards)
-    this.level.shards.forEach(s => s.draw(ctx));
-
-    // 5. Draw Queen Bee Antagonist Presence & Batboy Chrysalis
-    if (this.level.queenBeePresence) {
-      this.level.queenBeePresence.draw(ctx, this.camera);
-    }
-
-    // 6. Draw Enemies (Hive Grub, Honey Wisp, Honey Beetle, Hive Firefly)
-    this.level.enemies.forEach(e => {
-      e.draw(ctx);
-      if (this.level.debugAI) {
-        e.drawDebug(ctx);
-      }
-    });
-
-    // 7. Draw Environmental & Sparkle Particles
-    this.level.particles.forEach(p => p.draw(ctx));
-
-    // 8. Draw Princess Aria
-    this.player.draw(ctx);
-
-    ctx.restore();
-
-    // AI Debug Mode Screen Indicator
-    if (this.level.debugAI) {
-      ctx.save();
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 2;
-      ctx.fillRect(24, 110, 240, 40);
-      ctx.strokeRect(24, 110, 240, 40);
-      ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 13px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('⚙️ AI DEBUG MODE: ON (F1/B)', 144, 134);
-      ctx.restore();
-    }
-
-    // 8. Secret Area Discovery Banner & Landmark Shrine Cinematic Banner
-    if (this.level.secretBannerTimer > 0) {
-      this.renderer.drawSecretBanner(this.level.secretBannerTimer, this.level.secretBannerText);
-    }
-    if (this.level.shrineBannerTimer > 0) {
-      this.renderer.drawShrineBanner(this.level.shrineBannerTimer, this.level.shrineBannerText);
-    }
-    this.renderer.cinematic.setLetterbox(this.level.shrineBannerTimer > 0, 48);
-
-    // 9. 2D Lighting Layer & Atmospheric Ambient Pass
-    this.renderer.drawLighting(this.camera, this.level, this.player);
-
-    // 10. Foreground Framing Vignettes
-    this.renderer.drawForeground(this.camera);
-
-    // 11. Top HUD Bar (smoothly fades during cinematic moments)
-    this.hud.draw(ctx, this.gameState, { letterboxHeight: this.renderer.cinematic.letterboxHeight });
-
-    // 11. Cinematic Letterbox & Fade Transitions
-    this.renderer.drawCinematic();
-
-    // 12. Interactive Dialogue Box
-    if (this.dialogue && this.dialogue.active) {
-      this.dialogue.draw(ctx);
-    }
-
-    // 13. Game Over or Level Clear Screen
     if (this.state === GAME_STATES.GAME_OVER) {
-      this.gameOverScreen.draw(ctx, this.gameState, false);
-    } else if (this.state === GAME_STATES.LEVEL_CLEAR) {
-      this.gameOverScreen.draw(ctx, this.gameState, true, { totalShards: this.level.shards.length });
+      this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
+      this.renderer.drawGameOverScreen(this.gameOverScreen, this.gameState, false);
+      this.renderer.endFrame();
+      return;
     }
 
-    // 14. Developer Overlays (Animation & Visual Pipeline & AI Director)
-    animationDebug.draw(ctx, this.player, this.fps);
-    this.renderer.drawDebugVisual(this.fps, this.camera, this.level);
-    if (this.level && this.level.director) {
-      directorHUD.draw(ctx, this.level.director);
+    if (this.state === GAME_STATES.LEVEL_CLEAR) {
+      this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
+      this.renderer.drawGameOverScreen(this.gameOverScreen, this.gameState, true, { totalShards: this.level.shards.length });
+      this.renderer.endFrame();
+      return;
     }
+
+    // --- PLAYING STATE ---
+    this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
+
+    // Interactive Dialogue Box (if triggered)
+    if (this.dialogue && this.dialogue.active) {
+      this.dialogue.draw(this.renderer.internalCtx);
+    }
+
+    // Cinematic Fades / Transitions
+    this.renderer.drawCinematic();
 
     this.renderer.endFrame();
   }

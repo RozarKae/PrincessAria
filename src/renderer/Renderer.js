@@ -1,42 +1,67 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT, ASPECT_RATIO } from '../game/Constants.js';
-import { assetManager } from './AssetManager.js';
-import { ParallaxBackground } from './ParallaxBackground.js';
+import { INTERNAL_WIDTH, INTERNAL_HEIGHT, WORLD_TO_PIXEL, PIXEL_PALETTE } from './PixelPalette.js';
+import { PixelRenderer } from './PixelRenderer.js';
+import { pixelAriaRenderer } from './PixelCharacterRenderer.js';
+import { pixelEnemyRenderer } from './PixelEnemyRenderer.js';
+import { pixelHUD } from '../ui/PixelHUD.js';
+import { CinematicSystem } from '../systems/CinematicSystem.js';
+
+// Archived HD systems preserved for story/cinematic scenes
 import { LightingSystem } from './LightingSystem.js';
 import { AtmosphereSystem } from '../systems/AtmosphereSystem.js';
-import { CinematicSystem } from '../systems/CinematicSystem.js';
+import { ParallaxBackground } from './ParallaxBackground.js';
 import { environmentRenderer } from './EnvironmentRenderer.js';
+import { characterRenderer } from './HDCharacterRenderer.js';
 
 /**
- * HIGH-DEFINITION 2D RENDERER & VISUAL PIPELINE
- * Features:
- * - High-DPI canvas scaling separating game resolution (1920x1080) from display resolution
- * - Configurable 8-layer parallax background engine
- * - 2D Lighting System with ambient progression & point lights
- * - Weather & atmospheric particles (pollen, leaves, distant birds)
- * - Cinematic letterbox & fade transitions
- * - Visual Debug Overlay
+ * Renderer.js — Master 1985-Era Pixel Platformer Renderer
+ * 
+ * Target Internal Gameplay Resolution: 256 x 240.
+ * Widescreen display viewport scaling via crisp nearest-neighbor principles.
+ * 
+ * - Flat pixel-art lighting for normal gameplay
+ * - Disciplined 1985 console color palette
+ * - Minimal, uncluttered environment:
+ *   - Background: 2-3 blue tone sky + 1-2 silhouette hill/forest layers
+ *   - Midground: simple trees + rare monumental landmarks
+ *   - Gameplay layer: ultra-readable platform vocabulary (ground, platform, bridge, hazard, vine)
+ *   - Foreground: completely clear (negative space intentional)
+ * - Small, instantly recognizable pixel character & enemy silhouettes
+ * - Minimal retro HUD (top 12px)
+ * - Zero blur, zero painterly interpolation, crisp pixel edges
  */
+
+const P = PIXEL_PALETTE;
+
 export class Renderer {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    this.displayWidth = CANVAS_WIDTH;
-    this.displayHeight = CANVAS_HEIGHT;
-    this.scale = 1.0;
+    // Internal 256x240 Pixel Platformer Renderer
+    this.pixelRenderer = new PixelRenderer(this.canvas);
+    this.internalCanvas = this.pixelRenderer.internalCanvas;
+    this.internalCtx = this.pixelRenderer.internalCtx;
 
-    // Subsystems
-    this.parallax = new ParallaxBackground();
+    // Preserved subsystems (dormant during retro gameplay)
     this.lighting = new LightingSystem();
     this.atmosphere = new AtmosphereSystem('honeywood');
+    this.parallax = new ParallaxBackground();
     this.cinematic = new CinematicSystem();
 
-    // Visual Debug Mode
-    this.debugVisual = false;
+    // Disable HD runtime lighting and atmospheric dust in gameplay
+    this.lighting.enabled = false;
+    this.atmosphere.maxParticles = 0;
+    this.atmosphere.particles = [];
+    this.atmosphere.birds = [];
 
-    this.setupHighDPI();
-    window.addEventListener('resize', () => this.setupHighDPI());
+    this.debugVisual = false;
+    this.setupViewport();
+    window.addEventListener('resize', () => this.setupViewport());
+  }
+
+  setupViewport() {
+    this.pixelRenderer.setupViewport();
+    this.ctx.imageSmoothingEnabled = false;
   }
 
   toggleDebugVisual() {
@@ -44,234 +69,246 @@ export class Renderer {
     return this.debugVisual;
   }
 
-  /**
-   * Calculate exact display dimensions respecting 16:9 aspect ratio and DPR.
-   */
-  setupHighDPI() {
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const windowW = window.innerWidth;
-    const windowH = window.innerHeight;
-
-    let targetW = windowW;
-    let targetH = windowW / ASPECT_RATIO;
-
-    if (targetH > windowH) {
-      targetH = windowH;
-      targetW = windowH * ASPECT_RATIO;
-    }
-
-    this.displayWidth = Math.round(targetW);
-    this.displayHeight = Math.round(targetH);
-
-    // Canvas buffer resolution
-    this.canvas.width = Math.round(this.displayWidth * this.dpr);
-    this.canvas.height = Math.round(this.displayHeight * this.dpr);
-
-    // CSS styling maintains letterbox center
-    this.canvas.style.width = `${this.displayWidth}px`;
-    this.canvas.style.height = `${this.displayHeight}px`;
-
-    this.scale = (this.canvas.width / CANVAS_WIDTH);
-
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
-  }
-
   clear() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.pixelRenderer.clear();
   }
 
   beginFrame() {
-    this.ctx.save();
-    // Scale logical 1920x1080 coordinates to device buffer
-    this.ctx.scale(this.scale, this.scale);
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
+    this.pixelRenderer.beginFrame();
   }
 
   endFrame() {
-    this.ctx.restore();
+    this.pixelRenderer.endFrame();
   }
 
   update(dt) {
-    this.parallax.update(dt);
-    this.lighting.update(dt);
-    this.atmosphere.update(dt);
-    this.cinematic.update(dt);
+    this.pixelRenderer.update(dt);
   }
 
   /**
-   * Draw the multi-plane authored parallax background.
+   * Draw the entire gameplay world to the 256x240 internal canvas.
    */
+  drawWorld(camera, level, player, gameState) {
+    const ctx = this.internalCtx;
+
+    // 1. Draw 2-Layer Minimal Background (Sky + Distant Silhouette Hills)
+    this.pixelRenderer.drawBackground(camera, level);
+
+    // 2. Draw Midground Simple Trees & Rare Landmarks
+    this.pixelRenderer.drawMidground(camera, level.midgroundProps);
+
+    // 3. Draw World Platforms (Ground, elevated wood/stone/honey, bridges, vines, hazards, moving platforms)
+    this.pixelRenderer.drawPlatforms(camera, level.platforms, level.movingPlatforms);
+
+    // 4. Draw Entities (Checkpoints, Goal & Batboy, Shards, Enemies, Queen Bee silhouette, Particles, Player)
+    this.pixelRenderer.drawEntities(camera, level, player);
+
+    // 5. Draw Minimal Retro HUD (Top 12px)
+    this.pixelRenderer.drawHUD(gameState);
+
+    // 6. Visual Debug Overlay (F2)
+    if (this.debugVisual) {
+      this.drawDebugVisual(60, camera, level);
+    }
+  }
+
+  // Backward-compatibility wrappers for Game.js rendering calls
   drawBackground(camera, level) {
-    environmentRenderer.drawBackground(this.ctx, camera);
-    this.atmosphere.draw(this.ctx, camera);
+    this.pixelRenderer.drawBackground(camera, level);
   }
 
-  /**
-   * Draw authored midground landmark props.
-   */
-  drawMidgroundProps(props, camera = null) {
-    if (props && props.length > 0) {
-      environmentRenderer.drawMidgroundProps(this.ctx, props, camera);
-    }
+  drawMidgroundProps(props, camera) {
+    this.pixelRenderer.drawMidground(camera, props);
   }
 
-  /**
-   * Draw gameplay platforms using authored 3-slice assets & meadow tileset.
-   */
-  drawPlatforms(platforms, camera = null) {
-    if (!platforms) return;
-    environmentRenderer.drawGameplaySurfaces(this.ctx, platforms, camera);
+  drawPlatforms(platforms, camera) {
+    this.pixelRenderer.drawPlatforms(camera, platforms, []);
   }
 
-  /**
-   * Draw authored flora, fungi, and signs.
-   */
-  drawDetails(details, camera = null) {
-    if (details && details.length > 0) {
-      environmentRenderer.drawDetails(this.ctx, details, camera);
-    }
+  drawDetails(details, camera) {
+    // Disabled in 1985 pixel gameplay to eliminate screen clutter and preserve negative space
   }
 
-  /**
-   * Draw foreground framing vignette plates.
-   */
   drawForeground(camera) {
-    environmentRenderer.drawForeground(this.ctx, camera);
-  }
-
-  drawCheckpoints(checkpoints) {
-    if (!checkpoints || checkpoints.length === 0) return;
-    const props = checkpoints.map(cp => ({
-      type: 'shrine_altar',
-      x: cp.x + 20,
-      y: cp.y + cp.height,
-    }));
-    environmentRenderer.drawDetails(this.ctx, props);
-  }
-
-  drawCheckpoint(checkpoint) {
-    if (!checkpoint) return;
-    this.drawCheckpoints([checkpoint]);
+    // Disabled in 1985 pixel gameplay: negative space is intentional
   }
 
   drawLighting(camera, level, player) {
-    this.lighting.render(this.ctx, camera, level, player);
+    // Flat pixel-art lighting in gameplay: heavy dynamic 2D canvas lighting disabled
   }
 
   drawCinematic() {
-    this.cinematic.draw(this.ctx);
+    // Preserved for story/fade transitions
+    if (this.cinematic.fadeAlpha > 0) {
+      this.internalCtx.save();
+      this.internalCtx.fillStyle = `rgba(0, 0, 0, ${this.cinematic.fadeAlpha})`;
+      this.internalCtx.fillRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
+      this.internalCtx.restore();
+    }
+  }
+
+  drawSecretBanner(timer, text) {
+    // Suppressed or clean minimal pixel prompt
+  }
+
+  drawShrineBanner(timer, text) {
+    // Suppressed or clean minimal pixel prompt
+  }
+
+  drawCheckpoints(checkpoints) {
+    // Handled in drawWorld
+  }
+
+  drawCheckpoint(checkpoint) {
+    // Handled in drawWorld
   }
 
   drawGoal(goal, batboy) {
-    const ctx = this.ctx;
+    // Handled in drawWorld
+  }
+
+  /**
+   * Title Screen rendering at 256x240 internal retro resolution.
+   */
+  drawTitleScreen(titleScreen, player) {
+    const ctx = this.internalCtx;
     ctx.save();
-    if (batboy) {
-      batboy.draw(ctx);
+
+    // 1. Midnight Sky / Deep Forest Background
+    ctx.fillStyle = P.UI_BG;
+    ctx.fillRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
+
+    // Distant tree silhouette backdrop
+    ctx.fillStyle = P.FOREST_DEEP;
+    ctx.fillRect(0, 160, INTERNAL_WIDTH, 80);
+    ctx.fillStyle = P.GROUND_WARM;
+    ctx.fillRect(0, 196, INTERNAL_WIDTH, 44);
+    ctx.fillStyle = P.GRASS_TOP;
+    ctx.fillRect(0, 196, INTERNAL_WIDTH, 2);
+
+    // 2. Game Title (Clean retro typography)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // "PRINCESS ARIA"
+    ctx.fillStyle = P.HONEY_PALE;
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText('PRINCESS ARIA', INTERNAL_WIDTH / 2, 38);
+
+    // Title shadow / underline
+    ctx.fillStyle = P.HONEY_DARK;
+    ctx.fillRect(INTERNAL_WIDTH / 2 - 64, 58, 128, 2);
+
+    // "THE RESCUE OF BATBOY"
+    ctx.fillStyle = P.HONEY_AMBER;
+    ctx.font = '8px monospace';
+    ctx.fillText('THE RESCUE OF BATBOY', INTERNAL_WIDTH / 2, 66);
+
+    // 3. Princess Aria Pixel Sprite (Center Stage on Stone Plinth)
+    const plinthX = INTERNAL_WIDTH / 2 - 14;
+    const plinthY = 168;
+    ctx.fillStyle = P.STONE_LIGHT;
+    ctx.fillRect(plinthX, plinthY, 28, 4);
+    ctx.fillStyle = P.STONE_MID;
+    ctx.fillRect(plinthX + 2, plinthY + 4, 24, 24);
+
+    if (player) {
+      pixelAriaRenderer.draw(ctx, INTERNAL_WIDTH / 2 - 8, plinthY - 22, player);
     }
-    ctx.restore();
-  }
 
-  drawSecretBanner(timer, title = '✨ SECRET DISCOVERY: SUNSTONE CANOPY SANCTUM (+500 PTS)') {
-    if (timer <= 0) return;
-    const ctx = this.ctx;
-    ctx.save();
-    const alpha = Math.min(1, timer / 0.5);
-    ctx.globalAlpha = alpha;
+    // 4. Distant Queen Bee Silhouette in Sky
+    ctx.fillStyle = P.QUEEN_SILHOUETTE;
+    ctx.fillRect(INTERNAL_WIDTH / 2 - 12, 16, 24, 10);
+    ctx.fillStyle = P.QUEEN_EYES;
+    ctx.fillRect(INTERNAL_WIDTH / 2 - 4, 18, 2, 2);
+    ctx.fillRect(INTERNAL_WIDTH / 2 + 2, 18, 2, 2);
 
-    const bannerW = 880;
-    const bannerH = 64;
-    const bannerX = CANVAS_WIDTH / 2 - bannerW / 2;
-    const bannerY = 110;
+    // 5. Blinking "PRESS START" Prompt
+    const blink = Math.floor(Date.now() / 450) % 2 === 0;
+    if (blink) {
+      ctx.fillStyle = P.UI_TEXT_WHITE;
+      ctx.font = '8px monospace';
+      ctx.fillText('PRESS SPACE / ENTER', INTERNAL_WIDTH / 2, 136);
+    }
 
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 16);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#fde047';
-    ctx.font = 'bold 20px Outfit, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(title, CANVAS_WIDTH / 2, bannerY + bannerH / 2);
-
-    ctx.restore();
-  }
-
-  drawShrineBanner(timer, title = '✨ THE ANCIENT SUNSTONE SHRINE AWAKENS') {
-    if (timer <= 0) return;
-    const ctx = this.ctx;
-    ctx.save();
-    const alpha = Math.min(1, timer / 0.5);
-    ctx.globalAlpha = alpha;
-
-    const bannerW = 880;
-    const bannerH = 64;
-    const bannerX = CANVAS_WIDTH / 2 - bannerW / 2;
-    const bannerY = 110;
-
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
-    ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 16);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#fde047';
-    ctx.font = 'bold 20px Outfit, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(title, CANVAS_WIDTH / 2, bannerY + bannerH / 2);
+    // Copyright / Credits
+    ctx.fillStyle = P.STONE_MID;
+    ctx.font = '6px monospace';
+    ctx.fillText('1985 RETRO PLATFORM ENGINE', INTERNAL_WIDTH / 2, 222);
 
     ctx.restore();
   }
 
   /**
-   * Visual Debug Mode Overlay (F2 toggle).
+   * Game Over / Stage Clear screen at 256x240 internal retro resolution.
    */
-  drawDebugVisual(fps, camera, level) {
-    if (!this.debugVisual) return;
-
-    const ctx = this.ctx;
+  drawGameOverScreen(gameOverScreen, gameState, isClear, stats = {}) {
+    const ctx = this.internalCtx;
     ctx.save();
 
-    const panelW = 340;
-    const panelH = 220;
-    const panelX = 24;
-    const panelY = 160;
+    // Dark tint
+    ctx.fillStyle = 'rgba(9, 13, 22, 0.88)';
+    ctx.fillRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
 
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(panelX, panelY, panelW, panelH, 10);
-    ctx.fill();
-    ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
 
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 14px monospace';
+    if (isClear) {
+      // VICTORY / STAGE CLEAR
+      ctx.fillStyle = P.HONEY_PALE;
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText('STAGE CLEAR!', INTERNAL_WIDTH / 2, 48);
+
+      ctx.fillStyle = P.BATBOY_ACCENT;
+      ctx.font = '8px monospace';
+      ctx.fillText('BATBOY RESCUED!', INTERNAL_WIDTH / 2, 70);
+
+      ctx.fillStyle = P.UI_TEXT_WHITE;
+      ctx.font = '8px monospace';
+      ctx.fillText(`SCORE: ${gameState?.score || 0}`, INTERNAL_WIDTH / 2, 98);
+      ctx.fillText(`SHARDS: ${gameState?.coins || gameState?.shards || 0}`, INTERNAL_WIDTH / 2, 114);
+
+      const blink = Math.floor(Date.now() / 450) % 2 === 0;
+      if (blink) {
+        ctx.fillStyle = P.HONEY_AMBER;
+        ctx.fillText('PRESS SPACE TO PLAY AGAIN', INTERNAL_WIDTH / 2, 150);
+      }
+    } else {
+      // GAME OVER
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText('GAME OVER', INTERNAL_WIDTH / 2, 60);
+
+      ctx.fillStyle = P.UI_TEXT_WHITE;
+      ctx.font = '8px monospace';
+      ctx.fillText(`FINAL SCORE: ${gameState?.score || 0}`, INTERNAL_WIDTH / 2, 96);
+
+      const blink = Math.floor(Date.now() / 450) % 2 === 0;
+      if (blink) {
+        ctx.fillStyle = P.HONEY_AMBER;
+        ctx.fillText('PRESS SPACE TO RETRY', INTERNAL_WIDTH / 2, 140);
+      }
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Minimal retro visual debug overlay.
+   */
+  drawDebugVisual(fps, camera, level) {
+    const ctx = this.internalCtx;
+    ctx.save();
+    ctx.fillStyle = 'rgba(9, 13, 22, 0.85)';
+    ctx.fillRect(4, 16, 110, 48);
+    ctx.fillStyle = P.UI_TEXT_GOLD;
+    ctx.font = '6px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('📊 VISUAL PIPELINE DEBUG (F2)', panelX + 16, panelY + 26);
-
-    ctx.fillStyle = '#fef08a';
-    ctx.font = '12px monospace';
-    let y = panelY + 52;
-    const dy = 20;
-
-    ctx.fillText(`FPS: ${fps || 60} (Target: 60)`, panelX + 16, y); y += dy;
-    ctx.fillText(`Display: ${this.displayWidth}x${this.displayHeight} | DPR: ${this.dpr}`, panelX + 16, y); y += dy;
-    ctx.fillText(`Logical Res: ${CANVAS_WIDTH}x${CANVAS_HEIGHT} (16:9)`, panelX + 16, y); y += dy;
-    ctx.fillText(`Camera: X:${Math.round(camera ? camera.x : 0)} Y:${Math.round(camera ? camera.y : 0)} Zoom:${camera ? camera.zoomLevel.toFixed(2) : '1.00'}`, panelX + 16, y); y += dy;
-    ctx.fillText(`Lighting: ${this.lighting.enabled ? 'ENABLED (2D Blend)' : 'DISABLED'}`, panelX + 16, y); y += dy;
-    ctx.fillText(`Active Particles: ${level && level.particles ? level.particles.length : 0}`, panelX + 16, y); y += dy;
-    ctx.fillText(`Loaded Assets: ${assetManager.images.size} cached`, panelX + 16, y); y += dy;
-
+    ctx.textBaseline = 'top';
+    ctx.fillText(`FPS: ${fps || 60} | RES: 256x240`, 8, 20);
+    ctx.fillText(`CAM: X:${Math.round(camera ? camera.x : 0)}`, 8, 28);
+    ctx.fillText(`ENTITIES: ${level ? level.enemies.length : 0} ENEMIES`, 8, 36);
+    ctx.fillText(`MODE: 1985 PIXEL ENGINE`, 8, 44);
     ctx.restore();
   }
 }

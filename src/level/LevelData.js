@@ -34,40 +34,14 @@ export const WORLDS = {
           hiveAmber: '#f59e0b',
         },
 
-        // Midground Authored Props (Landmarks, Ruin Arches & Secret Structures)
+        // Midground Authored Props (Rare Monumental Landmarks only — negative space is intentional)
         midgroundProps: [
-          // --- SECTION 1: THE SUNSTONE GLADE (0-2400px) ---
-          // Beat 1: Arrival ancient oak framing on the far left edge
-          { type: 'ancient_oak', x: 80, y: 880, scale: 0.9 },
-          // Beat 3: Wild golden honeycomb nestled in canopy boughs above secret branch
-          { type: 'wild_honeycomb', x: 1360, y: 380, scale: 0.85 },
-          // Beat 4: Section 1 Landmark — Towering Ancient Oak & Sunstone Arch
-          { type: 'ancient_oak', x: 2100, y: 880, scale: 1.15 },
-          { type: 'sunstone_arch', x: 2100, y: 880, scale: 1.05 },
-
-          // --- SECTION 2: THE WHISPERING CANOPY & AMBER CHASM (2400-5200px) ---
-          // Beat 6: Chasm crossing wild honeycomb shelf
-          { type: 'wild_honeycomb', x: 2880, y: 380, scale: 0.9 },
-          // Beat 7: Section 2 Monumental Landmark — The Great Hollow Redwood & Amber Cataract
-          { type: 'hollow_redwood', x: 3900, y: 900, scale: 1.15 },
-          // Beat 8: Section 2 Secret Structure — The Forgotten Royal Apiary Sanctuary
-          { type: 'royal_apiary', x: 4480, y: 340, scale: 0.95 },
-          // Beat 8: Wild golden honeycomb shelf in upper sequoia boughs
-          { type: 'wild_honeycomb', x: 4200, y: 340, scale: 0.85 },
-          // Beat 9: Overgrown Outpost Gateway Arch to Section 3 Fortress
-          { type: 'sunstone_arch', x: 5000, y: 780, scale: 1.1 },
-
-          // --- SECTION 3: THE SUNSTONE AQUEDUCT & CRUMBLING FORTRESS (5200-8000px) ---
-          // Beat 10: Classical Granite Aqueduct Colonnade Ruins spanning across viaduct
-          { type: 'aqueduct_colonnade', x: 5520, y: 780, scale: 1.05 },
-          // Beat 12: Section 3 Secret Structure — The Sunstone Armory Vault
-          { type: 'fortress_armory', x: 6300, y: 360, scale: 0.95 },
-          // Beat 13: Secondary Aqueduct Colonnade Arches
-          { type: 'aqueduct_colonnade', x: 6540, y: 780, scale: 1.0 },
-          // Beat 14: Section 3 Monumental Landmark — The Sunstone Fortress Watchtower
-          { type: 'fortress_watchtower', x: 7150, y: 880, scale: 1.15 },
-          // Beat 15: Grand Citadel Gateway Arch to Hive Spire
-          { type: 'sunstone_arch', x: 7840, y: 760, scale: 1.15 },
+          // 1. Section 1 Forest Landmark: Ancient Fairytale Oak (x: 2100)
+          { type: 'ancient_oak', x: 2100, y: 880, scale: 1.0 },
+          // 2. Section 2 Deeper Forest Landmark: The Great Hollow Redwood (x: 3900)
+          { type: 'hollow_redwood', x: 3900, y: 900, scale: 1.0 },
+          // 3. Section 3 Fortress Approach Landmark: The Sunstone Watchtower (x: 7150)
+          { type: 'fortress_watchtower', x: 7150, y: 880, scale: 1.0 },
         ],
 
         // Solid Platforms (Modular 3-slice oak boughs, bouncy amber rafts, vines, stone terraces & crumble blocks)
@@ -185,71 +159,8 @@ export const WORLDS = {
           { startX: 6580, startY: 660, endX: 6740, endY: 660, width: 160, height: 36, type: 'moving_runestone', speed: 1.2, phaseOffset: 2.1 },
         ],
 
-        // Authored Detail Flora, Fungi, Signage & Magical Props
-        detailProps: [
-          // --- SECTION 1 DETAILS ---
-          // Beat 1: Quiet Arrival clearing
-          { type: 'bluebells', x: 140, y: 880, scale: 1.0 },
-          { type: 'road_sign', x: 320, y: 880, scale: 1.0 },
-          { type: 'pebbles', x: 420, y: 880, scale: 1.0 },
-
-          // Beat 2: Under-bridge clearing
-          { type: 'amber_bracket', x: 800, y: 880, scale: 1.0 },
-          { type: 'bluebells', x: 960, y: 880, scale: 1.0 },
-          { type: 'pebbles', x: 1100, y: 880, scale: 0.9 },
-
-          // Beat 3: Secret high canopy branch & landing terrace
-          { type: 'sun_crystal', x: 1360, y: 390, scale: 1.0 },
-          { type: 'amber_bracket', x: 1290, y: 460, scale: 0.85 },
-          { type: 'bluebells', x: 1480, y: 640, scale: 0.85 },
-
-          // Beat 4: Landmark Courtyard & Altar
-          { type: 'shrine_altar', x: 2100, y: 880, scale: 1.0 },
-          { type: 'bluebells', x: 1960, y: 880, scale: 1.0 },
-          { type: 'pebbles', x: 2030, y: 880, scale: 1.1 },
-          { type: 'bluebells', x: 2220, y: 880, scale: 1.0 },
-
-          // --- SECTION 2 DETAILS ---
-          // Beat 5: Chasm Brink Warning
-          { type: 'road_sign', x: 2420, y: 880, scale: 1.0 },
-          { type: 'pebbles', x: 2440, y: 880, scale: 1.0 },
-
-          // Beat 6: Chasm crossing details
-          { type: 'amber_bracket', x: 3100, y: 640, scale: 0.85 },
-
-          // Beat 7: Midpoint Hollow Redwood Sanctuary Checkpoint 2
-          { type: 'shrine_altar', x: 3540, y: 720, scale: 1.0 },
-          { type: 'bluebells', x: 3580, y: 720, scale: 1.0 },
-          { type: 'pebbles', x: 3660, y: 720, scale: 1.0 },
-          { type: 'amber_bracket', x: 3820, y: 600, scale: 0.9 },
-
-          // Beat 8: Secret Royal Apiary Sanctuary Floating Relic
-          { type: 'sun_crystal', x: 4480, y: 250, scale: 1.0 },
-          { type: 'amber_bracket', x: 4340, y: 340, scale: 0.85 },
-          { type: 'bluebells', x: 4620, y: 680, scale: 0.9 },
-
-          // Beat 9: Outpost Approach
-          { type: 'bluebells', x: 4860, y: 780, scale: 1.0 },
-          { type: 'pebbles', x: 4940, y: 780, scale: 1.0 },
-
-          // --- SECTION 3 DETAILS ---
-          // Beat 10: Colonnade Gateway Checkpoint 3
-          { type: 'shrine_altar', x: 5360, y: 780, scale: 1.0 },
-          { type: 'road_sign', x: 5280, y: 780, scale: 1.0 },
-          { type: 'pebbles', x: 5460, y: 780, scale: 1.1 },
-
-          // Beat 12: Secret Sunstone Armory Vault Core
-          { type: 'sun_crystal', x: 6300, y: 270, scale: 1.1 },
-          { type: 'pebbles', x: 6460, y: 740, scale: 1.0 },
-
-          // Beat 14: Watchtower Bastion Checkpoint 4 & Relic
-          { type: 'shrine_altar', x: 6920, y: 740, scale: 1.0 },
-          { type: 'pebbles', x: 7060, y: 740, scale: 1.1 },
-          { type: 'sun_crystal', x: 7560, y: 280, scale: 1.0 },
-
-          // Beat 15: Citadel Gateway Approach
-          { type: 'pebbles', x: 7720, y: 760, scale: 1.1 },
-        ],
+        // Detail Props (Kept empty for disciplined retro negative space)
+        detailProps: [],
 
         // Collectibles: Royal Shards
         shards: [

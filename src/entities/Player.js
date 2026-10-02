@@ -5,6 +5,7 @@ import { AnimationClip } from '../animation/AnimationClip.js';
 import { CharacterRig } from '../animation/CharacterRig.js';
 import { assetManager } from '../renderer/AssetManager.js';
 import { characterRenderer } from '../renderer/HDCharacterRenderer.js';
+import { pixelAriaRenderer } from '../renderer/PixelCharacterRenderer.js';
 import { Collision } from '../physics/Collision.js';
 
 /**
@@ -650,58 +651,8 @@ export class Player {
   draw(ctx) {
     if (this.isDead && this.anim.isFinished) return;
 
-    // Dynamically bind illustrated rig layers if not yet bound (e.g. on Title Screen before gameplay update)
-    if ((!this.layersBound || !this.rig?.masterPlates?.front) && assetManager.isReady) {
-      this.bindRigLayers();
-    }
-
-    if (!this._loggedDrawOnce) {
-      this._loggedDrawOnce = true;
-      console.log('[Player.draw Diagnostic]', {
-        x: this.x,
-        y: this.y,
-        anim: this.anim.currentAnimationName,
-        clip: this.anim.currentClip?.name,
-        clipTotalFrames: this.anim.currentClip?.totalFrames,
-        frame: this.anim.getCurrentFrame()
-      });
-    }
-
-    // 1. Draw Honey Dash Trail Ghosts
-    if (this.dashParticles.length > 0) {
-      const frameDesc = this.anim.getCurrentFrame();
-      this.dashParticles.forEach(p => {
-        characterRenderer.draw(
-          ctx,
-          p.x,
-          p.y,
-          this.width,
-          this.height,
-          { ...frameDesc, facing: p.facing },
-          { customAlpha: p.alpha * 0.45, drawShadow: false }
-        );
-      });
-    }
-
-    // 2. Decoupled HD Character Draw
-    const frameDesc = this.anim.getCurrentFrame();
-    characterRenderer.draw(
-      ctx,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      frameDesc,
-      {
-        isInvulnerable: this.invincibilityTimer > 0,
-        invulnerabilityTimer: this.invincibilityTimer,
-        isHurt: this.isHurt,
-        drawShadow: true,
-        groundDistance: this.groundDistance || 0,
-        isLanding: this.anim.currentAnimationName === ANIM_STATES.LAND,
-        rig: this.rig,
-      }
-    );
+    // 1985 Pixel Platformer Character Draw
+    pixelAriaRenderer.draw(ctx, this.x, this.y, this);
 
     // 3. Draw Royal Stardust Burst Attack Arc
     if (this.isAttacking) {

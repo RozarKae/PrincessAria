@@ -1,3 +1,4 @@
+console.log('[MAIN.JS TOP LEVEL LOADED]');
 import { Game } from './game/Game.js';
 
 function initGame() {

@@ -25,23 +25,8 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+  background-color: #050811;
   overflow: hidden;
-}
-
-/* Subtle enchanted golden honeycomb vignette */
-#game-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 50% 50%, transparent 60%, rgba(2, 6, 23, 0.75) 100%),
-    radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(13, 148, 136, 0.04) 0%, transparent 40%);
-  pointer-events: none;
 }
 
 #game-container {
@@ -49,12 +34,8 @@ html, body {
   width: min(100vw, calc(100vh * 16 / 9));
   height: min(100vh, calc(100vw * 9 / 16));
   aspect-ratio: 16 / 9;
-  box-shadow: 
-    0 30px 60px -12px rgba(0, 0, 0, 0.95),
-    0 0 45px rgba(245, 158, 11, 0.18),
-    0 0 80px rgba(13, 148, 136, 0.12);
-  border-radius: 14px;
-  border: 2px solid rgba(217, 119, 6, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95);
+  border: 4px solid #1e293b;
   overflow: hidden;
   display: flex;
   background-color: #020617;
@@ -64,5 +45,7 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
-  image-rendering: auto;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
