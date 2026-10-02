@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" width="138" height="138">
+  
+  <defs>
+    <linearGradient id="ariaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="35%" stop-color="#18181b" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#09090b" />
+    </linearGradient>
+
+    <linearGradient id="ariaCapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <radialGradient id="emeraldGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="60%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#047857" />
+    </radialGradient>
+
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="35%" stop-color="#92400e" />
+      <stop offset="75%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+
+    <linearGradient id="bootGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#27272a" />
+      <stop offset="50%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
+    </linearGradient>
+
+    <filter id="royalGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <g transform="translate(69, 133) scale(1, 1) translate(-69, -133)">
+
+    <!-- 1. WING-CUT HONEY SILK CAPELET (Behind Aria) -->
+    <g transform="translate(68, 56) rotate(11) translate(-68, -56)" opacity="0.9">
+      <path d="M 60 54 Q 51 78 48 108 Q 62 88 68 62 Z" fill="url(#ariaCapeGrad)" stroke="#b45309" stroke-width="1" />
+      <path d="M 64 56 Q 54.8 82 56 114 Q 66 90 72 64 Z" fill="url(#ariaCapeGrad)" opacity="0.85" />
+    </g>
+
+    <!-- 2. VOLUMINOUS CHESTNUT PONYTAIL -->
+    <g transform="translate(56, 32) rotate(7) translate(-56, -32)">
+      <path d="M 58 28 C 42 22, 34 38, 38 64 C 44 54, 52 46, 58 42 Z" fill="url(#hairGrad)" />
+      <path d="M 40 58 Q 30 76 34 88 Q 44 74 46 58 Z" fill="url(#hairGrad)" opacity="0.9" />
+      <!-- Ponytail Gold Ribbon Tie -->
+      <ellipse cx="56" cy="30" rx="3.5" ry="4.5" fill="#fbbf24" stroke="#b45309" stroke-width="1" />
+    </g>
+
+    <!-- 3. BACK LEG &amp; EXPLORER BOOT -->
+    <g transform="translate(62, 86) rotate(24) translate(-62, -86)">
+      <!-- Thigh -->
+      <line x1="62" y1="86" x2="60" y2="106" stroke="#18181b" stroke-width="8.5" stroke-linecap="round" />
+      <!-- Knee Joint -->
+      <circle cx="60" cy="106" r="4.5" fill="#fbbf24" />
+      <!-- Calf &amp; Boot -->
+      <line x1="60" y1="106" x2="58" y2="128" stroke="url(#bootGrad)" stroke-width="8" stroke-linecap="round" />
+      <!-- Foot / Sole -->
+      <path d="M 54 128 L 68 128 L 68 131 L 52 131 Z" fill="#09090b" />
+    </g>
+
+    <!-- 4. FRONT LEG &amp; EXPLORER BOOT -->
+    <g transform="translate(74, 86) rotate(-24) translate(-74, -86)">
+      <!-- Thigh -->
+      <line x1="74" y1="86" x2="76" y2="106" stroke="#18181b" stroke-width="9" stroke-linecap="round" />
+      <!-- Knee Joint with Gold Greave Clasp -->
+      <circle cx="76" cy="106" r="4.8" fill="#fbbf24" />
+      <!-- Calf &amp; Boot -->
+      <line x1="76" y1="106" x2="78" y2="128" stroke="url(#bootGrad)" stroke-width="8.5" stroke-linecap="round" />
+      <!-- Foot / Sole firmly planted on ground plane -->
+      <path d="M 72 128 L 88 128 L 88 131 L 70 131 Z" fill="#09090b" />
+      <!-- Boot Gold Buckle -->
+      <rect x="74" y="118" width="5" height="3" fill="#fde047" />
+    </g>
+
+    <!-- 5. IVORY PLEATED PETTICOAT &amp; GOLD PEPLUM SKIRT -->
+    <g transform="translate(68, 76) rotate(4) translate(-68, -76)">
+      <!-- Ivory Underskirt -->
+      <path d="M 58 76 L 52 92 L 84 92 L 78 76 Z" fill="#fffbeb" stroke="#fef08a" stroke-width="1.2" />
+      <!-- Honey Gold Peplum Petal Over-Skirt -->
+      <path d="M 56 74 C 50 82, 54 90, 68 90 C 82 90, 86 82, 80 74 Z" fill="url(#ariaDressGrad)" stroke="#b45309" stroke-width="1.5" />
+      <!-- Gold Hexagonal Belt Filigree -->
+      <rect x="58" y="72" width="20" height="4.5" rx="2" fill="#fbbf24" stroke="#b45309" stroke-width="1" />
+      <polygon points="68,71 71,73.5 71,76 68,78 65,76 65,73.5" fill="#14b8a6" />
+    </g>
+
+    <!-- 6. FITTED CHARCOAL BODICE &amp; TORSO -->
+    <g transform="translate(68, 56) rotate(0) translate(-68, -56)">
+      <!-- Obsidian Bodice -->
+      <path d="M 60 54 L 58 74 L 78 74 L 76 54 Z" fill="#18181b" stroke="#09090b" stroke-width="1.5" />
+      <!-- Scalloped Chemise Collar -->
+      <path d="M 62 54 Q 68 60 74 54" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.2" />
+      <!-- Chevron Gold Embroidery -->
+      <path d="M 64 62 L 68 67 L 72 62" fill="none" stroke="#fde047" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+
+    <!-- 7. BACK ARM &amp; GAUNTLET -->
+    <g transform="translate(60, 56) rotate(-21.6) translate(-60, -56)">
+      <line x1="60" y1="56" x2="52" y2="72" stroke="#18181b" stroke-width="6.5" stroke-linecap="round" />
+      <line x1="52" y1="72" x2="48" y2="86" stroke="#fed7aa" stroke-width="5.5" stroke-linecap="round" />
+      <circle cx="47" cy="88" r="3.2" fill="#fed7aa" />
+    </g>
+
+    <!-- 8. HEROIC HEAD, EXQUISITE FACE &amp; EXPRESSION -->
+    <g transform="translate(68, 40) rotate(0) translate(-68, -40)">
+      <!-- Head Base -->
+      <ellipse cx="68" cy="40" rx="13" ry="15" fill="#fed7aa" />
+      <!-- Soft Cheek Blush -->
+      <ellipse cx="73" cy="43" rx="3.5" ry="2" fill="#f43f5e" opacity="0.4" />
+
+      <!-- Natural Nose Bridge -->
+      <path d="M 72 38 L 74 41 L 71 42" fill="none" stroke="#fdba74" stroke-width="1.2" stroke-linecap="round" />
+
+      <!-- Expressive Eye Svg -->
+      
+      <ellipse cx="69" cy="36" rx="4.5" ry="5" fill="#0284c7" />
+      <circle cx="70" cy="36" r="2" fill="#0f172a" />
+      <circle cx="71" cy="34" r="1.4" fill="#ffffff" />
+      <path d="M 63 31 L 75 33" stroke="#09090b" stroke-width="2.2" stroke-linecap="round" />
+    
+
+      <!-- Expressive Mouth Svg -->
+      <line x1="66" y1="45" x2="73" y2="45" stroke="#09090b" stroke-width="2" stroke-linecap="round" />
+
+      <!-- Front Hair &amp; Side-Swept Bangs -->
+      <path d="M 57 32 C 62 26, 76 25, 79 33 C 74 31, 68 33, 64 36 Z" fill="url(#hairGrad)" />
+      <path d="M 57 34 Q 54 44 58 52 Q 62 42 60 36 Z" fill="url(#hairGrad)" />
+
+      <!-- DELICATE GOLD HONEYCOMB TIARA WITH EMERALD DROPLET -->
+      <!-- Honeycomb Circlet -->
+      <polygon points="62,25 66,21 70,25 74,21 78,25 74,27 66,27" fill="#fbbf24" stroke="#b45309" stroke-width="1" filter="url(#royalGlow)" />
+      <!-- Suspended Emerald Droplet Gem -->
+      <polygon points="70,26 72,29 70,33 68,29" fill="url(#emeraldGrad)" stroke="#b45309" stroke-width="0.8" />
+      <circle cx="69.5" cy="28.5" r="0.8" fill="#ffffff" />
+    </g>
+
+    <!-- 9. FRONT ARM &amp; ROYAL STAR WAND -->
+    <g transform="translate(74, 56) rotate(21.6) translate(-74, -56)">
+      <!-- Upper Arm -->
+      <line x1="74" y1="56" x2="82" y2="72" stroke="#18181b" stroke-width="7" stroke-linecap="round" />
+      <!-- Gold-Trimmed Wrist Bracer &amp; Hand -->
+      <line x1="82" y1="72" x2="86" y2="86" stroke="#fed7aa" stroke-width="6" stroke-linecap="round" />
+      <circle cx="87" cy="88" r="3.5" fill="#fed7aa" />
+      <rect x="80" y="77" width="5.5" height="5" rx="1.5" fill="#fbbf24" stroke="#b45309" stroke-width="0.8" />
+    </g>
+
+  </g>
+</svg>

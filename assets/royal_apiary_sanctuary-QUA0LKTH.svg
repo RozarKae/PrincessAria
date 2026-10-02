@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="440" height="460">
+  <defs>
+    <!-- Weathered Royal Teak Wood -->
+    <linearGradient id="apiaryWoodGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="40%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#1e0b02" />
+    </linearGradient>
+
+    <!-- Royal Sunstone Gold Filigree -->
+    <linearGradient id="apiaryGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+
+    <!-- Sacred Amber Interior Lantern Glow -->
+    <radialGradient id="apiaryAmberGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="25%" stop-color="#fef08a" stop-opacity="0.85" />
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Shadow Base -->
+  <ellipse cx="220" cy="445" rx="190" ry="14" fill="#09090b" opacity="0.45" />
+
+  <!-- ======================================================== -->
+  <!-- 1. OCTAGONAL FOUNDATION & STONE PILLARS -->
+  <!-- ======================================================== -->
+  <g id="apiaryBase">
+    <!-- Granite Foundation Platform -->
+    <path d="M40 430 L390 430 L410 445 L20 445 Z" fill="#334155" />
+    <path d="M30 435 L400 435" stroke="#64748b" stroke-width="2" />
+
+    <!-- Slender Carved Teak Support Pillars -->
+    <rect x="70" y="190" width="16" height="240" rx="3" fill="url(#apiaryWoodGrad)" />
+    <rect x="150" y="190" width="16" height="240" rx="3" fill="url(#apiaryWoodGrad)" />
+    <rect x="274" y="190" width="16" height="240" rx="3" fill="url(#apiaryWoodGrad)" />
+    <rect x="354" y="190" width="16" height="240" rx="3" fill="url(#apiaryWoodGrad)" />
+
+    <!-- Pillar Gold Rings -->
+    <rect x="68" y="210" width="20" height="6" fill="url(#apiaryGoldGrad)" />
+    <rect x="148" y="210" width="20" height="6" fill="url(#apiaryGoldGrad)" />
+    <rect x="272" y="210" width="20" height="6" fill="url(#apiaryGoldGrad)" />
+    <rect x="352" y="210" width="20" height="6" fill="url(#apiaryGoldGrad)" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 2. HONEYCOMB FRETWORK BALUSTRADE & INTERIOR -->
+  <!-- ======================================================== -->
+  <g id="apiaryFretwork">
+    <!-- Back Shaded Interior Wall -->
+    <rect x="86" y="220" width="268" height="210" fill="#1c1917" opacity="0.8" />
+
+    <!-- Honeycomb Hexagonal Screen Lattice -->
+    <g stroke="url(#apiaryGoldGrad)" stroke-width="2" fill="none" opacity="0.65">
+      <polygon points="120,260 135,252 150,260 150,278 135,286 120,278" />
+      <polygon points="150,260 165,252 180,260 180,278 165,286 150,278" />
+      <polygon points="260,260 275,252 290,260 290,278 275,286 260,278" />
+      <polygon points="290,260 305,252 320,260 320,278 305,286 290,278" />
+    </g>
+
+    <!-- Central Floating Royal Honeycomb Relic / Reliquary -->
+    <circle cx="220" cy="300" r="50" fill="url(#apiaryAmberGlow)" />
+    <polygon points="220,275 242,287 242,313 220,325 198,313 198,287" fill="#f59e0b" stroke="#fef08a" stroke-width="3" />
+    <polygon points="220,285 234,293 234,307 220,315 206,307 206,293" fill="#fbbf24" />
+
+    <!-- Carved Balustrade Handrail -->
+    <rect x="50" y="380" width="340" height="12" rx="4" fill="url(#apiaryGoldGrad)" />
+    <rect x="60" y="392" width="320" height="38" fill="url(#apiaryWoodGrad)" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 3. BELL-SHAPED BEEHIVE CANOPY ROOF -->
+  <!-- ======================================================== -->
+  <g id="apiaryRoof">
+    <!-- Sweeping Pagoda-Style Multi-Tiered Roof -->
+    <!-- Lower Eaves -->
+    <path d="M20 200 
+             C80 180 160 160 220 160 
+             C280 160 360 180 420 200 
+             L400 180 
+             C340 150 270 130 220 130 
+             C170 130 100 150 40 180 Z" 
+          fill="url(#apiaryGoldGrad)" />
+
+    <!-- Upper Bell Dome -->
+    <path d="M60 180 
+             C100 130 150 90 220 70 
+             C290 90 340 130 380 180 
+             C310 155 240 150 220 150 
+             C200 150 130 155 60 180 Z" 
+          fill="url(#apiaryWoodGrad)" />
+
+    <!-- Shingle Bands -->
+    <path d="M100 150 C150 120 290 120 340 150" stroke="#f59e0b" stroke-width="4" fill="none" opacity="0.75" />
+    <path d="M140 115 C180 95 260 95 300 115" stroke="#f59e0b" stroke-width="4" fill="none" opacity="0.75" />
+
+    <!-- Crown Finial & Amber Crystal Spire -->
+    <path d="M210 70 L230 70 L220 20 Z" fill="url(#apiaryGoldGrad)" />
+    <polygon points="220,10 228,24 220,38 212,24" fill="#fef08a" stroke="#f59e0b" stroke-width="1.5" />
+    <circle cx="220" cy="24" r="28" fill="url(#apiaryAmberGlow)" />
+  </g>
+</svg>

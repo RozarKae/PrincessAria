@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 980" width="760" height="980">
+  <defs>
+    <!-- Redwood Bark Longitudinal Ribbing Gradient -->
+    <linearGradient id="redwoodBarkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b1308" />
+      <stop offset="18%" stop-color="#581c0c" />
+      <stop offset="38%" stop-color="#7c2d12" />
+      <stop offset="55%" stop-color="#9a3412" />
+      <stop offset="78%" stop-color="#6c240d" />
+      <stop offset="100%" stop-color="#2c0d06" />
+    </linearGradient>
+
+    <!-- Deep Hollow Trunk Cavity Shadow -->
+    <radialGradient id="hollowShadowGrad" cx="50%" cy="55%" r="60%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.85" />
+      <stop offset="25%" stop-color="#b45309" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#451a03" stop-opacity="0.98" />
+      <stop offset="100%" stop-color="#0c0a09" stop-opacity="1.0" />
+    </radialGradient>
+
+    <!-- Amber Cataract Nectar Stream Gradient -->
+    <linearGradient id="amberCataractGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95" />
+      <stop offset="30%" stop-color="#fbbf24" stop-opacity="0.9" />
+      <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Giant Canopy Autumn Foliage Gradient -->
+    <linearGradient id="redwoodCanopyFoliage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="30%" stop-color="#b45309" />
+      <stop offset="70%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#291404" />
+    </linearGradient>
+
+    <!-- High Leafy Gold Glow -->
+    <radialGradient id="sunbeamFoliageGlow" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="45%" stop-color="#ea580c" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#451a03" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Ground Ambient Occlusion Shadow -->
+  <ellipse cx="380" cy="960" rx="340" ry="24" fill="#09090b" opacity="0.5" />
+
+  <!-- ======================================================== -->
+  <!-- 1. MASSIVE REDWOOD UPPER CANOPY CROWNS (Back Foliage) -->
+  <!-- ======================================================== -->
+  <g id="redwoodBackCanopy" fill="url(#redwoodCanopyFoliage)">
+    <!-- High bough arches extending across upper canopy -->
+    <path d="M120 280 Q80 180 180 120 Q280 60 420 80 Q560 60 640 140 Q720 220 680 320 Q620 420 540 400 Q480 340 380 360 Q260 340 180 380 Z" />
+    <path d="M40 360 Q20 260 120 220 Q200 180 280 240 Q220 340 140 380 Z" opacity="0.9" />
+    <path d="M580 380 Q660 280 740 320 Q780 400 700 480 Q620 460 580 380 Z" opacity="0.9" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 2. GIGANTIC HOLLOW REDWOOD TRUNK STRUCTURE -->
+  <!-- ======================================================== -->
+  <g id="redwoodMainTrunk">
+    <!-- Massive Fluted Trunk Base -->
+    <path d="M180 960 
+             C200 840 220 720 240 600 
+             C250 480 260 360 280 160 
+             L480 160 
+             C500 360 510 480 520 600 
+             C540 720 560 840 580 960 
+             C520 970 420 975 380 975 
+             C340 975 240 970 180 960 Z" 
+          fill="url(#redwoodBarkGrad)" />
+
+    <!-- Deep Bark Furrows and Longitudinal Fibers -->
+    <path d="M260 960 C270 780 290 620 300 420" stroke="#220b05" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.75" />
+    <path d="M340 965 C345 820 350 740 350 620" stroke="#220b05" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.65" />
+    <path d="M420 965 C415 820 410 740 410 620" stroke="#220b05" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.65" />
+    <path d="M500 960 C490 780 470 620 460 420" stroke="#220b05" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.75" />
+
+    <!-- Massive Gnarled Side Boughs Framing Traversal Routes -->
+    <!-- Left Bough -->
+    <path d="M250 560 C180 540 120 580 60 570 C10 560 0 510 50 490 C120 470 180 510 255 490 Z" fill="url(#redwoodBarkGrad)" />
+    <!-- Right Bough -->
+    <path d="M510 540 C580 520 640 560 700 550 C750 540 760 490 710 470 C640 450 580 490 505 470 Z" fill="url(#redwoodBarkGrad)" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 3. THE SACRED HOLLOW CHAMBER & AMBER CATARACT -->
+  <!-- ======================================================== -->
+  <g id="hollowChamber">
+    <!-- Huge Gothic Natural Hollow Aperture in Trunk -->
+    <path d="M300 880 
+             C300 700 310 580 340 520 
+             C360 480 400 480 420 520 
+             C450 580 460 700 460 880 
+             C430 910 330 910 300 880 Z" 
+          fill="url(#hollowShadowGrad)" />
+
+    <!-- Interior Radiant Amber Sap Veins Pulsing within Chamber -->
+    <path d="M350 550 Q360 680 355 860" stroke="#fde047" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.8" />
+    <path d="M410 550 Q400 680 405 860" stroke="#fde047" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.8" />
+    <path d="M380 520 Q380 720 380 870" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9" />
+
+    <!-- Glowing Amber Cataract Waterfall Cascading Through Center -->
+    <path d="M365 520 
+             C365 620 360 740 355 920 
+             L405 920 
+             C400 740 395 620 395 520 Z" 
+          fill="url(#amberCataractGrad)" />
+
+    <!-- Translucent Shimmer Highlights on Waterfall -->
+    <path d="M375 530 L372 900" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="14 18" fill="none" opacity="0.7" />
+    <path d="M388 540 L385 890" stroke="#fef08a" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10 14" fill="none" opacity="0.85" />
+
+    <!-- Amber Mist & Splashes at Cataract Base -->
+    <ellipse cx="380" cy="915" rx="55" ry="14" fill="#fbbf24" opacity="0.6" />
+    <circle cx="360" cy="905" r="4" fill="#fef08a" opacity="0.75" />
+    <circle cx="395" cy="902" r="5" fill="#fef08a" opacity="0.8" />
+    <circle cx="380" cy="890" r="3" fill="#ffffff" opacity="0.9" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 4. SHELF FUNGI & ANCIENT MOSS OVERHANGS -->
+  <!-- ======================================================== -->
+  <g id="shelfFungi">
+    <!-- Golden Amber Bracket Fungi Forming Natural Stepping Terraces -->
+    <!-- Left Fungal Terrace (x: 230, y: 680) -->
+    <path d="M210 700 C210 670 280 660 310 680 C310 695 260 710 210 700 Z" fill="#f59e0b" />
+    <path d="M215 690 C225 675 275 668 300 680" stroke="#fef08a" stroke-width="3" fill="none" />
+
+    <!-- Right Fungal Terrace (x: 450, y: 640) -->
+    <path d="M450 640 C450 615 520 605 550 625 C550 640 500 655 450 640 Z" fill="#d97706" />
+    <path d="M455 630 C465 618 515 612 540 625" stroke="#fef08a" stroke-width="3" fill="none" />
+
+    <!-- Lush Hanging Emerald Moss Tufts Clinging to Boughs -->
+    <path d="M80 570 C85 610 95 620 100 575 C105 605 115 615 120 575 Z" fill="#15803d" />
+    <path d="M660 550 C665 590 675 600 680 555 C685 585 695 595 700 555 Z" fill="#15803d" />
+  </g>
+
+  <!-- Upper Sunlit Foliage Crest -->
+  <circle cx="380" cy="180" r="180" fill="url(#sunbeamFoliageGlow)" />
+</svg>

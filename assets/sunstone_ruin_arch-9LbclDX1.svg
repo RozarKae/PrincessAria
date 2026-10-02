@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" width="400" height="520">
+  <defs>
+    <!-- Weathered Granite Masonry Gradient -->
+    <linearGradient id="stoneArchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="35%" stop-color="#64748b" />
+      <stop offset="75%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Antique Inlaid Brass Ring -->
+    <linearGradient id="brassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Sunstone Rune Glow -->
+    <radialGradient id="runeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Ivy Foliage -->
+    <linearGradient id="ivyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="50%" stop-color="#16a34a" />
+      <stop offset="100%" stop-color="#14532d" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Column Plinth &amp; Shaft -->
+  <g id="left_column">
+    <rect x="40" y="470" width="90" height="50" rx="4" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="52" y="160" width="66" height="310" rx="2" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <!-- Fluting Lines -->
+    <line x1="68" y1="170" x2="68" y2="460" stroke="#334155" stroke-width="2" />
+    <line x1="85" y1="170" x2="85" y2="460" stroke="#334155" stroke-width="2" />
+    <line x1="102" y1="170" x2="102" y2="460" stroke="#334155" stroke-width="2" />
+  </g>
+
+  <!-- Right Column Plinth &amp; Shaft -->
+  <g id="right_column">
+    <rect x="270" y="470" width="90" height="50" rx="4" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="282" y="160" width="66" height="310" rx="2" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <!-- Fluting Lines -->
+    <line x1="298" y1="170" x2="298" y2="460" stroke="#334155" stroke-width="2" />
+    <line x1="315" y1="170" x2="315" y2="460" stroke="#334155" stroke-width="2" />
+    <line x1="332" y1="170" x2="332" y2="460" stroke="#334155" stroke-width="2" />
+  </g>
+
+  <!-- Grand Hexagonal Archway &amp; Keystone Header -->
+  <g id="arch_head">
+    <!-- Capital Blocks -->
+    <rect x="36" y="130" width="98" height="32" rx="4" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="266" y="130" width="98" height="32" rx="4" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+
+    <!-- Massive Arch Traverse -->
+    <path d="M20 130 
+             L110 30 
+             L290 30 
+             L380 130 
+             L320 130 
+             L255 60 
+             L145 60 
+             L80 130 Z" 
+          fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" stroke-linejoin="round" />
+
+    <!-- Central Hexagonal Keystone -->
+    <polygon points="200,20 230,38 230,76 200,94 170,76 170,38" fill="url(#stoneArchGrad)" stroke="#1e293b" stroke-width="3" />
+    <!-- Inlaid Antique Brass Sunburst Rim inside Keystone -->
+    <polygon points="200,28 222,42 222,70 200,84 178,70 178,42" fill="none" stroke="url(#brassGrad)" stroke-width="2.5" />
+
+    <!-- Radiant Sunstone Crystal Relic in Keystone -->
+    <circle cx="200" cy="56" r="14" fill="url(#runeGlow)" />
+    <circle cx="200" cy="56" r="6" fill="#fffbeb" />
+  </g>
+
+  <!-- Carved Ancient Runes on Columns -->
+  <g stroke="url(#brassGrad)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.85">
+    <!-- Left Column Rune -->
+    <circle cx="85" cy="240" r="10" />
+    <line x1="85" y1="222" x2="85" y2="258" />
+    <line x1="72" y1="240" x2="98" y2="240" />
+
+    <!-- Right Column Rune -->
+    <polygon points="315,228 325,245 305,245" />
+    <line x1="315" y1="245" x2="315" y2="260" />
+    <circle cx="315" cy="264" r="3" fill="#fbbf24" />
+  </g>
+
+  <!-- Wild Ivy Tendrils Cascading Down Left &amp; Right -->
+  <g fill="url(#ivyGrad)" stroke="#052e16" stroke-width="1.5">
+    <!-- Left Tendril Leaves -->
+    <path d="M48 110 Q40 140 50 180" stroke="#166534" stroke-width="2" fill="none" />
+    <ellipse cx="44" cy="125" rx="7" ry="10" transform="rotate(-30 44 125)" />
+    <ellipse cx="54" cy="150" rx="8" ry="11" transform="rotate(25 54 150)" />
+    <ellipse cx="46" cy="175" rx="7" ry="9" transform="rotate(-15 46 175)" />
+
+    <!-- Right Tendril Leaves -->
+    <path d="M350 120 Q360 160 345 210" stroke="#166534" stroke-width="2" fill="none" />
+    <ellipse cx="355" cy="135" rx="8" ry="11" transform="rotate(25 355 135)" />
+    <ellipse cx="348" cy="165" rx="7" ry="10" transform="rotate(-20 348 165)" />
+    <ellipse cx="352" cy="195" rx="6" ry="8" transform="rotate(15 352 195)" />
+  </g>
+</svg>

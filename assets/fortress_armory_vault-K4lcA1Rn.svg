@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 500" width="480" height="500">
+  <defs>
+    <!-- Weathered Granite Masonry -->
+    <linearGradient id="vaultGranite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="40%" stop-color="#64748b" />
+      <stop offset="80%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Royal Sunstone Gold -->
+    <linearGradient id="vaultGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Relic Pedestal Radiant Beacon -->
+    <radialGradient id="relicGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fef08a" />
+      <stop offset="65%" stop-color="#f59e0b" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Deep Vault Chamber Dark Interior -->
+    <linearGradient id="chamberDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Nightshade Ivy -->
+    <linearGradient id="vaultIvy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="50%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#3b0764" />
+    </linearGradient>
+
+    <!-- Amber Honeycomb Encroachment -->
+    <linearGradient id="amberHex" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Relic Halo -->
+  <circle cx="240" cy="270" r="180" fill="url(#relicGlow)" opacity="0.45" />
+
+  <!-- Foundation Plinth Steps (x: 40 to 440, y: 440 to 500) -->
+  <g id="vault_foundation">
+    <!-- Bottom Step -->
+    <rect x="30" y="470" width="420" height="30" rx="3" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3" />
+    <!-- Top Step -->
+    <rect x="55" y="440" width="370" height="30" rx="3" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3" />
+    <line x1="55" y1="455" x2="425" y2="455" stroke="#334155" stroke-width="2" />
+  </g>
+
+  <!-- Vault Inner Chamber & Iron-Banded Door (y: 200 to 440) -->
+  <g id="vault_chamber">
+    <!-- Inner Chamber Recess (Reveals Glowing Treasure!) -->
+    <rect x="90" y="200" width="300" height="240" rx="6" fill="url(#chamberDark)" stroke="#1e293b" stroke-width="3.5" />
+
+    <!-- Arched Relic Alcove in Back Wall -->
+    <path d="M170 440 V270 Q240 210 310 270 V440 Z" fill="#020617" stroke="#334155" stroke-width="2.5" />
+    <!-- Pedestal Plinth -->
+    <polygon points="205,440 215,360 265,360 275,440" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+    <rect x="200" y="350" width="80" height="15" rx="2" fill="url(#vaultGold)" stroke="#78350f" stroke-width="2" />
+
+    <!-- Floating Sunstone Relic / Stardust Core on Pedestal -->
+    <circle cx="240" cy="315" r="24" fill="url(#relicGlow)" />
+    <!-- Diamond Sunstone Gemstone -->
+    <polygon points="240,285 258,315 240,345 222,315" fill="#fef08a" stroke="#d97706" stroke-width="2.5" />
+    <polygon points="240,295 250,315 240,335 230,315" fill="#ffffff" />
+    <circle cx="240" cy="315" r="5" fill="#fbbf24" />
+
+    <!-- Broken Left Vault Door Slab Swung Outward -->
+    <polygon points="75,200 95,205 95,440 75,435" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3" />
+    <!-- Iron Bands on Left Door -->
+    <line x1="75" y1="240" x2="95" y2="242" stroke="#0f172a" stroke-width="4" />
+    <line x1="75" y1="340" x2="95" y2="342" stroke="#0f172a" stroke-width="4" />
+    <line x1="75" y1="400" x2="95" y2="402" stroke="#0f172a" stroke-width="4" />
+
+    <!-- Broken Right Vault Door Slab Swung Open -->
+    <polygon points="385,205 405,200 405,435 385,440" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3" />
+    <line x1="385" y1="242" x2="405" y2="240" stroke="#0f172a" stroke-width="4" />
+    <line x1="385" y1="342" x2="405" y2="340" stroke="#0f172a" stroke-width="4" />
+    <line x1="385" y1="402" x2="405" y2="400" stroke="#0f172a" stroke-width="4" />
+  </g>
+
+  <!-- Front Flanking Classical Colonnade Pillars -->
+  <g id="vault_colonnade">
+    <!-- Left Column -->
+    <rect x="90" y="420" width="45" height="20" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+    <rect x="96" y="150" width="33" height="270" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+    <line x1="104" y1="160" x2="104" y2="410" stroke="#334155" stroke-width="1.5" />
+    <line x1="113" y1="160" x2="113" y2="410" stroke="#334155" stroke-width="1.5" />
+    <line x1="121" y1="160" x2="121" y2="410" stroke="#334155" stroke-width="1.5" />
+    <rect x="88" y="132" width="49" height="18" rx="2" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+
+    <!-- Right Column -->
+    <rect x="345" y="420" width="45" height="20" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+    <rect x="351" y="150" width="33" height="270" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+    <line x1="359" y1="160" x2="359" y2="410" stroke="#334155" stroke-width="1.5" />
+    <line x1="368" y1="160" x2="368" y2="410" stroke="#334155" stroke-width="1.5" />
+    <line x1="376" y1="160" x2="376" y2="410" stroke="#334155" stroke-width="1.5" />
+    <rect x="343" y="132" width="49" height="18" rx="2" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="2.5" />
+  </g>
+
+  <!-- Entablature & Classical Triangular Pediment (y: 30 to 135) -->
+  <g id="vault_pediment">
+    <!-- Architrave Beam -->
+    <rect x="70" y="112" width="340" height="24" rx="2" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3" />
+    <!-- Cornice -->
+    <rect x="60" y="98" width="360" height="14" rx="2" fill="#cbd5e1" stroke="#1e293b" stroke-width="2.5" />
+
+    <!-- Triangular Pediment Tympanum -->
+    <polygon points="240,15 50,98 430,98" fill="url(#vaultGranite)" stroke="#1e293b" stroke-width="3.5" />
+
+    <!-- Inlaid Royal Sun Medallion in Pediment -->
+    <circle cx="240" cy="65" r="22" fill="url(#vaultGold)" stroke="#78350f" stroke-width="2.5" />
+    <circle cx="240" cy="65" r="11" fill="#fef08a" />
+    <path d="M240 37 L240 45 M240 85 L240 93 M212 65 L220 65 M260 65 L268 65" stroke="#78350f" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Royal Armory Banners Flanking Entrance -->
+  <g id="armory_banners">
+    <!-- Left Banner -->
+    <path d="M50 140 H80 V260 L65 240 L50 260 Z" fill="#6b21a8" stroke="#3b0764" stroke-width="2" />
+    <circle cx="65" cy="180" r="7" fill="url(#vaultGold)" />
+
+    <!-- Right Banner -->
+    <path d="M400 140 H430 V260 L415 240 L400 260 Z" fill="#6b21a8" stroke="#3b0764" stroke-width="2" />
+    <circle cx="415" cy="180" r="7" fill="url(#vaultGold)" />
+  </g>
+
+  <!-- Hive Honeycomb Intrusion on Left Pediment -->
+  <g id="vault_corruption">
+    <path d="M90 70 L105 60 L120 70 L120 88 L105 98 L90 88 Z" fill="url(#amberHex)" stroke="#78350f" stroke-width="1.5" />
+    <path d="M115 55 L130 45 L145 55 L145 73 L130 83 L115 73 Z" fill="url(#amberHex)" stroke="#78350f" stroke-width="1.5" />
+    <path d="M105 98 C105 115, 110 125, 108 140 C106 148, 100 148, 100 140 C100 125, 103 110, 105 98 Z" fill="#f59e0b" opacity="0.9" />
+  </g>
+
+  <!-- Nightshade Purple Ivy Encroachment -->
+  <g id="vault_ivy">
+    <path d="M350 440 Q365 350 355 260 T380 160" fill="none" stroke="#581c87" stroke-width="3.5" stroke-linecap="round" />
+    <circle cx="358" cy="390" r="8" fill="url(#vaultIvy)" />
+    <circle cx="352" cy="320" r="9" fill="url(#vaultIvy)" />
+    <circle cx="365" cy="250" r="9" fill="url(#vaultIvy)" />
+    <circle cx="376" cy="190" r="8" fill="url(#vaultIvy)" />
+  </g>
+</svg>

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480" width="780" height="480">
+  
+    <defs>
+      <!-- Royal Honey Dress Gradient -->
+      <linearGradient id="ariaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="35%" stop-color="#18181b" />
+        <stop offset="70%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#09090b" />
+      </linearGradient>
+
+      <!-- Wing-Cut Capelet Gradient (Warm Honey to Rich Amber) -->
+      <linearGradient id="ariaCapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="50%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#b45309" />
+      </linearGradient>
+
+      <!-- Emerald Jewel Gradient -->
+      <radialGradient id="emeraldGrad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#14b8a6" />
+        <stop offset="60%" stop-color="#0d9488" />
+        <stop offset="100%" stop-color="#047857" />
+      </radialGradient>
+
+      <!-- Ivory Ruffle Gradient -->
+      <linearGradient id="ivoryGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fefce8" />
+        <stop offset="100%" stop-color="#fffbeb" />
+      </linearGradient>
+
+      <!-- Hair Gradient -->
+      <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#78350f" />
+        <stop offset="60%" stop-color="#92400e" />
+        <stop offset="100%" stop-color="#451a03" />
+      </linearGradient>
+    </defs>
+  
+  <rect width="780" height="480" fill="#090d16" />
+  <text x="32" y="44" fill="#fbbf24" font-family="system-ui" font-size="22" font-weight="900">PRINCESS ARIA — EMOTIONAL EXPRESSION REFERENCE</text>
+  <text x="32" y="68" fill="#94a3b8" font-family="system-ui" font-size="13">FACIAL ANATOMY, EYEBROWS, PUPILS &amp; MOUTH EMOTIONAL READABILITY SPECIFICATION</text>
+  
+      <g transform="translate(48, 90)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      
+      <ellipse cx="53" cy="54" rx="4.5" ry="5.5" fill="#0284c7"/>
+      <ellipse cx="53" cy="54" rx="3" ry="4" fill="#0d9488"/>
+      <circle cx="54.2" cy="52.2" r="1.8" fill="#ffffff"/>
+      <circle cx="51.8" cy="56" r="0.8" fill="#ffffff"/>
+      <path d="M47 47 Q53 45 59 47" stroke="#451a03" stroke-width="2" stroke-linecap="round" fill="none"/>
+    
+      
+      <ellipse cx="75" cy="54" rx="4.5" ry="5.5" fill="#0284c7"/>
+      <ellipse cx="75" cy="54" rx="3" ry="4" fill="#0d9488"/>
+      <circle cx="76.2" cy="52.2" r="1.8" fill="#ffffff"/>
+      <circle cx="73.8" cy="56" r="0.8" fill="#ffffff"/>
+      <path d="M69 47 Q75 45 81 47" stroke="#451a03" stroke-width="2" stroke-linecap="round" fill="none"/>
+    
+      <path d="M60.5 66 Q64 68.5 67.5 66" stroke="#e11d48" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">NEUTRAL</text>
+      </g>
+    
+      <g transform="translate(288, 90)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      <path d="M48 55 Q53 50 58 55" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M70 55 Q75 50 80 55" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M60 66 Q64 70 68 66" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">SMILING</text>
+      </g>
+    
+      <g transform="translate(528, 90)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      
+      <path d="M47 49 L59 52" stroke="#451a03" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="53" cy="54" rx="4" ry="4.5" fill="#0284c7"/>
+      <circle cx="54" cy="53" r="1.5" fill="#ffffff"/>
+    
+      
+      <path d="M81 49 L69 52" stroke="#451a03" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="75" cy="54" rx="4" ry="4.5" fill="#0284c7"/>
+      <circle cx="76" cy="53" r="1.5" fill="#ffffff"/>
+    
+      <path d="M59 67 L69 66" stroke="#9f1239" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">DETERMINED</text>
+      </g>
+    
+      <g transform="translate(48, 280)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      
+      <ellipse cx="53" cy="54" rx="5" ry="6" fill="#0284c7"/>
+      <circle cx="54" cy="53" r="2" fill="#ffffff"/>
+    
+      
+      <ellipse cx="75" cy="54" rx="5" ry="6" fill="#0284c7"/>
+      <circle cx="76" cy="53" r="2" fill="#ffffff"/>
+    
+      <ellipse cx="64" cy="67" rx="3" ry="4" fill="#be123c"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">SURPRISED</text>
+      </g>
+    
+      <g transform="translate(288, 280)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      
+      <path d="M47 51 L58 48" stroke="#451a03" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="53" cy="54" rx="4" ry="4.8" fill="#0284c7"/>
+      <circle cx="53" cy="53" r="1.5" fill="#ffffff"/>
+    
+      
+      <path d="M70 48 L81 51" stroke="#451a03" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="75" cy="54" rx="4" ry="4.8" fill="#0284c7"/>
+      <circle cx="75" cy="53" r="1.5" fill="#ffffff"/>
+    
+      <path d="M60 68 Q64 65 68 68" stroke="#be123c" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">WORRIED</text>
+      </g>
+    
+      <g transform="translate(528, 280)">
+        <rect width="200" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <g transform="translate(36, 12) scale(1)">
+          
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="64" cy="56" r="22" fill="url(#hairGrad)" />
+      <path d="M46 50 Q38 74 48 92 Q56 78 54 64 Z"
+            fill="#451a03" />
+      <path d="M82 50 Q90 74 80 92 Q72 78 74 64 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="64" cy="57" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="56" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="72" cy="63" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M64 59 Q65 61 63 62" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      
+      <path d="M47 49 L59 52" stroke="#451a03" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="53" cy="54" rx="4" ry="4.5" fill="#0284c7"/>
+      <circle cx="54" cy="53" r="1.5" fill="#ffffff"/>
+    
+      
+      <path d="M81 49 L69 52" stroke="#451a03" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="75" cy="54" rx="4" ry="4.5" fill="#0284c7"/>
+      <circle cx="76" cy="53" r="1.5" fill="#ffffff"/>
+    
+      <path d="M59 67 L69 66" stroke="#9f1239" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M48 46 Q64 34 82 47 Q72 55 62 51 Q55 53 48 46 Z"
+            fill="#92400e" />
+      <path d="M72 47 Q80 58 78 68 Q71 60 70 51 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M52 40 L78 40 L80 36 L72 32 L64 28 L56 32 L50 36 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="64,32 68,34 68,38 64,40 60,38 60,34"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="64" cy="36" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+        </g>
+        <text x="100" y="146" text-anchor="middle" fill="#fbbf24" font-family="system-ui" font-weight="bold" font-size="13">ANGRY / FOCUSED</text>
+      </g>
+    
+</svg>
