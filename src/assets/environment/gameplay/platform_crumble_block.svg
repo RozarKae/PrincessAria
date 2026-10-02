@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" width="160" height="48">
+  <defs>
+    <!-- Weathered Cracked Granite -->
+    <linearGradient id="crumbleStone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="30%" stop-color="#94a3b8" />
+      <stop offset="70%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Glowing Runic Fracture Fissures -->
+    <linearGradient id="runeFissure" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <!-- Nightshade Ivy -->
+    <linearGradient id="crumbleIvy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#581c87" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main Stone Block Body with Fractured Edges -->
+  <path d="M4 6 L22 4 L48 5 L75 3 L105 5 L138 4 L156 7 L158 38 L142 42 L110 40 L80 43 L45 41 L18 43 L2 38 Z" fill="url(#crumbleStone)" stroke="#1e293b" stroke-width="2.5" />
+
+  <!-- Top Stone Bevel Highlight -->
+  <path d="M6 7 L154 8" stroke="#f1f5f9" stroke-width="1.8" stroke-linecap="round" />
+
+  <!-- Deep Fissure Cracks Across the Slab -->
+  <!-- Crack 1 (Left-Center Jagged Fracture) -->
+  <path d="M42 5 L46 16 L38 24 L44 32 L40 41" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M42 5 L46 16 L38 24 L44 32 L40 41" fill="none" stroke="url(#runeFissure)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+
+  <!-- Crack 2 (Center-Right Splintering Fissure) -->
+  <path d="M102 4 L98 14 L106 22 L101 30 L108 40" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M102 4 L98 14 L106 22 L101 30 L108 40" fill="none" stroke="url(#runeFissure)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+
+  <!-- Branching Hairline Fractures -->
+  <path d="M46 16 L58 20 M38 24 L28 27 M98 14 L88 18 M106 22 L118 24" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-linecap="round" />
+
+  <!-- Nightshade Ivy Leaf Overhang -->
+  <circle cx="22" cy="7" r="5" fill="url(#crumbleIvy)" />
+  <circle cx="28" cy="9" r="4" fill="url(#crumbleIvy)" />
+  <circle cx="134" cy="6" r="4.5" fill="url(#crumbleIvy)" />
+  <circle cx="140" cy="8" r="3.5" fill="url(#crumbleIvy)" />
+
+  <!-- Mortar Pebbles & Debris Dropping at Base -->
+  <circle cx="48" cy="44" r="2" fill="#64748b" />
+  <circle cx="78" cy="45" r="1.5" fill="#64748b" />
+  <circle cx="106" cy="44" r="2" fill="#64748b" />
+</svg>

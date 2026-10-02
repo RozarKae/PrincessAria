@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 64" width="256" height="64">
+  <defs>
+    <linearGradient id="honeyPlatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="60%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+  </defs>
+  <!-- Honey Amber Slab -->
+  <path d="M12 8 L244 8 Q252 8 252 18 L248 38 Q240 44 230 40 Q220 38 214 46 Q208 54 200 48 Q190 40 180 44 Q170 50 162 42 Q150 36 140 44 Q130 52 120 46 Q110 38 100 44 Q90 52 82 46 Q70 38 60 46 Q50 54 42 48 Q32 40 24 46 L8 36 Q4 24 12 8 Z"
+        fill="url(#honeyPlatGrad)" stroke="#fde047" stroke-width="2" />
+  <!-- Gloss Surface Rim -->
+  <path d="M16 12 L240 12" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+  <!-- Honey Dripping Nodes -->
+  <circle cx="50" cy="56" r="3.5" fill="#fbbf24" opacity="0.9" />
+  <circle cx="162" cy="52" r="4" fill="#fbbf24" opacity="0.9" />
+  <circle cx="204" cy="58" r="3" fill="#fde047" opacity="0.9" />
+</svg>

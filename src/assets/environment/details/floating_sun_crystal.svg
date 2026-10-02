@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 96" width="64" height="96">
+  <defs>
+    <!-- Radiant Amber Sun Crystal Core -->
+    <linearGradient id="sunCrystalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Crystal Shard Facet Highlight -->
+    <linearGradient id="facetHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1" />
+    </linearGradient>
+
+    <!-- Outer Ambient Glow -->
+    <radialGradient id="sunAuraGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde047" stop-opacity="0.7" />
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Ambient Glow Halo -->
+  <circle cx="32" cy="44" r="30" fill="url(#sunAuraGlow)" />
+
+  <!-- Orbiting Ancient Runic Ring -->
+  <ellipse cx="32" cy="44" rx="26" ry="12" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="8,4,3,4" opacity="0.85" />
+
+  <!-- Orbiting Levitation Motes -->
+  <circle cx="10" cy="40" r="2" fill="#fff" />
+  <circle cx="52" cy="48" r="2.5" fill="#fef08a" />
+  <circle cx="38" cy="18" r="1.5" fill="#fde047" />
+  <circle cx="24" cy="68" r="2" fill="#fbbf24" />
+
+  <!-- Main Floating Octahedral Sun Crystal -->
+  <!-- Back Facets (Darker Amber) -->
+  <polygon points="32,12 18,44 32,54 46,44" fill="#92400e" stroke="#78350f" stroke-width="1" />
+  <polygon points="32,76 18,44 32,54 46,44" fill="#78350f" stroke="#451a03" stroke-width="1" />
+
+  <!-- Front Left Facet -->
+  <polygon points="32,12 18,44 32,48" fill="url(#sunCrystalGrad)" stroke="#d97706" stroke-width="1" />
+  <polygon points="32,76 18,44 32,48" fill="#d97706" stroke="#b45309" stroke-width="1" />
+
+  <!-- Front Right Facet (Bright Lit) -->
+  <polygon points="32,12 46,44 32,48" fill="url(#sunCrystalGrad)" stroke="#fde047" stroke-width="1" />
+  <polygon points="32,76 46,44 32,48" fill="#f59e0b" stroke="#d97706" stroke-width="1" />
+
+  <!-- Specular Facet Edge Highlight -->
+  <polygon points="32,12 36,36 32,48 29,36" fill="url(#facetHighlight)" />
+  <circle cx="32" cy="36" r="3" fill="#ffffff" opacity="0.95" />
+
+  <!-- Center Ancient Sun Rune -->
+  <circle cx="32" cy="42" r="3.5" fill="none" stroke="#ffffff" stroke-width="1.2" />
+  <line x1="32" y1="36" x2="32" y2="34" stroke="#ffffff" stroke-width="1" />
+  <line x1="32" y1="48" x2="32" y2="50" stroke="#ffffff" stroke-width="1" />
+  <line x1="26" y1="42" x2="24" y2="42" stroke="#ffffff" stroke-width="1" />
+  <line x1="38" y1="42" x2="40" y2="42" stroke="#ffffff" stroke-width="1" />
+</svg>

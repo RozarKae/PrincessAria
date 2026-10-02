@@ -1,0 +1,103 @@
+{
+  "character": "aria",
+  "ariaDesignVersion": "1.0",
+  "authoritativeDesignation": "Princess Aria Master Production Asset",
+  "dimensions": {
+    "frameWidth": 138,
+    "frameHeight": 138,
+    "physicalColliderWidth": 56,
+    "physicalColliderHeight": 84,
+    "anchorX": 0.5,
+    "anchorY": 0.95
+  },
+  "animations": {
+    "idle": {
+      "path": "art/characters/aria/animation/idle",
+      "totalFrames": 8,
+      "fps": 8,
+      "loop": true,
+      "description": "Breathing, dress ripple, and eye blink on frame 4"
+    },
+    "walk": {
+      "path": "art/characters/aria/animation/walk",
+      "totalFrames": 8,
+      "fps": 12,
+      "loop": true,
+      "description": "Natural athletic stride with ground contact roll"
+    },
+    "run": {
+      "path": "art/characters/aria/animation/run",
+      "totalFrames": 10,
+      "fps": 16,
+      "loop": true,
+      "description": "Dynamic athletic sprint with 12-deg lean and trailing capelet"
+    },
+    "jump_start": {
+      "path": "art/characters/aria/animation/jump_start",
+      "totalFrames": 4,
+      "fps": 16,
+      "loop": false,
+      "nextAnimation": "jump_rise",
+      "description": "Anticipation crouch before liftoff"
+    },
+    "jump_rise": {
+      "path": "art/characters/aria/animation/jump_rise",
+      "totalFrames": 4,
+      "fps": 12,
+      "loop": true,
+      "description": "Ascending flight with downward billowing capelet"
+    },
+    "fall": {
+      "path": "art/characters/aria/animation/fall",
+      "totalFrames": 4,
+      "fps": 12,
+      "loop": true,
+      "description": "Downward descent with upward wind resistance"
+    },
+    "land": {
+      "path": "art/characters/aria/animation/land",
+      "totalFrames": 5,
+      "fps": 16,
+      "loop": false,
+      "nextAnimation": "idle",
+      "description": "Ground impact squash and spring recovery"
+    },
+    "crouch": {
+      "path": "art/characters/aria/animation/crouch",
+      "totalFrames": 4,
+      "fps": 8,
+      "loop": true,
+      "description": "Low profile defensive and crawling stance"
+    },
+    "dash": {
+      "path": "art/characters/aria/animation/dash",
+      "totalFrames": 6,
+      "fps": 16,
+      "loop": false,
+      "nextAnimation": "run",
+      "description": "High-speed aerodynamic horizontal dash with stardust trail"
+    },
+    "hurt": {
+      "path": "art/characters/aria/animation/hurt",
+      "totalFrames": 4,
+      "fps": 14,
+      "loop": false,
+      "nextAnimation": "idle",
+      "description": "Knockback stagger and defensive flinch"
+    },
+    "death": {
+      "path": "art/characters/aria/animation/death",
+      "totalFrames": 8,
+      "fps": 10,
+      "loop": false,
+      "description": "Heroic defeat collapse and stasis fade"
+    },
+    "victory": {
+      "path": "art/characters/aria/animation/victory",
+      "totalFrames": 10,
+      "fps": 10,
+      "loop": true,
+      "description": "Royal celebratory spin and wand salute"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Royal Bluebell Petal Gradient -->
+    <linearGradient id="bellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="45%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+
+    <!-- Stem Green -->
+    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#84cc16" />
+      <stop offset="100%" stop-color="#166534" />
+    </linearGradient>
+  </defs>
+
+  <!-- Arched Slender Stems -->
+  <path d="M22 62 Q20 38 28 22 Q32 14 38 12" stroke="url(#stemGrad)" stroke-width="2.2" stroke-linecap="round" fill="none" />
+  <path d="M24 45 Q36 34 44 26" stroke="url(#stemGrad)" stroke-width="1.8" stroke-linecap="round" fill="none" />
+
+  <!-- Bell Blossom 1 (Top Hanging) -->
+  <g transform="translate(38, 12)">
+    <path d="M0 0 Q-8 8 -6 16 Q-3 20 2 20 Q7 20 10 16 Q12 8 4 0 Z" fill="url(#bellGrad)" stroke="#0f172a" stroke-width="1" />
+    <!-- Flared Bell Petal Scallops -->
+    <path d="M-6 16 Q-3 21 0 17 Q4 21 7 17 Q10 20 10 16" fill="none" stroke="#bae6fd" stroke-width="1.2" />
+  </g>
+
+  <!-- Bell Blossom 2 (Lower Hanging) -->
+  <g transform="translate(44, 26)">
+    <path d="M0 0 Q-7 7 -5 14 Q-2 17 2 17 Q6 17 9 14 Q10 7 3 0 Z" fill="url(#bellGrad)" stroke="#0f172a" stroke-width="1" />
+    <path d="M-5 14 Q-2 18 1 15 Q4 18 6 15 Q9 17 9 14" fill="none" stroke="#bae6fd" stroke-width="1.2" />
+  </g>
+
+  <!-- Slender Leaves at Base -->
+  <path d="M16 62 Q12 50 14 42 Q18 48 22 62 Z" fill="#65a30d" />
+  <path d="M25 62 Q28 48 32 38 Q32 49 27 62 Z" fill="#65a30d" />
+</svg>

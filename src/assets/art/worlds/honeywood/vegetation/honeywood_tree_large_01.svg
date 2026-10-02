@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="40%" stop-color="#78350f" />
+      <stop offset="70%" stop-color="#92400e" />
+      <stop offset="100%" stop-color="#271004" />
+    </linearGradient>
+    <radialGradient id="foliageGrad" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="60%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#14532d" />
+    </radialGradient>
+  </defs>
+  <!-- Trunk -->
+  <path d="M 230 900 C 230 650, 180 500, 220 350 L 380 350 C 420 500, 370 650, 370 900 Z" fill="url(#trunkGrad)" />
+  <!-- Canopy Foliage -->
+  <ellipse cx="300" cy="280" rx="240" ry="180" fill="url(#foliageGrad)" opacity="0.95" />
+  <ellipse cx="200" cy="240" rx="140" ry="110" fill="url(#foliageGrad)" opacity="0.9" />
+  <ellipse cx="400" cy="250" rx="150" ry="120" fill="url(#foliageGrad)" opacity="0.9" />
+  <!-- Hanging Moss Tendrils -->
+  <path d="M 180 340 Q 170 420 185 450 Q 195 420 185 340 Z" fill="#84cc16" opacity="0.75" />
+  <path d="M 390 350 Q 405 440 385 480 Q 380 430 395 350 Z" fill="#84cc16" opacity="0.75" />
+</svg>

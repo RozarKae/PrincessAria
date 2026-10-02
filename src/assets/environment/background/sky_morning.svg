@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <!-- Sky Atmosphere Gradient: Deep Celestial Azure to Golden Dawn Horizon -->
+    <linearGradient id="morningSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="35%" stop-color="#38bdf8" />
+      <stop offset="65%" stop-color="#7dd3fc" />
+      <stop offset="85%" stop-color="#fed7aa" />
+      <stop offset="100%" stop-color="#fef08a" />
+    </linearGradient>
+
+    <!-- Morning Sun Soft Glow (Upper-Center-Right, subtle & atmospheric) -->
+    <radialGradient id="morningSunAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="25%" stop-color="#fef08a" stop-opacity="0.45" />
+      <stop offset="60%" stop-color="#fde047" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Painterly Cumulus Cloud Gradient (Warm golden base, luminous white crown) -->
+    <linearGradient id="cloudWarmGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#fed7aa" stop-opacity="0.6" />
+      <stop offset="35%" stop-color="#fef3c7" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95" />
+    </linearGradient>
+
+    <!-- Soft Cloud Shadow Plane -->
+    <linearGradient id="cloudDistantGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#cbd5e1" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#f1f5f9" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Sky Canvas Base -->
+  <rect width="1920" height="1080" fill="url(#morningSkyGrad)" />
+
+  <!-- 2. Gentle Morning Sun Aura (Positioned high at x: 1200, y: 180) -->
+  <circle cx="1200" cy="180" r="320" fill="url(#morningSunAura)" />
+  <circle cx="1200" cy="180" r="70" fill="#ffffff" opacity="0.6" />
+
+  <!-- 3. Soft Painterly Morning Clouds on the Horizon (Back Tier) -->
+  <g fill="url(#cloudDistantGrad)">
+    <path d="M-60 480 Q40 410 160 430 Q280 370 420 400 Q560 350 700 390 Q820 370 940 420 L940 540 L-60 540 Z" />
+    <path d="M1100 490 Q1220 420 1360 440 Q1500 380 1640 410 Q1760 370 1980 440 L1980 540 L1100 540 Z" />
+  </g>
+
+  <!-- 4. Storybook Cumulus Formations (Front Tier - Catching Dawn Gold) -->
+  <g fill="url(#cloudWarmGrad)">
+    <!-- Central Majestic Cloud Formation -->
+    <path d="M320 540 
+             Q400 450 520 470 
+             Q620 400 760 430 
+             Q880 370 1020 400 
+             Q1140 380 1260 430 
+             Q1380 410 1480 470 
+             Q1580 460 1660 540 
+             L1660 620 L320 620 Z" />
+  </g>
+</svg>

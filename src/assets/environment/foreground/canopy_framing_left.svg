@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" width="500" height="700">
+  <defs>
+    <!-- Deep Silhouetted Foreground Timber Gradient -->
+    <linearGradient id="fgTimberLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Foreground Leaf Silhouette Gradient -->
+    <linearGradient id="fgLeafLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14532d" />
+      <stop offset="60%" stop-color="#052e16" />
+      <stop offset="100%" stop-color="#021a0d" />
+    </linearGradient>
+  </defs>
+
+  <!-- Grand Framing Ancient Oak Bough sweeping from upper-left corner -->
+  <path d="M-40 -40 
+           L220 -40 
+           Q200 70 150 130 
+           Q100 200 130 270 
+           Q150 310 110 350 
+           Q70 370 30 340 
+           Q0 300 -10 220 
+           L-40 220 Z" 
+        fill="url(#fgTimberLeft)" />
+
+  <!-- Natural Branch Splinter extending into frame -->
+  <path d="M120 230 Q190 220 250 250 Q280 270 270 282 Q240 282 180 260 L120 270 Z" 
+        fill="url(#fgTimberLeft)" />
+
+  <!-- Elegant Foreground Oak Leaves & Scalloped Clusters -->
+  <g fill="url(#fgLeafLeft)" stroke="#020617" stroke-width="1.5">
+    <!-- Leaf Cluster 1 on Branch Tip -->
+    <path d="M250 250 Q280 220 310 240 Q330 260 300 280 Q270 290 250 270 Z" />
+    <path d="M220 240 Q250 205 280 220 Q290 245 260 260 Z" />
+    <path d="M260 270 Q290 280 305 310 Q285 330 260 310 Z" />
+
+    <!-- Leaf Cluster 2 along Upper Bough -->
+    <path d="M150 120 Q190 80 230 100 Q240 130 200 150 Q160 160 150 120 Z" />
+    <path d="M180 140 Q220 130 240 160 Q230 190 190 180 Z" />
+    <path d="M120 180 Q160 170 170 200 Q150 230 120 210 Z" />
+  </g>
+
+  <!-- Delicate Hanging Spanish Moss Tendril -->
+  <g fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" opacity="0.85">
+    <path d="M100 350 Q90 410 105 470 Q110 510 100 550" />
+    <path d="M105 470 Q115 500 110 530" stroke-width="1.5" />
+    <path d="M60 350 Q55 390 62 430" stroke-width="1.5" />
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 500" width="2048" height="500">
+  <defs>
+    <linearGradient id="forestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#14532d" />
+      <stop offset="60%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+  </defs>
+  <path d="M 0 500 L 0 240 Q 140 180 280 250 Q 420 140 560 220 Q 720 120 880 240 Q 1060 160 1240 260 Q 1420 130 1600 230 Q 1820 110 2048 220 L 2048 500 Z" fill="url(#forestGrad)" />
+</svg>

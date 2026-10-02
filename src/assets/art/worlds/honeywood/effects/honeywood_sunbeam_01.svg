@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 1080" width="400" height="1080">
+  <defs>
+    <linearGradient id="beamGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="rgba(254, 240, 138, 0.45)" />
+      <stop offset="50%" stop-color="rgba(251, 191, 36, 0.18)" />
+      <stop offset="100%" stop-color="rgba(251, 191, 36, 0)" />
+    </linearGradient>
+  </defs>
+  <polygon points="80,0 200,0 360,1080 0,1080" fill="url(#beamGrad)" />
+</svg>

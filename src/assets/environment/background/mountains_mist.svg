@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 600" width="2048" height="600">
+  <defs>
+    <!-- Distant Mountain Ridge Gradient (Soft Atmospheric Slate) -->
+    <linearGradient id="mtnFarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
+      <stop offset="25%" stop-color="#475569" />
+      <stop offset="65%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Nearer Mountain Ridge Gradient (Deeper Contrast) -->
+    <linearGradient id="mtnNearGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="40%" stop-color="#1e293b" />
+      <stop offset="85%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Sunlit Ridge Crest Highlight (Soft Morning Light from Upper-Left) -->
+    <linearGradient id="mtnCrestHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#334155" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Valley Mist Blanket (Soft Ethereal Cloud Veil) -->
+    <linearGradient id="mtnMistGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.55" />
+      <stop offset="50%" stop-color="#e0f2fe" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#bae6fd" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- ======================================================== -->
+  <!-- 1. FAR MOUNTAIN RIDGE (Majestic Distant Alpine Peaks) -->
+  <!-- ======================================================== -->
+  <g fill="url(#mtnFarGrad)">
+    <path d="M0 600 L0 380 
+             Q120 280 260 310 Q380 210 520 250 Q660 160 820 210 
+             Q960 140 1100 190 Q1260 110 1420 170 Q1580 130 1720 200 
+             Q1880 180 2048 260 L2048 600 Z" />
+  </g>
+
+  <!-- Sunlit Crests on Far Ridge -->
+  <path d="M660 160 Q740 185 820 210 Q780 230 700 200 Z" fill="url(#mtnCrestHighlight)" />
+  <path d="M1260 110 Q1340 140 1420 170 Q1380 190 1300 160 Z" fill="url(#mtnCrestHighlight)" />
+
+  <!-- Mist Blanket Resting between Far and Near Ridges -->
+  <rect x="0" y="260" width="2048" height="180" fill="url(#mtnMistGrad)" />
+
+  <!-- ======================================================== -->
+  <!-- 2. NEARER MOUNTAIN RIDGE (Painterly Contoured Foothills) -->
+  <!-- ======================================================== -->
+  <g fill="url(#mtnNearGrad)">
+    <path d="M0 600 L0 440 
+             Q140 330 300 370 Q460 270 640 310 Q800 240 980 280 
+             Q1140 220 1320 270 Q1480 230 1660 290 Q1840 270 2048 350 
+             L2048 600 Z" />
+  </g>
+
+  <!-- Painterly Ridge Strata & Crest Highlights on Near Ridge -->
+  <path d="M460 270 Q550 290 640 310 Q580 340 500 320 Z" fill="url(#mtnCrestHighlight)" />
+  <path d="M1140 220 Q1230 245 1320 270 Q1260 300 1180 280 Z" fill="url(#mtnCrestHighlight)" />
+
+  <!-- Soft Alpine Base Mist (Blending Mountains into Forest Horizon) -->
+  <rect x="0" y="380" width="2048" height="220" fill="url(#mtnMistGrad)" />
+</svg>

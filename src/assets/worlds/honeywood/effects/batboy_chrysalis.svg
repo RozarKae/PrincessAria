@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 400" width="280" height="400">
+  <defs>
+    <!-- Corrupted Honey Amber Crystal Gradient -->
+    <linearGradient id="amberCrystal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(254, 240, 138, 0.85)" />
+      <stop offset="35%" stop-color="rgba(251, 191, 36, 0.75)" />
+      <stop offset="70%" stop-color="rgba(217, 119, 6, 0.85)" />
+      <stop offset="100%" stop-color="rgba(120, 53, 15, 0.95)" />
+    </linearGradient>
+
+    <!-- Amber Glow Filter -->
+    <filter id="chrysalisGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Chains &amp; Webbing -->
+    <linearGradient id="waxChain" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="50%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+  </defs>
+
+  <!-- Hanging Hexagonal Wax Tendrils / Chains from Hive Ceiling -->
+  <g stroke="url(#waxChain)" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M 90 0 L 110 90 L 130 140" />
+    <path d="M 190 0 L 170 90 L 150 140" />
+    <path d="M 140 0 L 140 130" stroke-width="8" />
+  </g>
+
+  <!-- Crystal Radiant Ambient Glow -->
+  <ellipse cx="140" cy="240" rx="95" ry="135" fill="rgba(245, 158, 11, 0.45)" filter="url(#chrysalisGlow)" />
+
+  <!-- Outer Faceted Amber Crystal Chrysalis -->
+  <polygon points="140,110 215,165 235,260 185,350 140,380 95,350 45,260 65,165" 
+           fill="url(#amberCrystal)" stroke="#fef08a" stroke-width="3.5" filter="url(#chrysalisGlow)" />
+
+  <!-- Crystal Facet Lines -->
+  <g stroke="#fef08a" stroke-width="1.8" opacity="0.65" fill="none">
+    <line x1="140" y1="110" x2="140" y2="380" />
+    <line x1="140" y1="210" x2="215" y2="165" />
+    <line x1="140" y1="210" x2="65" y2="165" />
+    <line x1="140" y1="280" x2="235" y2="260" />
+    <line x1="140" y1="280" x2="45" y2="260" />
+    <line x1="140" y1="330" x2="185" y2="350" />
+    <line x1="140" y1="330" x2="95" y2="350" />
+  </g>
+
+  <!-- CAPTIVE BATBOY SILHOUETTE INSIDE CRYSTAL -->
+  <g fill="#020617" opacity="0.88">
+    <!-- Distinct Bat Ears / Cowl -->
+    <path d="M 130 195 L 126 172 L 134 184 L 146 184 L 154 172 L 150 195 Z" />
+    
+    <!-- Hero Head &amp; Mask Profile -->
+    <circle cx="140" cy="202" r="14" />
+    
+    <!-- Torso &amp; Hero Crest -->
+    <path d="M 124 216 C 122 245, 126 270, 130 285 L 150 285 C 154 270, 158 245, 156 216 Z" />
+    
+    <!-- Flowing Hero Bat Cape (folded within crystal) -->
+    <path d="M 124 218 C 105 240, 102 280, 115 320 C 128 290, 132 250, 128 225 Z" />
+    <path d="M 156 218 C 175 240, 178 280, 165 320 C 152 290, 148 250, 152 225 Z" />
+
+    <!-- Arms Bound in Amber -->
+    <path d="M 124 225 L 115 250 L 128 260" stroke="#020617" stroke-width="6" stroke-linecap="round" fill="none" />
+    <path d="M 156 225 L 165 250 L 152 260" stroke="#020617" stroke-width="6" stroke-linecap="round" fill="none" />
+    
+    <!-- Legs in stasis -->
+    <path d="M 132 285 L 130 335" stroke="#020617" stroke-width="8" stroke-linecap="round" />
+    <path d="M 148 285 L 150 335" stroke="#020617" stroke-width="8" stroke-linecap="round" />
+  </g>
+
+  <!-- Glowing Resonant Hero Heartbeat in Amber (BATBOY IS ALIVE!) -->
+  <circle cx="140" cy="235" r="5" fill="#38bdf8" filter="url(#chrysalisGlow)" opacity="0.95" />
+  <circle cx="140" cy="235" r="9" fill="none" stroke="#38bdf8" stroke-width="1.5" opacity="0.75" />
+
+  <!-- Dripping Corrupted Nectar from Base -->
+  <g fill="#d97706">
+    <path d="M 138 380 Q 140 400 142 396 Q 144 380 140 380 Z" />
+    <circle cx="141" cy="405" r="3.5" />
+  </g>
+</svg>

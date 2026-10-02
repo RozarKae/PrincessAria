@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" width="120" height="160">
+  <defs>
+    <!-- Weathered Granite Altar Stone -->
+    <linearGradient id="altarStoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="40%" stop-color="#64748b" />
+      <stop offset="85%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Radiant Sunstone Crystal Beacon -->
+    <linearGradient id="sunstoneCrystal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <!-- Beacon Ambient Aura -->
+    <radialGradient id="beaconAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="40%" stop-color="#fbbf24" stop-opacity="0.5" />
+      <stop offset="80%" stop-color="#f59e0b" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Antique Brass Base Mounting -->
+    <linearGradient id="brassMount" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Radiant Sunstone Beacon Ambient Halo (Top Glow) -->
+  <circle cx="60" cy="40" r="38" fill="url(#beaconAura)" />
+
+  <!-- Levitating Multifaceted Sunstone Crystal -->
+  <g id="crystal_beacon">
+    <!-- Top Apex Facets -->
+    <polygon points="60,14 78,38 60,46" fill="#ffffff" />
+    <polygon points="60,14 42,38 60,46" fill="#fef08a" />
+    <!-- Bottom Apex Facets -->
+    <polygon points="60,66 78,38 60,46" fill="#f59e0b" />
+    <polygon points="60,66 42,38 60,46" fill="#d97706" />
+    <!-- Outer Facet Outlines -->
+    <polygon points="60,14 78,38 60,66 42,38" fill="none" stroke="#fffbeb" stroke-width="1.5" />
+    <!-- Specular Star Sparkle -->
+    <circle cx="60" cy="40" r="3" fill="#ffffff" />
+  </g>
+
+  <!-- Antique Brass Censer Claws holding Crystal Aura -->
+  <g fill="url(#brassMount)" stroke="#78350f" stroke-width="1.5">
+    <path d="M36 68 Q40 54 48 58 Q46 68 40 72 Z" />
+    <path d="M84 68 Q80 54 72 58 Q74 68 80 72 Z" />
+    <rect x="42" y="68" width="36" height="8" rx="2" />
+  </g>
+
+  <!-- Carved Granite Pedestal Column &amp; Base -->
+  <g id="granite_pedestal">
+    <!-- Capital Slab -->
+    <rect x="28" y="76" width="64" height="12" rx="3" fill="url(#altarStoneGrad)" stroke="#1e293b" stroke-width="2" />
+
+    <!-- Tapering Column Shaft -->
+    <path d="M34 88 L40 136 L80 136 L86 88 Z" fill="url(#altarStoneGrad)" stroke="#1e293b" stroke-width="2" />
+
+    <!-- Carved Solar Glyph on Column Shaft -->
+    <circle cx="60" cy="110" r="7" fill="none" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="60" cy="110" r="2.5" fill="#fef08a" />
+    <line x1="60" y1="98" x2="60" y2="101" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" />
+    <line x1="60" y1="119" x2="60" y2="122" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" />
+    <line x1="48" y1="110" x2="51" y2="110" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" />
+    <line x1="69" y1="110" x2="72" y2="110" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" />
+
+    <!-- Stepped Altar Plinth Base -->
+    <rect x="24" y="136" width="72" height="10" rx="2" fill="url(#altarStoneGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="14" y="146" width="92" height="14" rx="3" fill="url(#altarStoneGrad)" stroke="#1e293b" stroke-width="2.5" />
+  </g>
+</svg>

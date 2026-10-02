@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 920" width="720" height="920">
+  <defs>
+    <!-- Gnarled Fairytale Oak Bark Gradient -->
+    <linearGradient id="oakTrunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2d1305" />
+      <stop offset="20%" stop-color="#4a220a" />
+      <stop offset="45%" stop-color="#6c3412" />
+      <stop offset="70%" stop-color="#441f08" />
+      <stop offset="100%" stop-color="#1e0b02" />
+    </linearGradient>
+
+    <!-- Deep Shadow Foliage (Silhouette Back Layer) -->
+    <linearGradient id="oakDeepFoliage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="60%" stop-color="#022c22" />
+      <stop offset="100%" stop-color="#011812" />
+    </linearGradient>
+
+    <!-- Mid Canopy Foliage (Lush Oak Leaves) -->
+    <linearGradient id="oakMidFoliage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e" />
+      <stop offset="40%" stop-color="#16a34a" />
+      <stop offset="85%" stop-color="#14532d" />
+      <stop offset="100%" stop-color="#052e16" />
+    </linearGradient>
+
+    <!-- Sunlit Upper Leaf Highlights (Morning Dawn Gold) -->
+    <linearGradient id="oakSunlitFoliage" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#bef264" />
+      <stop offset="70%" stop-color="#65a30d" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Warm Amber Hollow Glow -->
+    <radialGradient id="oakHollowGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#f59e0b" stop-opacity="0.75" />
+      <stop offset="70%" stop-color="#78350f" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#0c0a09" stop-opacity="0.95" />
+    </radialGradient>
+
+    <!-- Velvet Moss Cushion Gradient -->
+    <linearGradient id="oakMossCushion" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86efac" />
+      <stop offset="45%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#14532d" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Base Shadow on Ground Soil -->
+  <ellipse cx="360" cy="900" rx="320" ry="20" fill="#09090b" opacity="0.4" />
+
+  <!-- ======================================================== -->
+  <!-- 1. DEEP BACK CANOPY FOLIAGE (Atmospheric Woodland Foundation) -->
+  <!-- ======================================================== -->
+  <g id="backFoliage" fill="url(#oakDeepFoliage)">
+    <!-- Scalloped leaf silhouettes creating natural organic fairy-tale masses -->
+    <path d="M120 420 
+             Q80 370 100 320 Q80 270 120 220 Q160 170 220 160 Q280 140 340 160 
+             Q400 130 460 150 Q520 130 580 170 Q640 210 640 280 Q660 350 620 410 
+             Q580 460 520 480 Q450 510 360 490 Q270 510 190 480 Q130 460 120 420 Z" />
+    <path d="M60 500 Q40 430 80 370 Q130 330 180 360 Q230 340 270 390 Q290 450 250 510 Q190 550 120 540 Q60 530 60 500 Z" opacity="0.85" />
+    <path d="M460 400 Q510 340 570 350 Q630 330 670 380 Q700 440 670 500 Q630 550 560 540 Q490 530 460 480 Q440 430 460 400 Z" opacity="0.85" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 2. GNARLED OAK TRUNK & ARCHING TIMBER BOUGHS -->
+  <!-- ======================================================== -->
+  <g id="oakTrunkAndBoughs">
+    <!-- Massive Flared Roots spreading organically into loam soil -->
+    <path d="M280 720 Q230 780 140 850 Q90 885 60 900 L180 900 Q250 860 310 790 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2" />
+    <path d="M320 740 Q280 810 220 885 L310 900 Q360 840 370 770 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2" />
+    <path d="M440 720 Q490 780 580 850 Q630 885 660 900 L540 900 Q470 860 410 790 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2" />
+    <path d="M400 740 Q440 810 500 885 L410 900 Q360 840 350 770 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2" />
+
+    <!-- Main Central Trunk Column (Gnarled Ancient Heartwood) -->
+    <path d="M280 720 Q305 600 295 480 Q280 400 230 330 L320 330 Q355 400 360 460 Q365 400 400 330 L490 330 Q440 400 425 480 Q415 600 440 720 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="3" />
+
+    <!-- Major Left Primary Bough extending into canopy foliage -->
+    <path d="M295 480 Q210 450 140 390 Q90 340 70 320 Q95 350 160 420 Q225 480 290 515 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2.5" />
+    <!-- Secondary Left Branchlet -->
+    <path d="M160 420 Q120 450 85 460 Q110 480 170 455 Z" fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="1.5" />
+
+    <!-- Major Right Primary Bough extending into canopy foliage -->
+    <path d="M425 480 Q510 450 580 390 Q630 340 650 320 Q625 350 560 420 Q495 480 430 515 Z"
+          fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="2.5" />
+    <!-- Secondary Right Branchlet -->
+    <path d="M560 420 Q600 450 635 460 Q610 480 550 455 Z" fill="url(#oakTrunkGrad)" stroke="#1c0b02" stroke-width="1.5" />
+
+    <!-- Vertical Bark Grain & Fissure Lines (Hand-drawn organic wood texture) -->
+    <g fill="none" stroke="#1c0b02" stroke-linecap="round">
+      <path d="M330 760 Q320 650 335 530 Q340 460 330 380" stroke-width="3.5" />
+      <path d="M390 760 Q400 650 385 530 Q380 460 390 380" stroke-width="3.5" />
+      <path d="M350 780 Q365 710 355 610 Q350 550 360 490" stroke-width="2.5" />
+      <path d="M310 830 Q328 790 330 730" stroke-width="2.5" stroke="#33180a" />
+      <path d="M410 830 Q392 790 390 730" stroke-width="2.5" stroke="#33180a" />
+      <path d="M250 465 Q200 430 160 390" stroke-width="2" />
+      <path d="M470 465 Q520 430 560 390" stroke-width="2" />
+    </g>
+
+    <!-- Warm Amber Hollow (Heart of the Ancient Glade) -->
+    <ellipse cx="360" cy="625" rx="32" ry="54" fill="url(#oakHollowGlow)" stroke="#1c0b02" stroke-width="3" />
+    <!-- Hollow Bark Rim Edge Highlight -->
+    <path d="M338 585 Q326 625 338 665" fill="none" stroke="#d97706" stroke-width="2" opacity="0.8" />
+    <path d="M382 585 Q394 625 382 665" fill="none" stroke="#78350f" stroke-width="2" opacity="0.6" />
+
+    <!-- Velvet Moss Clinging to Bark Crevices & Roots -->
+    <path d="M280 710 Q265 750 245 790 Q270 795 290 760 Z" fill="url(#oakMossCushion)" />
+    <path d="M205 845 Q180 865 155 885 Q185 885 220 860 Z" fill="url(#oakMossCushion)" />
+    <path d="M440 710 Q455 750 475 790 Q450 795 430 760 Z" fill="url(#oakMossCushion)" />
+    <path d="M295 500 Q260 480 230 460 Q240 480 275 510 Z" fill="url(#oakMossCushion)" />
+    <path d="M425 500 Q460 480 490 460 Q480 480 445 510 Z" fill="url(#oakMossCushion)" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 3. LAYERED SCALLOPED CANOPY FOLIAGE (Rich Storybook Depth) -->
+  <!-- ======================================================== -->
+  <g id="mainCanopyClusters">
+    <!-- CLUSTER A: Lower Left Bough Foliage Mass -->
+    <path d="M60 430 
+             Q30 390 50 340 Q30 300 80 270 Q130 240 180 260 
+             Q230 240 280 270 Q320 310 300 360 Q320 410 270 440 
+             Q220 470 170 450 Q110 480 60 430 Z"
+          fill="url(#oakMidFoliage)" stroke="#052e16" stroke-width="2" />
+    <!-- Scalloped Leaf Lobes and Highlights on Cluster A -->
+    <path d="M50 340 Q90 280 150 270 Q210 260 260 290 Q290 330 260 360 Q200 330 140 340 Q80 370 50 340 Z"
+          fill="url(#oakSunlitFoliage)" />
+    <!-- Fine Foliage Serration Cuts on Cluster A -->
+    <path d="M90 320 Q120 300 150 315 M170 300 Q200 285 230 305 M80 380 Q110 365 140 380"
+          fill="none" stroke="#14532d" stroke-width="2" stroke-linecap="round" />
+
+    <!-- CLUSTER B: Lower Right Bough Foliage Mass -->
+    <path d="M420 440 
+             Q370 410 390 360 Q370 310 410 270 Q460 240 510 260 
+             Q560 240 610 270 Q660 300 640 350 Q660 400 630 440 
+             Q580 480 520 460 Q470 480 420 440 Z"
+          fill="url(#oakMidFoliage)" stroke="#052e16" stroke-width="2" />
+    <!-- Scalloped Leaf Lobes and Highlights on Cluster B -->
+    <path d="M410 340 Q450 280 510 270 Q570 260 620 290 Q630 330 590 360 Q530 330 480 340 Q440 370 410 340 Z"
+          fill="url(#oakSunlitFoliage)" />
+    <!-- Fine Foliage Serration Cuts on Cluster B -->
+    <path d="M440 320 Q470 300 500 315 M530 300 Q560 285 590 305 M460 380 Q490 365 520 380"
+          fill="none" stroke="#14532d" stroke-width="2" stroke-linecap="round" />
+
+    <!-- CLUSTER C: Grand Central Canopy Crown -->
+    <path d="M150 300 
+             Q100 230 140 160 Q190 100 280 90 Q340 70 420 80 
+             Q500 60 570 110 Q630 160 610 240 Q640 300 580 360 
+             Q510 390 440 370 Q370 410 300 380 Q230 400 170 360 
+             Q120 340 150 300 Z"
+          fill="url(#oakMidFoliage)" stroke="#052e16" stroke-width="2.5" />
+
+    <!-- CLUSTER D: Upper Sunlit Crown Tier (Morning Sun Dappled Light) -->
+    <path d="M210 210 
+             Q180 140 240 85 Q300 50 370 55 Q440 45 500 80 
+             Q560 120 540 180 Q500 230 420 220 Q350 240 280 230 
+             Q230 240 210 210 Z"
+          fill="url(#oakSunlitFoliage)" stroke="#15803d" stroke-width="2" />
+
+    <!-- Delicate Sky Negative Spaces (Light filtering through upper branches) -->
+    <path d="M290 170 Q310 150 330 170 Q310 185 290 170 Z" fill="#38bdf8" opacity="0.6" />
+    <path d="M420 160 Q440 140 460 160 Q440 175 420 160 Z" fill="#38bdf8" opacity="0.6" />
+
+    <!-- Ruffled Leaf Scallop Cuts across Crown -->
+    <path d="M200 230 Q230 205 260 225 Q290 200 320 220 Q350 195 380 215 Q410 195 440 215 Q470 190 500 220"
+          fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" />
+    <path d="M150 280 Q180 255 210 270 Q240 250 270 270"
+          fill="none" stroke="#14532d" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M450 270 Q480 250 510 270 Q540 255 570 280"
+          fill="none" stroke="#14532d" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Hanging Ivy Vines & Leafy Tendrils from Boughs -->
+    <g fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round">
+      <path d="M170 450 Q160 500 175 550 Q180 575 170 600" />
+      <path d="M530 450 Q545 500 530 550 Q525 575 535 605" />
+      <path d="M260 480 Q250 520 260 550" />
+      <path d="M450 480 Q460 520 450 550" />
+    </g>
+    <!-- Ivy Leaves on Tendrils -->
+    <g fill="#4ade80" stroke="#14532d" stroke-width="1">
+      <path d="M175 510 Q165 520 175 528 Q185 520 175 510 Z" />
+      <path d="M168 560 Q158 570 168 578 Q178 570 168 560 Z" />
+      <path d="M538 510 Q548 520 538 528 Q528 520 538 510 Z" />
+      <path d="M530 560 Q540 570 530 578 Q520 570 530 560 Z" />
+    </g>
+
+    <!-- Golden Fairy Acorns nestled in the foliage -->
+    <g fill="#f59e0b" stroke="#78350f" stroke-width="1.2">
+      <!-- Acorn 1 -->
+      <path d="M245 375 Q245 390 252 396 Q260 390 260 375 Z" />
+      <ellipse cx="252" cy="374" rx="8" ry="4" fill="#78350f" />
+      <!-- Acorn 2 -->
+      <path d="M465 375 Q465 390 472 396 Q480 390 480 375 Z" />
+      <ellipse cx="472" cy="374" rx="8" ry="4" fill="#78350f" />
+      <!-- Acorn 3 -->
+      <path d="M355 255 Q355 270 362 276 Q370 270 370 255 Z" />
+      <ellipse cx="362" cy="254" rx="8" ry="4" fill="#78350f" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,113 @@
+{
+  "version": "1.0.0",
+  "characters": {
+    "aria": {
+      "idle": "characters/aria/idle",
+      "walk": "characters/aria/walk",
+      "run": "characters/aria/run",
+      "jump_start": "characters/aria/jump_start",
+      "jump_rise": "characters/aria/jump_rise",
+      "fall": "characters/aria/fall",
+      "land": "characters/aria/land",
+      "crouch": "characters/aria/crouch",
+      "dash": "characters/aria/dash",
+      "hurt": "characters/aria/hurt",
+      "death": "characters/aria/death",
+      "victory": "characters/aria/victory"
+    },
+    "ariaProduction": {
+      "designVersion": "2.0",
+      "pipeline": "illustrated",
+      "manifest": "art/characters/aria/aria_animation_manifest",
+      "masterConcept": "art/characters/aria/master/aria_master_concept",
+      "idle": "art/characters/aria/animation/idle",
+      "walk": "art/characters/aria/animation/walk",
+      "run": "art/characters/aria/animation/run",
+      "jump_start": "art/characters/aria/animation/jump_start",
+      "jump_rise": "art/characters/aria/animation/jump_rise",
+      "fall": "art/characters/aria/animation/fall",
+      "land": "art/characters/aria/animation/land",
+      "crouch": "art/characters/aria/animation/crouch",
+      "dash": "art/characters/aria/animation/dash",
+      "hurt": "art/characters/aria/animation/hurt",
+      "death": "art/characters/aria/animation/death",
+      "victory": "art/characters/aria/animation/victory"
+    },
+    "ariaLegacyProcedural": {
+      "path": "art/characters/aria/legacy_procedural",
+      "manifest": "art/characters/aria/legacy_procedural/aria_animation_manifest"
+    },
+    "batboy": {
+      "chrysalis": "art/worlds/honeywood/effects/batboy_chrysalis",
+      "cage": "worlds/honeywood/effects/batboy_chrysalis",
+      "hero": "characters/batboy"
+    },
+    "queenBee": {
+      "monarch": "art/worlds/honeywood/effects/queen_bee_monarch",
+      "shadow": "worlds/honeywood/effects/queen_bee_shadow",
+      "eyes": "worlds/honeywood/effects/queen_bee_eyes"
+    }
+  },
+  "enemies": {
+    "hiveGrub": {
+      "idle": "worlds/honeywood/enemies/hive_grub",
+      "walk": "worlds/honeywood/enemies/hive_grub",
+      "attack": "worlds/honeywood/enemies/hive_grub",
+      "hurt": "worlds/honeywood/enemies/hive_grub",
+      "death": "worlds/honeywood/enemies/hive_grub"
+    },
+    "honeyWisp": {
+      "idle": "worlds/honeywood/enemies/honey_wisp",
+      "float": "worlds/honeywood/enemies/honey_wisp",
+      "attack": "worlds/honeywood/enemies/honey_wisp",
+      "death": "worlds/honeywood/enemies/honey_wisp"
+    },
+    "honeyBeetle": {
+      "idle": "worlds/honeywood/enemies/honey_beetle",
+      "walk": "worlds/honeywood/enemies/honey_beetle",
+      "charge": "worlds/honeywood/enemies/honey_beetle",
+      "stunned": "worlds/honeywood/enemies/honey_beetle",
+      "death": "worlds/honeywood/enemies/honey_beetle"
+    },
+    "hiveFirefly": {
+      "hover": "worlds/honeywood/enemies/hive_firefly",
+      "dive": "worlds/honeywood/enemies/hive_firefly",
+      "death": "worlds/honeywood/enemies/hive_firefly"
+    }
+  },
+  "worlds": {
+    "honeywood": {
+      "backgrounds": {
+        "sky": "art/worlds/honeywood/backgrounds/honeywood_bg_sky_01",
+        "mountains": "art/worlds/honeywood/parallax/honeywood_bg_mountains_01",
+        "forest": "art/worlds/honeywood/parallax/honeywood_bg_forest_01"
+      },
+      "vegetation": {
+        "largeTree": "art/worlds/honeywood/vegetation/honeywood_tree_large_01"
+      },
+      "platforms": {
+        "grass": "art/worlds/honeywood/platforms/honeywood_platform_grass_01",
+        "honey": "worlds/honeywood/platforms/honey_platform",
+        "movingWood": "art/worlds/honeywood/platforms/honeywood_platform_grass_01"
+      },
+      "hive": {
+        "wall": "art/worlds/honeywood/hive/honeywood_hive_wall_01",
+        "honeycomb": "worlds/honeywood/props/giant_honeycomb"
+      },
+      "effects": {
+        "sunbeam": "art/worlds/honeywood/effects/honeywood_sunbeam_01"
+      }
+    }
+  },
+  "collectibles": {
+    "royalShard": "worlds/honeywood/collectibles/royal_shard"
+  },
+  "ui": {
+    "portraits": {
+      "aria": "characters/aria/expressions/smiling",
+      "aria_determined": "characters/aria/expressions/determined",
+      "batboy": "art/worlds/honeywood/effects/batboy_chrysalis",
+      "queenBee": "worlds/honeywood/effects/queen_bee_eyes"
+    }
+  }
+}

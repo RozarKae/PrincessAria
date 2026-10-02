@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280" width="360" height="280">
+  <defs>
+    <!-- Branch Wood Gradient -->
+    <linearGradient id="combBranchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="60%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#1c1917" />
+    </linearGradient>
+
+    <!-- Rich Translucent Amber Honeycomb Gradient -->
+    <linearGradient id="combAmberGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Honey Nectar Droplet Glow -->
+    <radialGradient id="nectarDrip" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fef08a" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#92400e" />
+    </radialGradient>
+  </defs>
+
+  <!-- Host Ancient Oak Branch Supporting the Comb -->
+  <path d="M0 60 Q120 45 220 70 Q300 95 360 80 L360 120 Q280 135 180 110 Q80 85 0 95 Z" 
+        fill="url(#combBranchGrad)" stroke="#1c1917" stroke-width="3" />
+
+  <!-- Wild Honeycomb Mass Hanging Beneath Branch -->
+  <g id="comb_structure">
+    <!-- Base Wax Silhouette -->
+    <path d="M60 85 
+             Q100 190 140 220 
+             Q180 240 220 210 
+             Q270 170 290 95 Z" 
+          fill="url(#combAmberGrad)" stroke="#78350f" stroke-width="3" />
+
+    <!-- Hexagonal Comb Cells Matrix (Layer 1) -->
+    <g stroke="#92400e" stroke-width="2.5" fill="#f59e0b" opacity="0.9">
+      <!-- Row 1 -->
+      <polygon points="120,110 135,102 150,110 150,128 135,136 120,128" />
+      <polygon points="155,110 170,102 185,110 185,128 170,136 155,128" fill="#fbbf24" />
+      <polygon points="190,110 205,102 220,110 220,128 205,136 190,128" />
+      
+      <!-- Row 2 -->
+      <polygon points="102,138 117,130 132,138 132,156 117,164 102,156" />
+      <polygon points="137,138 152,130 167,138 167,156 152,164 137,156" fill="#fef08a" />
+      <polygon points="172,138 187,130 202,138 202,156 187,164 172,156" fill="#fbbf24" />
+      <polygon points="207,138 222,130 237,138 237,156 222,164 207,156" />
+
+      <!-- Row 3 -->
+      <polygon points="120,166 135,158 150,166 150,184 135,192 120,184" fill="#fbbf24" />
+      <polygon points="155,166 170,158 185,166 185,184 170,192 155,184" fill="#fef08a" />
+      <polygon points="190,166 205,158 220,166 220,184 205,192 190,184" />
+      
+      <!-- Row 4 (Lower Tip) -->
+      <polygon points="137,194 152,186 167,194 167,212 152,220 137,212" fill="#fbbf24" />
+      <polygon points="172,194 187,186 202,194 202,212 187,220 172,212" />
+    </g>
+
+    <!-- Liquid Honey Specular Highlights across the comb -->
+    <path d="M125 106 Q150 96 175 104" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8" />
+    <path d="M140 134 Q165 124 190 132" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+
+    <!-- Viscous Honey Droplets Teardropping from Comb Bottom -->
+    <g id="honey_drips">
+      <!-- Drip 1 Left -->
+      <path d="M110 180 Q108 210 110 225 Q110 235 116 235 Q122 235 122 225 Q120 205 124 185 Z" fill="url(#nectarDrip)" stroke="#78350f" stroke-width="1.2" />
+      <circle cx="116" cy="246" r="4.5" fill="url(#nectarDrip)" stroke="#78350f" stroke-width="1" />
+
+      <!-- Drip 2 Center-Low (Longest) -->
+      <path d="M176 215 Q178 245 178 260 Q178 268 184 268 Q190 268 190 260 Q188 240 190 215 Z" fill="url(#nectarDrip)" stroke="#78350f" stroke-width="1.2" />
+      <circle cx="184" cy="275" r="3.5" fill="url(#nectarDrip)" stroke="#78350f" stroke-width="1" />
+
+      <!-- Drip 3 Right -->
+      <path d="M236 170 Q234 195 236 210 Q236 218 241 218 Q246 218 246 210 Q244 190 248 170 Z" fill="url(#nectarDrip)" stroke="#78350f" stroke-width="1.2" />
+    </g>
+  </g>
+</svg>

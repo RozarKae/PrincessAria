@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 40" width="72" height="40">
+  <defs>
+    <!-- River Pebble Slate Gradient -->
+    <linearGradient id="pebbleGrad1" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="45%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Warm Sandstone Pebble Gradient -->
+    <linearGradient id="pebbleGrad2" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="50%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <!-- Moss Cushion Gradient -->
+    <linearGradient id="pebbleMossGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a3e635" />
+      <stop offset="50%" stop-color="#65a30d" />
+      <stop offset="100%" stop-color="#365314" />
+    </linearGradient>
+
+    <!-- Clover Leaf Gradient -->
+    <linearGradient id="cloverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86efac" />
+      <stop offset="100%" stop-color="#16a34a" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Ground Shadow -->
+  <ellipse cx="36" cy="34" rx="32" ry="5" fill="#0f172a" opacity="0.4" />
+
+  <!-- Pebble 1: Back Left (Small) -->
+  <ellipse cx="18" cy="24" rx="10" ry="7" fill="url(#pebbleGrad2)" stroke="#1e293b" stroke-width="1.2" />
+
+  <!-- Pebble 2: Main Center Right (Large Rounded Granite) -->
+  <ellipse cx="44" cy="22" rx="18" ry="12" fill="url(#pebbleGrad1)" stroke="#1e293b" stroke-width="1.5" />
+  <!-- Moss creeping on large stone -->
+  <path d="M36 14 Q44 11 52 15 Q48 20 38 18 Z" fill="url(#pebbleMossGrad)" />
+  <circle cx="50" cy="18" r="2.5" fill="url(#pebbleMossGrad)" />
+
+  <!-- Pebble 3: Front Center-Left (Medium Flat River Stone) -->
+  <ellipse cx="26" cy="28" rx="14" ry="8" fill="url(#pebbleGrad2)" stroke="#1e293b" stroke-width="1.2" />
+  <path d="M20 25 Q26 23 30 27 Z" fill="url(#pebbleMossGrad)" />
+
+  <!-- Pebble 4: Front Far Right (Tiny smooth pebble) -->
+  <ellipse cx="58" cy="30" rx="6" ry="4" fill="url(#pebbleGrad1)" stroke="#1e293b" stroke-width="1" />
+
+  <!-- Fresh Forest Clover Sprig growing between pebbles -->
+  <path d="M30 25 Q32 16 34 10" fill="none" stroke="#15803d" stroke-width="1.5" stroke-linecap="round" />
+  <!-- 3 Clover Leaflets -->
+  <circle cx="31" cy="9" r="3.5" fill="url(#cloverGrad)" stroke="#14532d" stroke-width="0.8" />
+  <circle cx="37" cy="9" r="3.5" fill="url(#cloverGrad)" stroke="#14532d" stroke-width="0.8" />
+  <circle cx="34" cy="6" r="3.5" fill="url(#cloverGrad)" stroke="#14532d" stroke-width="0.8" />
+  <circle cx="34" cy="9" r="1.5" fill="#fef08a" />
+</svg>

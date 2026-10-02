@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  
+    <defs>
+      <!-- Royal Honey Dress Gradient -->
+      <linearGradient id="ariaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="35%" stop-color="#18181b" />
+        <stop offset="70%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#09090b" />
+      </linearGradient>
+
+      <!-- Wing-Cut Capelet Gradient (Warm Honey to Rich Amber) -->
+      <linearGradient id="ariaCapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="50%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#b45309" />
+      </linearGradient>
+
+      <!-- Emerald Jewel Gradient -->
+      <radialGradient id="emeraldGrad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#14b8a6" />
+        <stop offset="60%" stop-color="#0d9488" />
+        <stop offset="100%" stop-color="#047857" />
+      </radialGradient>
+
+      <!-- Ivory Ruffle Gradient -->
+      <linearGradient id="ivoryGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fefce8" />
+        <stop offset="100%" stop-color="#fffbeb" />
+      </linearGradient>
+
+      <!-- Hair Gradient -->
+      <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#78350f" />
+        <stop offset="60%" stop-color="#92400e" />
+        <stop offset="100%" stop-color="#451a03" />
+      </linearGradient>
+    </defs>
+  
+  <rect width="128" height="128" rx="16" fill="#0f172a" />
+  <g transform="translate(-64, -22)">
+    
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="128" cy="86" r="22" fill="url(#hairGrad)" />
+      <path d="M110 80 Q102 104 112 122 Q120 108 118 94 Z"
+            fill="#451a03" />
+      <path d="M146 80 Q154 104 144 122 Q136 108 138 94 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="128" cy="87" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="120" cy="93" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="136" cy="93" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M128 89 Q129 91 127 92" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      <path d="M112 85 Q117 80 122 85" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M134 85 Q139 80 144 85" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M124 96 Q128 100 132 96" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M112 76 Q128 64 146 77 Q136 85 126 81 Q119 83 112 76 Z"
+            fill="#92400e" />
+      <path d="M136 77 Q144 88 142 98 Q135 90 134 81 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M116 70 L142 70 L144 66 L136 62 L128 58 L120 62 L114 66 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="128,62 132,64 132,68 128,70 124,68 124,64"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="128" cy="66" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+  </g>
+</svg>

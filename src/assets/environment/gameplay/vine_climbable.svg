@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 256" width="64" height="256">
+  <defs>
+    <!-- Thick Ivy Stem Gradient -->
+    <linearGradient id="vineStemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14532d" />
+      <stop offset="45%" stop-color="#15803d" />
+      <stop offset="85%" stop-color="#166534" />
+      <stop offset="100%" stop-color="#052e16" />
+    </linearGradient>
+
+    <!-- Emerald Leaf Gradient -->
+    <linearGradient id="vineLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#86efac" />
+      <stop offset="40%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Golden Bellflower Gradient -->
+    <radialGradient id="vineFlowerGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </radialGradient>
+  </defs>
+
+  <!-- Main Twisted Vine Trunk -->
+  <path d="M32 0 Q22 32 30 64 Q42 96 32 128 Q20 160 30 192 Q40 224 32 256"
+        fill="none" stroke="url(#vineStemGrad)" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Secondary Counter-Twisted Tendril -->
+  <path d="M28 0 Q38 32 30 64 Q18 96 32 128 Q44 160 30 192 Q22 224 30 256"
+        fill="none" stroke="#166534" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Natural Knotted Grips &amp; Leaves -->
+  <!-- Knot 1 (y: 28) -->
+  <ellipse cx="28" cy="28" rx="8" ry="6" fill="#14532d" stroke="#052e16" stroke-width="1.5" />
+  <path d="M22 26 Q8 16 12 6 Q24 12 24 24 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+  <path d="M34 30 Q48 20 44 10 Q32 16 32 28 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+
+  <!-- Knot 2 (y: 84) -->
+  <ellipse cx="34" cy="84" rx="8" ry="6" fill="#14532d" stroke="#052e16" stroke-width="1.5" />
+  <path d="M28 82 Q14 74 18 62 Q30 68 30 80 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+  <!-- Golden flower bell at knot -->
+  <circle cx="44" cy="86" r="6" fill="url(#vineFlowerGrad)" stroke="#78350f" stroke-width="1" />
+  <circle cx="44" cy="86" r="2" fill="#fff" />
+
+  <!-- Knot 3 (y: 144) -->
+  <ellipse cx="28" cy="144" rx="8" ry="6" fill="#14532d" stroke="#052e16" stroke-width="1.5" />
+  <path d="M22 142 Q6 134 10 122 Q24 128 24 140 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+  <path d="M34 146 Q50 138 48 126 Q36 132 34 144 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+
+  <!-- Knot 4 (y: 204) -->
+  <ellipse cx="34" cy="204" rx="8" ry="6" fill="#14532d" stroke="#052e16" stroke-width="1.5" />
+  <path d="M28 202 Q12 194 16 182 Q28 188 28 200 Z" fill="url(#vineLeafGrad)" stroke="#14532d" stroke-width="1" />
+  <!-- Golden flower bell -->
+  <circle cx="46" cy="206" r="6" fill="url(#vineFlowerGrad)" stroke="#78350f" stroke-width="1" />
+  <circle cx="46" cy="206" r="2" fill="#fff" />
+
+  <!-- Hanging tendril curl at bottom -->
+  <path d="M32 250 Q24 254 26 258 Q28 260 30 258" fill="none" stroke="#15803d" stroke-width="2" />
+</svg>

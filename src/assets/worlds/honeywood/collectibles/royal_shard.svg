@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Radiant Golden Shard Glow -->
+    <radialGradient id="shardAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="crystalFacetA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="crystalFacetB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="emeraldFacet" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Outer Glow -->
+  <circle cx="64" cy="64" r="54" fill="url(#shardAura)" />
+
+  <!-- Multifaceted Golden Royal Crystal -->
+  <!-- Top Apex Facets -->
+  <polygon points="64,16 88,44 64,52" fill="url(#crystalFacetA)" stroke="#fde047" stroke-width="1.2" />
+  <polygon points="64,16 40,44 64,52" fill="url(#crystalFacetB)" stroke="#fde047" stroke-width="1.2" />
+  <polygon points="40,44 64,16 64,52" fill="#fffbeb" opacity="0.4" />
+
+  <!-- Center Belt Facets -->
+  <polygon points="40,44 64,52 64,88 28,68" fill="url(#crystalFacetB)" stroke="#d97706" stroke-width="1.2" />
+  <polygon points="88,44 64,52 64,88 100,68" fill="url(#crystalFacetA)" stroke="#d97706" stroke-width="1.2" />
+
+  <!-- Bottom Terminal Facets -->
+  <polygon points="64,88 28,68 64,114" fill="url(#crystalFacetB)" stroke="#b45309" stroke-width="1.2" />
+  <polygon points="64,88 100,68 64,114" fill="url(#crystalFacetA)" stroke="#b45309" stroke-width="1.2" />
+
+  <!-- Central Emerald Royal Core Insignia -->
+  <polygon points="64,56 72,66 64,76 56,66" fill="url(#emeraldFacet)" stroke="#fde047" stroke-width="1.5" />
+  <circle cx="64" cy="66" r="2.5" fill="#fef08a" />
+
+  <!-- Specular Sparkle Star -->
+  <polygon points="76,28 78,34 84,36 78,38 76,44 74,38 68,36 74,34" fill="#ffffff" opacity="0.95" />
+</svg>

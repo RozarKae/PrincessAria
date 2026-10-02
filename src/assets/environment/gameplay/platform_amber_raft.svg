@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64">
+  <defs>
+    <!-- Liquid Translucent Amber Honey Gradient -->
+    <linearGradient id="amberRaftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+
+    <!-- Liquid Specular Surface Rim -->
+    <linearGradient id="specularRim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="70%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.3" />
+    </linearGradient>
+
+    <!-- Hanging Honey Droplet -->
+    <radialGradient id="honeyDroplet" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fef08a" />
+      <stop offset="75%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#92400e" />
+    </radialGradient>
+  </defs>
+
+  <!-- Complete Amber Honey Raft Body -->
+  <g id="amber_raft_master">
+    <!-- Main Viscous Honeycomb Slab Contour -->
+    <path d="M16 12 
+             Q4 14 6 28 
+             Q8 44 24 48 
+             Q80 52 140 50 
+             Q200 52 256 48 
+             Q272 44 274 28 
+             Q276 14 264 12 Z" 
+          fill="url(#amberRaftGrad)" stroke="#b45309" stroke-width="2" stroke-linejoin="round" />
+
+    <!-- Interior Hexagonal Crystallization Cells (visible through translucent amber) -->
+    <g stroke="#d97706" stroke-width="1.5" fill="#f59e0b" opacity="0.65">
+      <polygon points="60,24 72,18 84,24 84,36 72,42 60,36" />
+      <polygon points="94,24 106,18 118,24 118,36 106,42 94,36" />
+      <polygon points="128,24 140,18 152,24 152,36 140,42 128,36" fill="#fef08a" opacity="0.8" />
+      <polygon points="162,24 174,18 186,24 186,36 174,42 162,36" />
+      <polygon points="196,24 208,18 220,24 220,36 208,42 196,36" />
+    </g>
+
+    <!-- High-Gloss Liquid Surface Glint (Walkable Edge Highlight) -->
+    <path d="M22 15 Q140 10 258 15" stroke="url(#specularRim)" stroke-width="3" stroke-linecap="round" fill="none" />
+    <ellipse cx="140" cy="18" rx="70" ry="2.5" fill="#ffffff" opacity="0.75" />
+
+    <!-- Viscous Honey Droplets on Bottom Edge -->
+    <!-- Drip Left -->
+    <path d="M48 48 Q46 54 48 58 Q49 62 52 62 Q55 62 56 58 Q58 54 56 48 Z" fill="url(#honeyDroplet)" stroke="#92400e" stroke-width="1" />
+    <!-- Drip Right -->
+    <path d="M224 48 Q222 55 224 59 Q225 63 228 63 Q231 63 232 59 Q234 55 232 48 Z" fill="url(#honeyDroplet)" stroke="#92400e" stroke-width="1" />
+  </g>
+</svg>

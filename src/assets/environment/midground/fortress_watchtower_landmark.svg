@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 980" width="780" height="980">
+  <defs>
+    <!-- Weathered Royal White & Ashlar Granite Gradient -->
+    <linearGradient id="fortressStoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="25%" stop-color="#94a3b8" />
+      <stop offset="65%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Deep Shadow Stone -->
+    <linearGradient id="fortressShadowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Royal Sunstone Filigree Gold -->
+    <linearGradient id="royalGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Hive Honeycomb Amber Corruption -->
+    <linearGradient id="amberCorruption" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+
+    <!-- Nightshade Purple Ivy -->
+    <linearGradient id="purpleIvyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#3b0764" />
+    </linearGradient>
+
+    <!-- Interior Window Radiant Glow -->
+    <radialGradient id="beaconGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fef08a" />
+      <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Watchtower Spire Ambient Aura -->
+    <radialGradient id="spireAura" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#7c3aed" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Atmospheric Spire Aura -->
+  <circle cx="390" cy="240" r="320" fill="url(#spireAura)" />
+
+  <!-- Lower Fortress Bastion & Foundation Buttresses -->
+  <g id="tower_foundation">
+    <!-- Wide Stone Plinth Base -->
+    <path d="M120 980 L160 820 L620 820 L660 980 Z" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="4" />
+    <!-- Ashlar Masonry Horizontal Mortar Joints -->
+    <line x1="150" y1="860" x2="630" y2="860" stroke="#1e293b" stroke-width="2.5" />
+    <line x1="140" y1="900" x2="640" y2="900" stroke="#1e293b" stroke-width="2.5" />
+    <line x1="130" y1="940" x2="650" y2="940" stroke="#1e293b" stroke-width="2.5" />
+
+    <!-- Left Flanking Buttress -->
+    <polygon points="120,980 180,760 240,760 210,980" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3.5" />
+    <!-- Right Flanking Buttress -->
+    <polygon points="660,980 600,760 540,760 570,980" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3.5" />
+  </g>
+
+  <!-- Massive Lower Rampart Walls (x: 180 to 600, y: 520 to 820) -->
+  <g id="lower_ramparts">
+    <rect x="180" y="520" width="420" height="300" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="4" />
+
+    <!-- Stone Brick Texture Courses -->
+    <path d="M180 560 H600 M180 600 H600 M180 640 H600 M180 680 H600 M180 720 H600 M180 760 H600" stroke="#334155" stroke-width="2" />
+    <!-- Vertical Mortar Lines -->
+    <line x1="240" y1="520" x2="240" y2="560" stroke="#334155" stroke-width="2" />
+    <line x1="320" y1="520" x2="320" y2="560" stroke="#334155" stroke-width="2" />
+    <line x1="420" y1="520" x2="420" y2="560" stroke="#334155" stroke-width="2" />
+    <line x1="520" y1="520" x2="520" y2="560" stroke="#334155" stroke-width="2" />
+
+    <line x1="280" y1="560" x2="280" y2="600" stroke="#334155" stroke-width="2" />
+    <line x1="380" y1="560" x2="380" y2="600" stroke="#334155" stroke-width="2" />
+    <line x1="480" y1="560" x2="480" y2="600" stroke="#334155" stroke-width="2" />
+    <line x1="560" y1="560" x2="560" y2="600" stroke="#334155" stroke-width="2" />
+
+    <line x1="220" y1="600" x2="220" y2="640" stroke="#334155" stroke-width="2" />
+    <line x1="330" y1="600" x2="330" y2="640" stroke="#334155" stroke-width="2" />
+    <line x1="440" y1="600" x2="440" y2="640" stroke="#334155" stroke-width="2" />
+    <line x1="540" y1="600" x2="540" y2="640" stroke="#334155" stroke-width="2" />
+
+    <!-- Arched Great Gatehouse Portcullis -->
+    <path d="M330 820 V690 Q390 640 450 690 V820 Z" fill="#0f172a" stroke="#1e293b" stroke-width="4" />
+    <!-- Iron Portcullis Grate -->
+    <line x1="360" y1="675" x2="360" y2="820" stroke="#64748b" stroke-width="3" />
+    <line x1="390" y1="655" x2="390" y2="820" stroke="#64748b" stroke-width="3" />
+    <line x1="420" y1="675" x2="420" y2="820" stroke="#64748b" stroke-width="3" />
+    <line x1="330" y1="730" x2="450" y2="730" stroke="#64748b" stroke-width="3" />
+    <line x1="330" y1="775" x2="450" y2="775" stroke="#64748b" stroke-width="3" />
+
+    <!-- Royal Sun Crest Above Portcullis -->
+    <circle cx="390" cy="625" r="28" fill="url(#royalGoldGrad)" stroke="#78350f" stroke-width="3" />
+    <circle cx="390" cy="625" r="14" fill="#fef08a" />
+    <path d="M390 588 L390 598 M390 652 L390 662 M353 625 L363 625 M417 625 L427 625" stroke="#78350f" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <!-- Mid-Level Machicolated Gallery & Corbel Brackets (y: 480 to 520) -->
+  <g id="machicolations">
+    <!-- Corbel Support Brackets -->
+    <polygon points="160,520 180,480 220,480 200,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="230,520 245,480 285,480 270,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="300,520 315,480 355,480 340,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="370,520 380,480 400,480 410,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="425,520 440,480 480,480 465,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="495,520 510,480 550,480 535,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+    <polygon points="565,520 580,480 620,480 605,520" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3" />
+
+    <!-- Projecting Gallery Beam -->
+    <rect x="150" y="470" width="480" height="22" rx="3" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3.5" />
+  </g>
+
+  <!-- Mid-Level Battlements & Parapets (x: 170 to 610, y: 430 to 470) -->
+  <g id="mid_battlements">
+    <rect x="170" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="235" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="300" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="440" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="505" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="570" y="430" width="40" height="40" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+  </g>
+
+  <!-- Main Upper Watchtower Shaft (x: 230 to 550, y: 160 to 470) -->
+  <g id="upper_tower_shaft">
+    <rect x="230" y="160" width="320" height="310" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="4" />
+    <!-- Course lines -->
+    <path d="M230 210 H550 M230 260 H550 M230 310 H550 M230 360 H550 M230 410 H550" stroke="#334155" stroke-width="2" />
+
+    <!-- Arched Gothic Beacon Windows with Warm Radiant Glow -->
+    <!-- Center Grand Window -->
+    <rect x="345" y="220" width="90" height="150" rx="45" fill="#0f172a" stroke="#1e293b" stroke-width="4" />
+    <rect x="350" y="225" width="80" height="140" rx="40" fill="url(#beaconGlow)" />
+    <!-- Stained glass tracery -->
+    <line x1="390" y1="225" x2="390" y2="365" stroke="#1e293b" stroke-width="3" />
+    <line x1="350" y1="295" x2="430" y2="295" stroke="#1e293b" stroke-width="3" />
+    <circle cx="390" cy="265" r="16" fill="none" stroke="#1e293b" stroke-width="2.5" />
+
+    <!-- Left Flanking Arrow Slit -->
+    <rect x="265" y="270" width="22" height="70" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="3" />
+    <rect x="268" y="274" width="16" height="62" rx="8" fill="url(#beaconGlow)" />
+
+    <!-- Right Flanking Arrow Slit -->
+    <rect x="493" y="270" width="22" height="70" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="3" />
+    <rect x="496" y="274" width="16" height="62" rx="8" fill="url(#beaconGlow)" />
+  </g>
+
+  <!-- Crown Watchtower Machicolations & High Battlements (y: 100 to 160) -->
+  <g id="crown_battlements">
+    <!-- Flared Corbel Capital -->
+    <polygon points="210,160 230,130 550,130 570,160" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3.5" />
+    <rect x="200" y="115" width="380" height="18" rx="3" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3.5" />
+
+    <!-- High Crenellation Merlons -->
+    <rect x="205" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="260" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="315" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="372" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="428" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="484" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="539" y="70" width="36" height="45" fill="url(#fortressStoneGrad)" stroke="#1e293b" stroke-width="3" />
+  </g>
+
+  <!-- High Watchtower Octagonal Steeple & Royal Sun Weather Vane (y: 0 to 70) -->
+  <g id="tower_spire">
+    <!-- Steeple Roof -->
+    <polygon points="390,10 250,70 530,70" fill="url(#fortressShadowGrad)" stroke="#1e293b" stroke-width="3.5" />
+    <!-- Tile Ridges -->
+    <line x1="390" y1="10" x2="330" y2="70" stroke="#64748b" stroke-width="2" />
+    <line x1="390" y1="10" x2="450" y2="70" stroke="#64748b" stroke-width="2" />
+
+    <!-- Royal Sunstone Finial Rod & Weather Vane -->
+    <line x1="390" y1="10" x2="390" y2="-30" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" />
+    <circle cx="390" cy="-35" r="14" fill="url(#royalGoldGrad)" stroke="#b45309" stroke-width="2.5" />
+    <path d="M380 -35 H400 M390 -45 V-25" stroke="#fef08a" stroke-width="2" />
+  </g>
+
+  <!-- Hive Honeycomb Encroachment & Structural Breaches (Visual Storytelling of Invasion) -->
+  <g id="hive_corruption">
+    <!-- Honeycomb Cluster 1 (Left Rampart Wall) -->
+    <path d="M190 620 L210 610 L230 620 L230 645 L210 655 L190 645 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M225 600 L245 590 L265 600 L265 625 L245 635 L225 625 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M225 640 L245 630 L265 640 L265 665 L245 675 L225 665 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M260 620 L280 610 L300 620 L300 645 L280 655 L260 645 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <!-- Cascading Amber Honey Drips -->
+    <path d="M210 655 C210 680, 216 690, 214 715 C212 725, 204 725, 204 715 C204 695, 208 670, 210 655 Z" fill="#f59e0b" opacity="0.9" />
+    <path d="M245 675 C245 700, 252 715, 250 740 C248 750, 240 750, 240 740 C240 715, 243 690, 245 675 Z" fill="#d97706" opacity="0.92" />
+
+    <!-- Honeycomb Cluster 2 (Upper Tower Right Edge Breach) -->
+    <path d="M500 340 L520 330 L540 340 L540 365 L520 375 L500 365 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M535 320 L555 310 L575 320 L575 345 L555 355 L535 345 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M535 360 L555 350 L575 360 L575 385 L555 395 L535 385 Z" fill="url(#amberCorruption)" stroke="#78350f" stroke-width="2" />
+    <path d="M520 375 C520 400, 526 420, 523 445 C520 455, 513 455, 514 445 C516 425, 518 395, 520 375 Z" fill="#f59e0b" opacity="0.88" />
+  </g>
+
+  <!-- Overgrown Nightshade Purple Ivy Tendrils & Leaf Clusters -->
+  <g id="purple_ivy">
+    <!-- Ivy Vines Scaling Left Foundation -->
+    <path d="M140 980 Q160 880 175 800 T210 720 T190 640" fill="none" stroke="#581c87" stroke-width="4.5" stroke-linecap="round" />
+    <!-- Leaf Sprigs -->
+    <circle cx="155" cy="890" r="10" fill="url(#purpleIvyGrad)" />
+    <circle cx="168" cy="850" r="12" fill="url(#purpleIvyGrad)" />
+    <circle cx="178" cy="800" r="11" fill="url(#purpleIvyGrad)" />
+    <circle cx="195" cy="760" r="13" fill="url(#purpleIvyGrad)" />
+    <circle cx="212" cy="710" r="12" fill="url(#purpleIvyGrad)" />
+    <circle cx="185" cy="650" r="9" fill="url(#purpleIvyGrad)" />
+
+    <!-- Ivy Cascading From Upper Tower Battlement -->
+    <path d="M540 160 Q555 240 535 320 T560 410" fill="none" stroke="#581c87" stroke-width="3.5" stroke-linecap="round" />
+    <circle cx="545" cy="190" r="9" fill="url(#purpleIvyGrad)" />
+    <circle cx="552" cy="240" r="11" fill="url(#purpleIvyGrad)" />
+    <circle cx="538" cy="290" r="10" fill="url(#purpleIvyGrad)" />
+    <circle cx="550" cy="360" r="11" fill="url(#purpleIvyGrad)" />
+  </g>
+</svg>

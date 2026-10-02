@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 128" width="256" height="128">
+  <defs>
+    <radialGradient id="queenEyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="1" />
+      <stop offset="50%" stop-color="#dc2626" stop-opacity="0.8" />
+      <stop offset="85%" stop-color="#991b1b" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <!-- Pair of Malevolent Glowing Queen Bee Compound Eyes -->
+  <ellipse cx="80" cy="64" rx="42" ry="32" fill="url(#queenEyeGlow)" />
+  <ellipse cx="176" cy="64" rx="42" ry="32" fill="url(#queenEyeGlow)" />
+  <!-- Inner Hexagonal Facets -->
+  <ellipse cx="82" cy="64" rx="26" ry="18" fill="#fca5a5" opacity="0.9" />
+  <ellipse cx="174" cy="64" rx="26" ry="18" fill="#fca5a5" opacity="0.9" />
+  <ellipse cx="84" cy="64" rx="12" ry="8" fill="#ffffff" />
+  <ellipse cx="172" cy="64" rx="12" ry="8" fill="#ffffff" />
+</svg>

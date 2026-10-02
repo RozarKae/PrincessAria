@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  
+    <defs>
+      <!-- Royal Honey Dress Gradient -->
+      <linearGradient id="ariaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="35%" stop-color="#18181b" />
+        <stop offset="70%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#09090b" />
+      </linearGradient>
+
+      <!-- Wing-Cut Capelet Gradient (Warm Honey to Rich Amber) -->
+      <linearGradient id="ariaCapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="50%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#b45309" />
+      </linearGradient>
+
+      <!-- Emerald Jewel Gradient -->
+      <radialGradient id="emeraldGrad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#14b8a6" />
+        <stop offset="60%" stop-color="#0d9488" />
+        <stop offset="100%" stop-color="#047857" />
+      </radialGradient>
+
+      <!-- Ivory Ruffle Gradient -->
+      <linearGradient id="ivoryGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fefce8" />
+        <stop offset="100%" stop-color="#fffbeb" />
+      </linearGradient>
+
+      <!-- Hair Gradient -->
+      <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#78350f" />
+        <stop offset="60%" stop-color="#92400e" />
+        <stop offset="100%" stop-color="#451a03" />
+      </linearGradient>
+    </defs>
+  
+  <g id="aria_side">
+    
+      <!-- SIDE VIEW BODY &amp; COSTUME -->
+      <!-- Explorer Boots (Side Profile) -->
+      <path d="M124 188 L142 188 L144 214 L150 220 L122 220 L124 188 Z"
+            fill="#18181b" stroke="#09090b" stroke-width="1.5" />
+      <rect x="126" y="194" width="16" height="4" fill="#fbbf24" />
+
+      <!-- Skirt Side Silhouette (Layered Peplum Pannier) -->
+      <path d="M110 142 L144 142 L152 184 L106 184 Z"
+            fill="url(#ariaDressGrad)" stroke="#09090b" stroke-width="1.5" />
+      <path d="M108 178 Q128 184 150 178"
+            stroke="#fde047" stroke-width="2.5" fill="none" />
+
+      <!-- Wing-Cut Capelet (Flowing gently back) -->
+      <path d="M122 114 Q92 145 100 188 Q112 165 128 130 Z"
+            fill="url(#ariaCapeGrad)" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Bodice Side &amp; Arm -->
+      <path d="M120 114 L140 114 L142 142 L118 142 Z"
+            fill="#18181b" stroke="#d97706" stroke-width="1" />
+
+      <!-- Arm &amp; Gold Bracer -->
+      <rect x="128" y="120" width="10" height="24" rx="4" fill="#fbbf24" />
+      <rect x="128" y="134" width="10" height="8" fill="#18181b" />
+      <circle cx="133" cy="148" r="5" fill="#fed7aa" />
+    
+    
+      <!-- Side View Head -->
+      <g>
+        <!-- Hair Base -->
+        <circle cx="128" cy="86" r="21" fill="url(#hairGrad)" />
+        <path d="M118 82 Q110 111 116 131 Q124 111 126 84 Z"
+              fill="#451a03" />
+        <!-- Face Profile -->
+        <path d="M128 70 Q142 72 145 82 L148 88 L144 90 Q145 95 142 100 Q134 104 128 102 Z"
+              fill="#fed7aa" />
+        <!-- Cheeks Blush -->
+        <ellipse cx="138" cy="92" rx="4" ry="2.5" fill="#f43f5e" opacity="0.35" />
+        <!-- Eye Profile -->
+        <ellipse cx="139" cy="86" rx="3.5" ry="5" fill="#0284c7" />
+        <circle cx="140" cy="84.5" r="1.5" fill="#ffffff" />
+        <!-- Mouth Profile -->
+        <path d="M144 95 L140 96" stroke="#e11d48" stroke-width="1.8" stroke-linecap="round" />
+        <!-- Hair Side Braid &amp; Fringe -->
+        <path d="M124 68 Q138 62 144 72 Q136 78 132 72 Z"
+              fill="#92400e" />
+        <!-- Tiara Profile with Emerald Droplet -->
+        <path d="M132 70 L144 68 L142 62 L136 64 Z"
+              fill="#fbbf24" stroke="#d97706" stroke-width="1" />
+        <circle cx="144" cy="68" r="2.5" fill="url(#emeraldGrad)" />
+      </g>
+    
+  </g>
+</svg>

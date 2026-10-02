@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64">
+  <defs>
+    <!-- Bark Texture Gradient: Rich Umber & Gnarled Heartwood -->
+    <linearGradient id="boughBarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="35%" stop-color="#58240c" />
+      <stop offset="75%" stop-color="#381708" />
+      <stop offset="100%" stop-color="#1c0b02" />
+    </linearGradient>
+
+    <!-- Velvet Forest Moss Cushion Gradient -->
+    <linearGradient id="boughMossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bef264" />
+      <stop offset="40%" stop-color="#65a30d" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+  </defs>
+
+  <!-- Complete 3-Slice Modular Oak Branch Body -->
+  <g id="oak_platform_master">
+    <!-- Main Gnarled Branch Silhouette -->
+    <path d="M12 18 
+             Q4 26 10 38 
+             Q20 54 48 56 
+             Q100 58 160 54 
+             Q220 56 270 54 
+             Q306 50 312 36 
+             Q316 24 306 18 
+             L12 18 Z" 
+          fill="url(#boughBarkGrad)" stroke="#1c0b02" stroke-width="2.5" stroke-linejoin="round" />
+
+    <!-- Bark Furrows & Wood Grain Lines -->
+    <g stroke="#1c0b02" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.75">
+      <path d="M25 32 Q90 38 160 34 Q230 38 295 30" />
+      <path d="M40 44 Q100 48 160 46 Q220 48 275 42" />
+      <path d="M18 24 Q30 28 45 26" />
+      <path d="M270 24 Q285 28 300 24" />
+    </g>
+
+    <!-- Natural Bark Knot on Middle-Right -->
+    <ellipse cx="210" cy="38" rx="7" ry="5" fill="#1c0b02" stroke="#451a03" stroke-width="1.5" />
+    <ellipse cx="210" cy="38" rx="3.5" ry="2.5" fill="#090502" />
+
+    <!-- Velvet Forest Moss Cushion Top Cap (Physical Walkable Surface) -->
+    <path d="M6 18 
+             Q2 12 14 10 
+             Q30 6 50 10 Q70 14 90 8 Q110 4 130 8 Q150 14 170 8 Q190 4 210 8 Q230 14 250 8 Q270 4 290 10 Q308 12 314 18 
+             L312 24 
+             Q295 28 275 22 Q255 18 235 24 Q215 30 195 22 Q175 16 155 24 Q135 30 115 22 Q95 16 75 24 Q55 28 35 20 Q18 26 8 24 Z" 
+          fill="url(#boughMossGrad)" stroke="#052e16" stroke-width="1.5" />
+
+    <!-- Delicate Hanging Lichen Tendril under Branch -->
+    <path d="M38 56 Q36 62 40 65 Q44 62 42 56" fill="#65a30d" />
+    <path d="M255 54 Q252 60 256 63 Q260 60 258 54" fill="#65a30d" />
+  </g>
+</svg>

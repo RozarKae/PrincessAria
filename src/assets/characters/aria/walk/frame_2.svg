@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  
+    <defs>
+      <!-- Royal Honey Dress Gradient -->
+      <linearGradient id="ariaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="35%" stop-color="#18181b" />
+        <stop offset="70%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#09090b" />
+      </linearGradient>
+
+      <!-- Wing-Cut Capelet Gradient (Warm Honey to Rich Amber) -->
+      <linearGradient id="ariaCapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24" />
+        <stop offset="50%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#b45309" />
+      </linearGradient>
+
+      <!-- Emerald Jewel Gradient -->
+      <radialGradient id="emeraldGrad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#14b8a6" />
+        <stop offset="60%" stop-color="#0d9488" />
+        <stop offset="100%" stop-color="#047857" />
+      </radialGradient>
+
+      <!-- Ivory Ruffle Gradient -->
+      <linearGradient id="ivoryGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fefce8" />
+        <stop offset="100%" stop-color="#fffbeb" />
+      </linearGradient>
+
+      <!-- Hair Gradient -->
+      <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#78350f" />
+        <stop offset="60%" stop-color="#92400e" />
+        <stop offset="100%" stop-color="#451a03" />
+      </linearGradient>
+    </defs>
+  
+  <g transform="translate(128, 183) scale(1, 1) translate(-128, -183)" opacity="1">
+    
+
+    <!-- 1. WING-CUT ROYAL CAPELET (FLOWING FABRIC, NO PHYSICAL INSECT WINGS) -->
+    <g transform="rotate(-6, 122, 133)">
+      <path d="M120 131 Q89.6 153, 96.4 181 Q114 167, 126 151 Z"
+            fill="url(#ariaCapeGrad)" stroke="#d97706" stroke-width="1.2" />
+      <path d="M89.6 153 Q93 173 96.4 181"
+            stroke="#fde047" stroke-width="2" fill="none" />
+      <!-- Subtle Emerald Brooch on Capelet -->
+      <circle cx="120" cy="135" r="2" fill="url(#emeraldGrad)" />
+    </g>
+
+    <!-- 2. EXPLORER KNEE-HIGH BOOTS &amp; LEGS -->
+    <!-- Left Leg / Boot -->
+    <g transform="rotate(4, 117, 159) translate(0, 0)">
+      <rect x="111" y="159" width="12" height="18" rx="3" fill="#18181b" stroke="#09090b" stroke-width="1" />
+      <rect x="111" y="157" width="12" height="4" rx="1.5" fill="#fbbf24" />
+      <rect x="110" y="175" width="15" height="6" rx="2" fill="#09090b" />
+      <rect x="111" y="177" width="13" height="2" fill="#fbbf24" />
+    </g>
+
+    <!-- Right Leg / Boot -->
+    <g transform="rotate(-12, 135, 159) translate(0, -8)">
+      <rect x="129" y="159" width="12" height="18" rx="3" fill="#18181b" stroke="#09090b" stroke-width="1" />
+      <rect x="129" y="157" width="12" height="4" rx="1.5" fill="#fbbf24" />
+      <rect x="128" y="175" width="15" height="6" rx="2" fill="#09090b" />
+      <rect x="129" y="177" width="13" height="2" fill="#fbbf24" />
+    </g>
+
+    <!-- 3. BEE-INSPIRED LAYERED PETAL SKIRT &amp; PEPLUM -->
+    <g transform="rotate(3, 128, 143)">
+      <path d="M113 135 L143 135 L154 167 L102 167 Z"
+            fill="url(#ariaDressGrad)" stroke="#09090b" stroke-width="1.5" />
+
+      <!-- Ivory Ruffle Pleats -->
+      <path d="M104 167 L108 171 L116 167 L122 171 L128 167 L134 171 L140 167 L148 171 L152 167 Z"
+            fill="url(#ivoryGrad)" stroke="#d97706" stroke-width="0.8" />
+
+      <!-- Honeycomb Royal Belt Emblem with Emerald Accent -->
+      <polygon points="128,135 135,139 135,147 128,151 121,147 121,139"
+               fill="#fbbf24" stroke="#d97706" stroke-width="1" />
+      <circle cx="128" cy="143" r="2.4" fill="url(#emeraldGrad)" />
+
+      <!-- Skirt Golden Honeycomb Trims -->
+      <path d="M106.4 163 Q128 168 149.6 163"
+            stroke="#fde047" stroke-width="2.5" fill="none" />
+      <path d="M109 156 Q128 160 147 156"
+            stroke="#f59e0b" stroke-width="2" fill="none" />
+
+      <!-- Doublet Bodice Chevrons -->
+      <path d="M118 137 L128 145 L138 137"
+            stroke="#fde047" stroke-width="2" fill="none" />
+
+      <!-- Left Arm &amp; Bracer -->
+      <g transform="rotate(-4, 116, 133)">
+        <rect x="112" y="133" width="8" height="18" rx="4" fill="#fbbf24" />
+        <rect x="112" y="143" width="8" height="6" rx="2" fill="#18181b" />
+        <circle cx="116" cy="153" r="4" fill="#fed7aa" />
+      </g>
+
+      <!-- Right Arm &amp; Bracer -->
+      <g transform="rotate(4, 140, 133)">
+        <rect x="136" y="133" width="8" height="18" rx="4" fill="#fbbf24" />
+        <rect x="136" y="143" width="8" height="6" rx="2" fill="#18181b" />
+        <circle cx="140" cy="153" r="4" fill="#fed7aa" />
+      </g>
+    </g>
+
+    <!-- 4. HEAD, TIARA &amp; HAIR -->
+    <g transform="rotate(0, 128, 105)">
+      
+    <!-- Head Base &amp; Flowing Chestnut Hair -->
+    <g>
+      <!-- Back Hair Volume -->
+      <circle cx="128" cy="105" r="22" fill="url(#hairGrad)" />
+      <path d="M110 99 Q102 123 112 141 Q120 127 118 113 Z"
+            fill="#451a03" />
+      <path d="M146 99 Q154 123 144 141 Q136 127 138 113 Z"
+            fill="#451a03" />
+
+      <!-- Face -->
+      <circle cx="132" cy="106" r="17" fill="#fed7aa" />
+
+      <!-- Cheeks Blush -->
+      <ellipse cx="124" cy="112" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+      <ellipse cx="140" cy="112" rx="4" ry="2.2" fill="#f43f5e" opacity="0.35" />
+
+      <!-- Nose -->
+      <path d="M132 108 Q133 110 131 111" stroke="#fdba74" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes &amp; Mouth -->
+      <path d="M112 104 Q117 99 122 104" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M134 104 Q139 99 144 104" stroke="#09090b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M124 115 Q128 119 132 115" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+      <!-- Front Hair Bangs with Amber Highlights -->
+      <path d="M112 95 Q128 83 146 96 Q136 104 126 100 Q119 102 112 95 Z"
+            fill="#92400e" />
+      <path d="M136 96 Q144 107 142 117 Q135 109 134 100 Z"
+            fill="#78350f" />
+
+      <!-- HONEYCOMB TIARA WITH EMERALD DROPLET JEWEL (NO insect wings) -->
+      <path d="M120 89 L146 89 L148 85 L140 81 L132 77 L124 81 L118 85 Z"
+            fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+
+      <!-- Hexagonal Honeycomb Inset on Tiara -->
+      <polygon points="132,81 136,83 136,87 132,89 128,87 128,83"
+               fill="#18181b" stroke="#fde047" stroke-width="0.8" />
+
+      <!-- Center Emerald Droplet Gem -->
+      <circle cx="132" cy="85" r="2.8" fill="url(#emeraldGrad)" stroke="#fde047" stroke-width="0.8" />
+    </g>
+  
+    </g>
+
+    
+  </g>
+</svg>

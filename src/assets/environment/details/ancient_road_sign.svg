@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 130" width="90" height="130">
+  <defs>
+    <!-- Weathered Sign Wood -->
+    <linearGradient id="signWood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="50%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#291508" />
+    </linearGradient>
+
+    <linearGradient id="signBoard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#92400e" />
+      <stop offset="50%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+  </defs>
+
+  <!-- Wooden Post -->
+  <rect x="40" y="24" width="12" height="106" rx="2" fill="url(#signWood)" stroke="#1c1917" stroke-width="2" />
+
+  <!-- Pointed Sign Board (Pointing Right towards The Hive) -->
+  <path d="M10 24 
+           L64 24 
+           L84 42 
+           L64 60 
+           L10 60 
+           L14 42 Z" 
+        fill="url(#signBoard)" stroke="#1c1917" stroke-width="2.5" stroke-linejoin="round" />
+
+  <!-- Carved Iron Nails -->
+  <circle cx="46" cy="34" r="2.5" fill="#1e293b" />
+  <circle cx="46" cy="50" r="2.5" fill="#1e293b" />
+
+  <!-- Carved Bee Sigil Glyph on Sign -->
+  <g fill="#fbbf24" stroke="#d97706" stroke-width="1">
+    <!-- Bee Body -->
+    <ellipse cx="36" cy="42" rx="6" ry="9" transform="rotate(90 36 42)" />
+    <!-- Bee Head -->
+    <circle cx="46" cy="42" r="3.5" />
+    <!-- Wings -->
+    <ellipse cx="34" cy="33" rx="4" ry="7" transform="rotate(-30 34 33)" opacity="0.85" />
+    <ellipse cx="34" cy="51" rx="4" ry="7" transform="rotate(30 34 51)" opacity="0.85" />
+  </g>
+
+  <!-- Directional Arrow Carving -->
+  <path d="M60 42 L72 42 M68 36 L74 42 L68 48" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" fill="none" />
+</svg>

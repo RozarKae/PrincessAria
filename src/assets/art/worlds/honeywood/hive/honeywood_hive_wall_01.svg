@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <linearGradient id="cellGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="85%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+  </defs>
+  <!-- Hexagonal Honeycomb Matrix -->
+  <g fill="url(#cellGrad)" stroke="#271004" stroke-width="4">
+    <polygon points="120,40 170,10 220,40 220,100 170,130 120,100" />
+    <polygon points="220,40 270,10 320,40 320,100 270,130 220,100" />
+    <polygon points="70,130 120,100 170,130 170,190 120,220 70,190" />
+    <polygon points="170,130 220,100 270,130 270,190 220,220 170,190" />
+    <polygon points="270,130 320,100 370,130 370,190 320,220 270,190" />
+    <polygon points="120,220 170,190 220,220 220,280 170,310 120,280" />
+    <polygon points="220,220 270,190 320,220 320,280 270,310 220,280" />
+  </g>
+</svg>

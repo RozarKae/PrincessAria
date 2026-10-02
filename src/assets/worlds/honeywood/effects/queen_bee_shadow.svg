@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 384" width="512" height="384">
+  <defs>
+    <radialGradient id="shadowFade" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.95" />
+      <stop offset="70%" stop-color="#020617" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#020617" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <!-- Gigantic Queen Bee Menacing Silhouette -->
+  <g fill="url(#shadowFade)" stroke="#090d16" stroke-width="4">
+    <!-- Huge Wings Spread -->
+    <ellipse cx="140" cy="120" rx="130" ry="70" transform="rotate(-25 140 120)" />
+    <ellipse cx="372" cy="120" rx="130" ry="70" transform="rotate(25 372 120)" />
+    <!-- Lower Wings -->
+    <ellipse cx="160" cy="200" rx="90" ry="45" transform="rotate(-15 160 200)" />
+    <ellipse cx="352" cy="200" rx="90" ry="45" transform="rotate(15 352 200)" />
+    <!-- Enormous Thorax &amp; Abdomen -->
+    <ellipse cx="256" cy="180" rx="60" ry="50" />
+    <ellipse cx="256" cy="270" rx="75" ry="95" />
+    <!-- Giant Stinger -->
+    <polygon points="246,350 266,350 256,380" fill="#020617" />
+    <!-- Queen Head &amp; Crown Silhouette -->
+    <circle cx="256" cy="115" r="42" />
+    <!-- Spiked Queen Crown Silhouette -->
+    <polygon points="230,85 240,65 248,78 256,58 264,78 272,65 282,85" />
+  </g>
+</svg>

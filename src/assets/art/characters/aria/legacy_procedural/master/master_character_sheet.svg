@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="1000" height="680">
+  <rect width="1000" height="680" fill="#090d16" />
+  <text x="500" y="44" fill="#fbbf24" font-family="Outfit, sans-serif" font-size="26" font-weight="bold" text-anchor="middle">PRINCESS ARIA — MASTER CHARACTER DESIGN v1.0</text>
+  <text x="500" y="70" fill="#94a3b8" font-family="monospace" font-size="14" text-anchor="middle">Canonical Visual Specification: Front, 3/4 Front, Side, 3/4 Back, Back</text>
+  <line x1="50" y1="85" x2="950" y2="85" stroke="#f59e0b" stroke-width="1.5" opacity="0.6" />
+
+  <!-- Turnaround Row -->
+  <g transform="translate(60, 110)">
+    <rect x="0" y="0" width="160" height="240" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="80" y="225" fill="#fde047" font-size="12" font-family="monospace" text-anchor="middle">FRONT</text>
+    <image href="front_view.svg" x="11" y="20" width="138" height="138" />
+  </g>
+  <g transform="translate(245, 110)">
+    <rect x="0" y="0" width="160" height="240" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="80" y="225" fill="#fde047" font-size="12" font-family="monospace" text-anchor="middle">3/4 FRONT</text>
+    <image href="three_quarter_front_view.svg" x="11" y="20" width="138" height="138" />
+  </g>
+  <g transform="translate(430, 110)">
+    <rect x="0" y="0" width="160" height="240" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="80" y="225" fill="#fde047" font-size="12" font-family="monospace" text-anchor="middle">SIDE (PROFILE)</text>
+    <image href="side_view.svg" x="11" y="20" width="138" height="138" />
+  </g>
+  <g transform="translate(615, 110)">
+    <rect x="0" y="0" width="160" height="240" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="80" y="225" fill="#fde047" font-size="12" font-family="monospace" text-anchor="middle">3/4 BACK</text>
+    <image href="three_quarter_back_view.svg" x="11" y="20" width="138" height="138" />
+  </g>
+  <g transform="translate(800, 110)">
+    <rect x="0" y="0" width="160" height="240" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="80" y="225" fill="#fde047" font-size="12" font-family="monospace" text-anchor="middle">BACK</text>
+    <image href="back_view.svg" x="11" y="20" width="138" height="138" />
+  </g>
+
+  <!-- Ground Plane Indicator Line -->
+  <line x1="50" y1="310" x2="950" y2="310" stroke="#22c55e" stroke-width="2" stroke-dasharray="8,4" opacity="0.75" />
+  <text x="955" y="314" fill="#86efac" font-size="11" font-family="monospace">FEET GROUND PLANE (Y: 131 / ANCHOR: 0.95)</text>
+
+  <!-- Expressions Row -->
+  <text x="500" y="400" fill="#fbbf24" font-family="Outfit, sans-serif" font-size="18" font-weight="bold" text-anchor="middle">FACIAL EXPRESSION MATRIX</text>
+  <g transform="translate(70, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">NEUTRAL</text>
+    <image href="expression_neutral.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+  <g transform="translate(220, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">SMILE</text>
+    <image href="expression_smile.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+  <g transform="translate(370, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">DETERMINED</text>
+    <image href="expression_determined.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+  <g transform="translate(520, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">SURPRISED</text>
+    <image href="expression_surprised.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+  <g transform="translate(670, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">WORRIED</text>
+    <image href="expression_worried.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+  <g transform="translate(820, 425)">
+    <rect x="0" y="0" width="125" height="180" fill="#0f172a" rx="8" stroke="#334155" />
+    <text x="62" y="165" fill="#fde047" font-size="11" font-family="monospace" text-anchor="middle">ANGRY/FOCUSED</text>
+    <image href="expression_angry_focused.svg" x="-6" y="0" width="138" height="138" />
+  </g>
+</svg>

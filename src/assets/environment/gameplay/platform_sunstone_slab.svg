@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64">
+  <defs>
+    <!-- Weathered Ancient Granite / Runestone Gradient -->
+    <linearGradient id="runestoneBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="25%" stop-color="#475569" />
+      <stop offset="70%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Top Bevel Surface (Walkable Plane) -->
+    <linearGradient id="runestoneTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+
+    <!-- Velvet Forest Moss Cap -->
+    <linearGradient id="runestoneMossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bef264" />
+      <stop offset="40%" stop-color="#65a30d" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Glowing Sunstone Rune Inlay -->
+    <radialGradient id="sunRuneGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fef08a" />
+      <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Complete 3-Slice Ancient Carved Sunstone Slab -->
+  <g id="sunstone_slab_master">
+    <!-- Main Heavy Weathered Stone Block with Natural Chipped Edges -->
+    <path d="M12 14 
+             L308 14 
+             Q314 20 312 36 
+             Q316 48 306 58 
+             L14 58 
+             Q6 48 8 36 
+             Q4 22 12 14 Z" 
+          fill="url(#runestoneBodyGrad)" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round" />
+
+    <!-- Weathered Stone Fractures & Ancient Weathering Cracks -->
+    <g fill="none" stroke="#1e293b" stroke-width="1.8" stroke-linecap="round">
+      <path d="M42 22 L55 35 L48 48" />
+      <path d="M280 20 L268 32 L275 46" />
+      <path d="M120 48 L130 58" />
+    </g>
+
+    <!-- Ancient Hand-Carved Solar Petroglyphs (Center Tiling Region: x=160) -->
+    <g id="center_sun_rune">
+      <!-- Central Sun Disc -->
+      <circle cx="160" cy="38" r="10" fill="url(#sunRuneGlow)" stroke="#f59e0b" stroke-width="1.5" />
+      <circle cx="160" cy="38" r="4" fill="#ffffff" />
+      
+      <!-- Engraved Solar Rays & Spiral Flourishes -->
+      <path d="M142 38 Q130 32 122 38" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
+      <path d="M178 38 Q190 32 198 38" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
+      <circle cx="120" cy="38" r="2.5" fill="#fef08a" />
+      <circle cx="200" cy="38" r="2.5" fill="#fef08a" />
+    </g>
+
+    <!-- Velvet Forest Moss Cushion (Natural Walkable Top Rim) -->
+    <path d="M8 14 
+             Q4 8 16 7 Q35 4 55 8 Q75 12 95 6 Q115 3 135 7 Q155 12 175 6 Q195 3 215 7 Q235 12 255 6 Q275 3 295 8 Q312 8 314 14 
+             L310 20 
+             Q290 24 270 18 Q250 14 230 20 Q210 26 190 18 Q170 12 150 20 Q130 26 110 18 Q90 12 70 20 Q50 24 30 16 Q14 22 8 20 Z" 
+          fill="url(#runestoneMossGrad)" stroke="#052e16" stroke-width="1.5" />
+
+    <!-- Clinging Ivy Tendril draping under right corner -->
+    <path d="M290 50 Q296 58 292 64" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" />
+    <circle cx="292" cy="62" r="2.5" fill="#4ade80" />
+  </g>
+</svg>
