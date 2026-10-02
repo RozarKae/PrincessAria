@@ -11,6 +11,7 @@ import { assetManager } from '../renderer/AssetManager.js';
 import { HUD } from '../ui/HUD.js';
 import { DialogueBox } from '../ui/DialogueBox.js';
 import { TitleScreen } from '../ui/TitleScreen.js';
+import { TitleScreen3D } from '../ui/TitleScreen3D.js';
 import { GameOverScreen } from '../ui/GameOverScreen.js';
 import { Collision } from '../physics/Collision.js';
 import { animationDebug } from '../ui/AnimationDebugOverlay.js';
@@ -25,6 +26,7 @@ import { directorHUD } from '../director/DirectorHUD.js';
 export class Game {
   constructor(canvas) {
     this.canvas = canvas;
+    this.container = this.canvas.parentElement;
     this.renderer = new Renderer(this.canvas);
     this.input = new Input();
     this.camera = new Camera();
@@ -34,6 +36,9 @@ export class Game {
     this.hud = new HUD();
     this.dialogue = new DialogueBox();
     this.titleScreen = new TitleScreen();
+    this.titleScreen3D = new TitleScreen3D(this.container, () => {
+      this.restartGame();
+    }, this.audio);
     this.gameOverScreen = new GameOverScreen();
 
     this.state = GAME_STATES.TITLE;
@@ -67,9 +72,8 @@ export class Game {
         return;
       }
 
-      // Click anywhere to start on Title Screen
+      // Clicks on Title Screen handled by TitleScreen3D
       if (this.state === GAME_STATES.TITLE) {
-        this.restartGame();
         return;
       }
 
@@ -94,18 +98,26 @@ export class Game {
   }
 
   async start() {
-    console.log('[Game] Initializing 1985 Pixel Platformer engine...');
+    console.log('[Game] Initializing 1985 Pixel Platformer engine & 3D Title Screen...');
     this.player.setupAnimations();
 
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('play') === 'true' || urlParams.get('start') === 'true') {
+      if (this.titleScreen3D) {
+        this.titleScreen3D.hide();
+      }
       this.restartGame();
+    } else {
+      this.state = GAME_STATES.TITLE;
+      if (this.titleScreen3D) {
+        this.titleScreen3D.start();
+      }
     }
 
     this.lastTime = performance.now();
     requestAnimationFrame(this.loop);
-    console.log('[Game] Pixel engine ready. Loop running.');
+    console.log('[Game] Engine ready. Loop running.');
 
     // Preload legacy assets in background for story scenes
     Promise.all([
@@ -115,6 +127,9 @@ export class Game {
   }
 
   restartGame() {
+    if (this.titleScreen3D) {
+      this.titleScreen3D.hide();
+    }
     if (this.audio) {
       this.audio.unlock();
       this.audio.playStart();
@@ -180,10 +195,7 @@ export class Game {
     }
 
     if (this.state === GAME_STATES.TITLE) {
-      this.titleScreen.update(dt, this.player);
-      if (this.input.justPressed('START')) {
-        this.restartGame();
-      }
+      // 3D Title Screen runs its own continuous loop and handles input
       return;
     }
 
@@ -317,7 +329,8 @@ export class Game {
     this.renderer.beginFrame();
 
     if (this.state === GAME_STATES.TITLE) {
-      this.renderer.drawTitleScreen(this.titleScreen, this.player);
+      // 3D Title screen is active on its overlay canvas; clear underlying 2D canvas
+      this.renderer.clear();
       this.renderer.endFrame();
       return;
     }
