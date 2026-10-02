@@ -12,6 +12,7 @@ import { HUD } from '../ui/HUD.js';
 import { DialogueBox } from '../ui/DialogueBox.js';
 import { TitleScreen } from '../ui/TitleScreen.js';
 import { TitleScreen3D } from '../ui/TitleScreen3D.js';
+import { CinematicTitleScreen } from '../ui/CinematicTitleScreen.js';
 import { GameOverScreen } from '../ui/GameOverScreen.js';
 import { Collision } from '../physics/Collision.js';
 import { animationDebug } from '../ui/AnimationDebugOverlay.js';
@@ -35,8 +36,7 @@ export class Game {
 
     this.hud = new HUD();
     this.dialogue = new DialogueBox();
-    this.titleScreen = new TitleScreen();
-    this.titleScreen3D = new TitleScreen3D(this.container, () => {
+    this.titleScreen = new CinematicTitleScreen(this.container, () => {
       this.restartGame();
     }, this.audio);
     this.gameOverScreen = new GameOverScreen();
@@ -98,20 +98,20 @@ export class Game {
   }
 
   async start() {
-    console.log('[Game] Initializing 1985 Pixel Platformer engine & 3D Title Screen...');
+    console.log('[Game] Initializing 1985 Pixel Platformer engine & Anime Cinematic Title Screen...');
     this.player.setupAnimations();
 
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('play') === 'true' || urlParams.get('start') === 'true') {
-      if (this.titleScreen3D) {
-        this.titleScreen3D.hide();
+      if (this.titleScreen) {
+        this.titleScreen.hide();
       }
       this.restartGame();
     } else {
       this.state = GAME_STATES.TITLE;
-      if (this.titleScreen3D) {
-        this.titleScreen3D.start();
+      if (this.titleScreen) {
+        this.titleScreen.start();
       }
     }
 
@@ -127,8 +127,8 @@ export class Game {
   }
 
   restartGame() {
-    if (this.titleScreen3D) {
-      this.titleScreen3D.hide();
+    if (this.titleScreen) {
+      this.titleScreen.hide();
     }
     if (this.audio) {
       this.audio.unlock();
