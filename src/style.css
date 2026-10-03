@@ -4,6 +4,8 @@
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 
 html, body {
@@ -22,23 +24,28 @@ html, body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* dynamic mobile viewport height */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #050811;
+  background: radial-gradient(circle at center, #090e1c 0%, #030611 100%);
   overflow: hidden;
 }
 
+/* Default Desktop & Landscape Mobile Presentation (Centered 4:3 or 16:9 view) */
 #game-container {
   position: relative;
-  width: min(100vw, calc(100vh * 16 / 9));
-  height: min(100vh, calc(100vw * 9 / 16));
-  aspect-ratio: 16 / 9;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95);
-  border: 4px solid #1e293b;
+  width: min(100vw, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95);
+  border: 3px solid #1e293b;
+  border-radius: 8px;
   overflow: hidden;
   display: flex;
   background-color: #020617;
+  transition: all 0.3s ease;
 }
 
 #game-canvas {
@@ -48,4 +55,298 @@ html, body {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+}
+
+/* ======================================================== */
+/* PORTRAIT MODE ARCHITECTURE FOR MOBILE PHONES             */
+/* ======================================================== */
+@media (orientation: portrait), (max-aspect-ratio: 1/1) {
+  #game-wrapper {
+    justify-content: flex-start;
+    padding-top: max(4px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* Game screen anchors neatly in upper section of phone with crisp 4:3 neo-pixel view */
+  #game-container {
+    width: 100vw;
+    max-width: 100vw;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border: none;
+    border-bottom: 2px solid #334155;
+    border-radius: 0;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.9);
+    flex-shrink: 0;
+  }
+
+  /* Title screen overlay adjustments in portrait */
+  #cinematic-ui-overlay {
+    padding: 16px 20px !important;
+    align-items: center !important;
+  }
+  #cinematic-title-root h1 {
+    font-size: clamp(24px, 7vw, 36px) !important;
+    letter-spacing: 4px !important;
+    text-align: center !important;
+  }
+  #cinematic-ui-overlay > div:first-child {
+    text-align: center !important;
+    margin-top: 10px !important;
+  }
+  #cinematic-ui-overlay > div:nth-child(2) {
+    align-items: center !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Virtual gamepad anchors into the comfortable lower half below the 4:3 screen */
+  #mobile-touch-controls {
+    display: flex !important;
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - (100vw * 3 / 4));
+    height: calc(100dvh - (100vw * 3 / 4));
+    background: radial-gradient(circle at 50% 30%, #0c1427 0%, #030611 100%);
+    border-top: 1px solid rgba(56, 189, 248, 0.2);
+  }
+
+  .mobile-top-bar {
+    top: 10px;
+    right: 12px;
+  }
+
+  .touch-dpad-cluster {
+    bottom: max(20px, env(safe-area-inset-bottom));
+    left: 14px;
+  }
+
+  .touch-action-cluster {
+    bottom: max(20px, env(safe-area-inset-bottom));
+    right: 14px;
+    gap: 12px;
+  }
+}
+
+/* ======================================================== */
+/* VIRTUAL MOBILE TOUCH CONTROLS                            */
+/* ======================================================== */
+#mobile-touch-controls {
+  display: none; /* revealed automatically on mobile portrait/touch devices */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/* Show touch controls on touch devices or small screens */
+@media (pointer: coarse), (max-width: 900px) {
+  #mobile-touch-controls {
+    display: flex;
+  }
+}
+
+/* Top utility bar */
+.mobile-top-bar {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+  z-index: 110;
+}
+
+.touch-btn-util {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #fde047;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.touch-btn-util:active {
+  background: rgba(245, 158, 11, 0.4);
+  transform: scale(0.95);
+}
+
+/* D-Pad on Lower Left */
+.touch-dpad-cluster {
+  position: absolute;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 16px;
+  pointer-events: auto;
+  z-index: 105;
+}
+
+.dpad-cross {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dpad-mid-row {
+  display: flex;
+  align-items: center;
+}
+
+.dpad-center-hub {
+  width: 44px;
+  height: 44px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.touch-btn-dir {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.08s ease, background 0.08s ease;
+}
+
+.dir-up {
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+}
+
+.dir-down {
+  border-radius: 0 0 12px 12px;
+  border-top: none;
+}
+
+.dir-left {
+  border-radius: 12px 0 0 12px;
+  border-right: none;
+}
+
+.dir-right {
+  border-radius: 0 12px 12px 0;
+  border-left: none;
+}
+
+.touch-btn-dir.active, .touch-btn-dir:active {
+  background: #0284c7;
+  color: #ffffff;
+  transform: scale(0.92);
+  box-shadow: 0 0 12px #38bdf8;
+}
+
+/* Action Buttons on Lower Right */
+.touch-action-cluster {
+  position: absolute;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: auto;
+  z-index: 105;
+}
+
+.action-top-row, .action-bottom-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.touch-btn-action {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.65);
+  font-family: inherit;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.action-symbol {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.action-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-top: 3px;
+}
+
+/* Specific Action Color Schemes */
+.btn-jump {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  border: 2px solid #6ee7b7;
+  color: #ffffff;
+}
+
+.btn-attack {
+  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+  border: 2px solid #fde047;
+  color: #ffffff;
+}
+
+.btn-shoot {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 2px solid #7dd3fc;
+  color: #ffffff;
+}
+
+.btn-dash {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  border: 2px solid #c084fc;
+  color: #ffffff;
+}
+
+.touch-btn-action.active, .touch-btn-action:active {
+  transform: scale(0.9);
+  filter: brightness(1.25);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
+}
+
+/* Portrait spacing optimizations for tall screens (iPhone, Galaxy, Pixel) */
+@media (orientation: portrait) and (min-height: 700px) {
+  .touch-dpad-cluster {
+    bottom: max(32px, env(safe-area-inset-bottom));
+    left: 20px;
+  }
+  .touch-action-cluster {
+    bottom: max(32px, env(safe-area-inset-bottom));
+    right: 20px;
+    gap: 16px;
+  }
+  .touch-btn-dir {
+    width: 58px;
+    height: 58px;
+  }
+  .touch-btn-action {
+    width: 66px;
+    height: 66px;
+  }
 }
