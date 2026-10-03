@@ -103,17 +103,15 @@ export class MobileTouchControls {
 
       <!-- Upper Shoulder Bumpers (L1/LB and R1/RB) for Pro Claw-Grip -->
       <div class="pro-bumpers-bar">
-        <button class="pro-bumper-btn bumper-left" data-action="DASH" id="touch-bumper-l">
+        <button class="pro-bumper-btn bumper-left" data-action="DASH" id="touch-bumper-l" aria-label="Left Trigger Dash">
           <span class="bumper-name" id="label-bumper-l">L1</span>
-          <span class="bumper-action">DASH ⚡</span>
         </button>
-        <button class="pro-bumper-btn bumper-right" data-action="SHOOT" id="touch-bumper-r">
+        <button class="pro-bumper-btn bumper-right" data-action="SHOOT" id="touch-bumper-r" aria-label="Right Trigger Shoot">
           <span class="bumper-name" id="label-bumper-r">R1</span>
-          <span class="bumper-action">STAR ✦</span>
         </button>
       </div>
 
-      <!-- Pro D-Pad Cluster (Left Hand) -->
+      <!-- Pro D-Pad Cluster (Left Hand) - Seamless Cross Housing -->
       <div class="touch-dpad-cluster" id="touch-dpad-cluster">
         <div class="pro-dpad-base">
           <div class="pro-dpad-housing">
@@ -138,31 +136,27 @@ export class MobileTouchControls {
         </div>
       </div>
 
-      <!-- Pro Action Diamond Cluster (Right Hand) -->
+      <!-- Pro Action Diamond Cluster (Right Hand) - Authentic Console Keycaps -->
       <div class="touch-action-cluster" id="touch-action-cluster">
         <div class="pro-action-diamond">
           <!-- TOP Button: SHOOT (Triangle / Y / X) -->
           <button id="touch-btn-top" class="pro-action-btn btn-top" type="button" data-action="SHOOT" aria-label="Top Action">
             <span class="pro-glyph" id="glyph-top">△</span>
-            <span class="pro-sub" id="sub-top">STAR</span>
           </button>
 
           <!-- LEFT Button: ATTACK/SLASH (Square / X / Y) -->
           <button id="touch-btn-left-action" class="pro-action-btn btn-left" type="button" data-action="ATTACK" aria-label="Left Action">
             <span class="pro-glyph" id="glyph-left">□</span>
-            <span class="pro-sub" id="sub-left">SLASH</span>
           </button>
 
           <!-- RIGHT Button: DASH (Circle / B / A) -->
           <button id="touch-btn-right-action" class="pro-action-btn btn-right" type="button" data-action="DASH" aria-label="Right Action">
             <span class="pro-glyph" id="glyph-right">○</span>
-            <span class="pro-sub" id="sub-right">DASH</span>
           </button>
 
           <!-- BOTTOM Button: JUMP (Cross / A / B) -->
           <button id="touch-btn-bottom" class="pro-action-btn btn-bottom primary-jump" type="button" data-action="JUMP" aria-label="Bottom Action">
             <span class="pro-glyph" id="glyph-bottom">✕</span>
-            <span class="pro-sub" id="sub-bottom">JUMP</span>
           </button>
         </div>
       </div>
@@ -194,10 +188,8 @@ export class MobileTouchControls {
     // Update Top button (Shoot / Star)
     const btnTop = document.getElementById('touch-btn-top');
     const glyphTop = document.getElementById('glyph-top');
-    const subTop = document.getElementById('sub-top');
-    if (btnTop && glyphTop && subTop) {
+    if (btnTop && glyphTop) {
       glyphTop.textContent = prof.shoot.symbol;
-      subTop.textContent = prof.shoot.label;
       btnTop.style.setProperty('--btn-glow', prof.shoot.glow);
       btnTop.style.setProperty('--btn-color', prof.shoot.color);
     }
@@ -205,10 +197,8 @@ export class MobileTouchControls {
     // Update Left button (Attack / Slash)
     const btnLeft = document.getElementById('touch-btn-left-action');
     const glyphLeft = document.getElementById('glyph-left');
-    const subLeft = document.getElementById('sub-left');
-    if (btnLeft && glyphLeft && subLeft) {
+    if (btnLeft && glyphLeft) {
       glyphLeft.textContent = prof.attack.symbol;
-      subLeft.textContent = prof.attack.label;
       btnLeft.style.setProperty('--btn-glow', prof.attack.glow);
       btnLeft.style.setProperty('--btn-color', prof.attack.color);
     }
@@ -216,10 +206,8 @@ export class MobileTouchControls {
     // Update Right button (Dash)
     const btnRight = document.getElementById('touch-btn-right-action');
     const glyphRight = document.getElementById('glyph-right');
-    const subRight = document.getElementById('sub-right');
-    if (btnRight && glyphRight && subRight) {
+    if (btnRight && glyphRight) {
       glyphRight.textContent = prof.dash.symbol;
-      subRight.textContent = prof.dash.label;
       btnRight.style.setProperty('--btn-glow', prof.dash.glow);
       btnRight.style.setProperty('--btn-color', prof.dash.color);
     }
@@ -227,10 +215,8 @@ export class MobileTouchControls {
     // Update Bottom button (Jump)
     const btnBottom = document.getElementById('touch-btn-bottom');
     const glyphBottom = document.getElementById('glyph-bottom');
-    const subBottom = document.getElementById('sub-bottom');
-    if (btnBottom && glyphBottom && subBottom) {
+    if (btnBottom && glyphBottom) {
       glyphBottom.textContent = prof.jump.symbol;
-      subBottom.textContent = prof.jump.label;
       btnBottom.style.setProperty('--btn-glow', prof.jump.glow);
       btnBottom.style.setProperty('--btn-color', prof.jump.color);
     }

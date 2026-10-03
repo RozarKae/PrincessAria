@@ -285,256 +285,245 @@ html, body {
 }
 
 .pro-bumper-btn {
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.92) 100%);
-  border: 1.5px solid rgba(148, 163, 184, 0.35);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  padding: 6px 14px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 5px 16px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   cursor: pointer;
   color: #e2e8f0;
-  transition: all 0.1s ease;
+  transition: all 0.08s ease;
   backdrop-filter: blur(4px);
+  min-width: 48px;
 }
 
 .bumper-name {
   font-size: 11px;
   font-weight: 800;
-  color: #38bdf8;
-  letter-spacing: 0.5px;
-}
-
-.bumper-action {
-  font-size: 9.5px;
-  font-weight: 700;
-  color: #94a3b8;
-  letter-spacing: 0.5px;
+  color: #cbd5e1;
+  letter-spacing: 0.8px;
 }
 
 .pro-bumper-btn.active, .pro-bumper-btn:active {
-  background: #0284c7;
+  background: #334155;
   border-color: #38bdf8;
   transform: translateY(2px) scale(0.96);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.pro-bumper-btn.active .bumper-name, .pro-bumper-btn:active .bumper-name {
+  color: #38bdf8;
 }
 
 /* ======================================================== */
-/* PRO D-PAD CLUSTER (Ergonomic Cross & Pivot)              */
+/* PRO D-PAD CLUSTER (Real Seamless Console Cross D-Pad)    */
 /* ======================================================== */
 .touch-dpad-cluster {
   position: absolute;
-  bottom: max(22px, env(safe-area-inset-bottom));
-  left: 18px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 16px;
   pointer-events: auto;
   z-index: 105;
 }
 
 .pro-dpad-base {
-  padding: 6px;
-  background: radial-gradient(circle, rgba(15, 23, 42, 0.6) 0%, rgba(2, 6, 23, 0.9) 100%);
-  border-radius: 50%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .pro-dpad-housing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
+  width: 132px;
+  height: 132px;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.45) 0%, rgba(2, 6, 23, 0.8) 100%);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .pro-dpad-middle {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 132px;
+  height: 44px;
   display: flex;
   align-items: center;
 }
 
 .pro-dpad-pivot {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  position: absolute;
+  top: 44px;
+  left: 44px;
+  width: 44px;
+  height: 44px;
+  background: #151d2a;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .pro-pivot-indent {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: radial-gradient(circle, #090e17 0%, #1e293b 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .pro-dpad-dir {
-  width: 52px;
-  height: 52px;
+  position: absolute;
+  width: 44px;
+  height: 44px;
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  border: 1.5px solid rgba(56, 189, 248, 0.45);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-  color: #38bdf8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 3px 6px rgba(0, 0, 0, 0.5);
+  color: #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  transition: transform 0.06s ease, background 0.06s ease, box-shadow 0.06s ease;
+  transition: transform 0.05s ease, background 0.05s ease, box-shadow 0.05s ease, color 0.05s ease;
+  z-index: 1;
 }
 
 .dpad-arrow {
-  font-size: 18px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  font-size: 13px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  pointer-events: none;
 }
 
 .dir-up {
-  border-radius: 14px 14px 0 0;
+  top: 0;
+  left: 44px;
+  border-radius: 8px 8px 0 0;
   border-bottom: none;
 }
 
 .dir-down {
-  border-radius: 0 0 14px 14px;
+  bottom: 0;
+  left: 44px;
+  border-radius: 0 0 8px 8px;
   border-top: none;
 }
 
 .dir-left {
-  border-radius: 14px 0 0 14px;
+  top: 44px;
+  left: 0;
+  border-radius: 8px 0 0 8px;
   border-right: none;
 }
 
 .dir-right {
-  border-radius: 0 14px 14px 0;
+  top: 44px;
+  right: 0;
+  border-radius: 0 8px 8px 0;
   border-left: none;
 }
 
 .pro-dpad-dir.active, .pro-dpad-dir:active {
-  background: #0284c7;
-  color: #ffffff;
-  transform: scale(0.92);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 14px #38bdf8;
+  background: #334155;
+  color: #38bdf8;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
 }
 
 /* ======================================================== */
-/* PRO ACTION DIAMOND CLUSTER (PS5 / Xbox / Nintendo)       */
+/* PRO ACTION DIAMOND CLUSTER (Real Clean Console Keycaps)  */
 /* ======================================================== */
 .touch-action-cluster {
   position: absolute;
-  bottom: max(22px, env(safe-area-inset-bottom));
-  right: 18px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  right: 16px;
   pointer-events: auto;
   z-index: 105;
 }
 
 .pro-action-diamond {
   position: relative;
-  width: 170px;
-  height: 170px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.85) 100%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.45) 0%, rgba(2, 6, 23, 0.8) 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .pro-action-btn {
   position: absolute;
-  width: 54px;
-  height: 54px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #1e293b 0%, #090e17 100%);
-  border: 2px solid var(--btn-color, rgba(148, 163, 184, 0.6));
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.75), inset 0 2px 3px rgba(255, 255, 255, 0.18);
+  background: radial-gradient(circle at 35% 30%, #293548 0%, #0d131f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  transition: transform 0.06s ease, filter 0.06s ease, box-shadow 0.06s ease;
+  transition: transform 0.05s ease, filter 0.05s ease, box-shadow 0.05s ease;
 }
 
-/* Diamond Coordinates */
+/* Diamond Coordinates - Clean Balanced Positioning */
 .btn-top {
   top: 4px;
-  left: 58px;
+  left: 48px;
 }
 
 .btn-bottom {
   bottom: 4px;
-  left: 58px;
+  left: 48px;
 }
 
 .btn-left {
-  top: 58px;
+  top: 48px;
   left: 4px;
 }
 
 .btn-right {
-  top: 58px;
+  top: 48px;
   right: 4px;
 }
 
 .pro-glyph {
-  font-size: 20px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--btn-color, #ffffff);
-  text-shadow: 0 0 10px var(--btn-glow, rgba(255, 255, 255, 0.6));
-}
-
-.pro-sub {
-  font-size: 8px;
+  font-size: 17px;
   font-weight: 800;
-  letter-spacing: 0.5px;
-  color: #94a3b8;
-  margin-top: 2px;
+  line-height: 1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--btn-color, #f1f5f9);
+  text-shadow: 0 0 6px var(--btn-glow, rgba(255, 255, 255, 0.4));
+  pointer-events: none;
 }
 
 .pro-action-btn.active, .pro-action-btn:active {
-  transform: scale(0.91);
-  filter: brightness(1.3);
-  box-shadow: 0 0 18px var(--btn-glow, #38bdf8), inset 0 2px 6px rgba(0, 0, 0, 0.8);
-  background: var(--btn-color, #0284c7);
+  transform: translateY(2px) scale(0.94);
+  box-shadow: 0 0 10px var(--btn-glow, #38bdf8), inset 0 2px 4px rgba(0, 0, 0, 0.9);
+  background: radial-gradient(circle at 50% 50%, #1e293b 0%, #090e17 100%);
+  border-color: var(--btn-color, #38bdf8);
 }
 
 .pro-action-btn.active .pro-glyph,
 .pro-action-btn:active .pro-glyph {
-  color: #ffffff;
+  transform: scale(0.95);
+  filter: brightness(1.2);
 }
 
-/* Portrait spacing optimizations for tall screens (iPhone, Galaxy, Pixel) */
-@media (orientation: portrait) and (min-height: 700px) {
+/* Landscape / Tall Viewport adjustments */
+@media (orientation: landscape) {
   .touch-dpad-cluster {
-    bottom: max(34px, env(safe-area-inset-bottom));
-    left: 20px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    left: max(20px, env(safe-area-inset-left));
   }
   .touch-action-cluster {
-    bottom: max(34px, env(safe-area-inset-bottom));
-    right: 20px;
-  }
-  .pro-dpad-dir {
-    width: 56px;
-    height: 56px;
-  }
-  .pro-action-diamond {
-    width: 180px;
-    height: 180px;
-  }
-  .pro-action-btn {
-    width: 58px;
-    height: 58px;
-  }
-  .btn-top {
-    left: 61px;
-  }
-  .btn-bottom {
-    left: 61px;
-  }
-  .btn-left {
-    top: 61px;
-  }
-  .btn-right {
-    top: 61px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    right: max(20px, env(safe-area-inset-right));
   }
 }
