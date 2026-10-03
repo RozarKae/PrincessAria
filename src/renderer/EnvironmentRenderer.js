@@ -141,6 +141,42 @@ export class EnvironmentRenderer {
       ctx.restore();
     }
 
+    // 6. Section 4: The Sovereign Hive Spire Bioluminescent Void (8000px+)
+    if (rightEdgeX > 8000) {
+      const spireAlpha = Math.min(1, (rightEdgeX - 8000) / 600);
+      ctx.save();
+      ctx.globalAlpha = spireAlpha;
+
+      // Pitch-black starry void with intense amber atmospheric glow
+      const voidSkyGrad = ctx.createLinearGradient(0, 0, 0, 720);
+      voidSkyGrad.addColorStop(0, '#05030a');
+      voidSkyGrad.addColorStop(0.45, '#0c0718');
+      voidSkyGrad.addColorStop(0.8, '#241026');
+      voidSkyGrad.addColorStop(1, '#451a03'); // fiery amber horizon
+
+      ctx.fillStyle = voidSkyGrad;
+      ctx.fillRect(0, 0, CANVAS_WIDTH, 720);
+
+      // Distant colossal obsidian hex spire pillars in the background
+      ctx.fillStyle = 'rgba(10, 6, 20, 0.95)';
+      const hexOffX = (camX * 0.05) % 400;
+      for (let x = -hexOffX - 100; x < CANVAS_WIDTH + 400; x += 180) {
+        ctx.fillRect(x + 20, 260, 90, 480);
+        ctx.fillRect(x + 50, 180, 30, 80);
+      }
+
+      // Shimmering bioluminescent golden honeycomb vapor in the lower chasm
+      const spireMistGrad = ctx.createLinearGradient(0, 720, 0, CANVAS_HEIGHT);
+      spireMistGrad.addColorStop(0, 'rgba(245, 158, 11, 0.15)');
+      spireMistGrad.addColorStop(0.4, 'rgba(217, 119, 6, 0.45)');
+      spireMistGrad.addColorStop(0.85, 'rgba(120, 53, 15, 0.85)');
+      spireMistGrad.addColorStop(1, 'rgba(15, 7, 2, 1.0)');
+      ctx.fillStyle = spireMistGrad;
+      ctx.fillRect(0, 720, CANVAS_WIDTH, CANVAS_HEIGHT - 720);
+
+      ctx.restore();
+    }
+
     ctx.restore();
   }
 
@@ -160,6 +196,9 @@ export class EnvironmentRenderer {
       else if (p.type === 'fortress_watchtower' || p.type === 'watchtower') def = this.assets.MIDGROUND.FORTRESS_WATCHTOWER;
       else if (p.type === 'aqueduct_colonnade' || p.type === 'aqueduct') def = this.assets.MIDGROUND.AQUEDUCT_COLONNADE;
       else if (p.type === 'fortress_armory' || p.type === 'armory_vault') def = this.assets.MIDGROUND.FORTRESS_ARMORY;
+      else if (p.type === 'sovereign_throne' || p.type === 'sovereign_throne_landmark' || p.type === 'throne') def = this.assets.MIDGROUND.SOVEREIGN_THRONE;
+      else if (p.type === 'spire_gateway' || p.type === 'spire_hex_pillar_gateway') def = this.assets.MIDGROUND.SPIRE_GATEWAY;
+      else if (p.type === 'hive_secret_chamber' || p.type === 'secret_chamber') def = this.assets.MIDGROUND.HIVE_SECRET_CHAMBER;
 
       if (!def) return;
       const img = assetManager.getImage(def.key);
@@ -201,6 +240,12 @@ export class EnvironmentRenderer {
         this.render3SlicePlatform(ctx, plat, this.assets.GAMEPLAY.SUNSTONE_SLAB);
       } else if (plat.type === 'honey' || plat.type === 'moving_honey') {
         this.render3SlicePlatform(ctx, plat, this.assets.GAMEPLAY.AMBER_RAFT);
+      } else if (plat.type === 'hex_platform' || plat.type === 'moving_hex' || plat.type === 'obsidian') {
+        this.render3SlicePlatform(ctx, plat, this.assets.GAMEPLAY.HEX_PILLAR);
+      } else if (plat.type === 'honey_geyser' || plat.type === 'geyser') {
+        this.renderGeyser(ctx, plat);
+      } else if (plat.type === 'sticky_amber') {
+        this.renderStickyAmber(ctx, plat);
       } else if (plat.type === 'crumble_block' || plat.type === 'crumble') {
         if (plat.isBroken) return; // shattered / invisible
         ctx.save();
@@ -216,6 +261,31 @@ export class EnvironmentRenderer {
         this.render3SlicePlatform(ctx, plat, this.assets.GAMEPLAY.OAK_BOUGH);
       }
     });
+  }
+
+  renderGeyser(ctx, plat) {
+    const def = this.assets.GAMEPLAY.HONEY_GEYSER;
+    const img = assetManager.getImage(def.key);
+    if (img && img.complete) {
+      ctx.drawImage(img, plat.x, plat.y - 120, plat.width, plat.height + 120);
+    } else {
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+    }
+  }
+
+  renderStickyAmber(ctx, plat) {
+    const def = this.assets.GAMEPLAY.AMBER_RAFT;
+    const img = assetManager.getImage(def.key);
+    if (img && img.complete) {
+      ctx.save();
+      ctx.filter = 'hue-rotate(20deg) saturate(1.4)';
+      this.render3SlicePlatform(ctx, plat, def);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+    }
   }
 
   /**

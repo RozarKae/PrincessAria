@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520">
+  <defs>
+    <linearGradient id="spireGateObsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d224d" />
+      <stop offset="40%" stop-color="#181428" />
+      <stop offset="100%" stop-color="#090712" />
+    </linearGradient>
+
+    <linearGradient id="spireGateGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <radialGradient id="portalVoidGlow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.4" />
+      <stop offset="40%" stop-color="#7c3aed" stop-opacity="0.25" />
+      <stop offset="80%" stop-color="#05030a" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#05030a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Ambient Portal Void Glow Behind Arch -->
+  <ellipse cx="300" cy="300" rx="190" ry="210" fill="url(#portalVoidGlow)" />
+
+  <!-- Left Colonnade Hex Pillar Group -->
+  <polygon points="60,200 110,170 160,200 160,510 110,530 60,510" fill="url(#spireGateObsidian)" stroke="#3f3261" stroke-width="2" />
+  <polygon points="120,150 170,120 220,150 220,510 170,530 120,510" fill="url(#spireGateObsidian)" stroke="url(#spireGateGold)" stroke-width="2.5" />
+
+  <!-- Right Colonnade Hex Pillar Group -->
+  <polygon points="440,200 490,170 540,200 540,510 490,530 440,510" fill="url(#spireGateObsidian)" stroke="#3f3261" stroke-width="2" />
+  <polygon points="380,150 430,120 480,150 480,510 430,530 380,510" fill="url(#spireGateObsidian)" stroke="url(#spireGateGold)" stroke-width="2.5" />
+
+  <!-- Overhead Geometric Hexagonal Lintel Archway -->
+  <path d="M120,150 L170,90 L300,50 L430,90 L480,150 L420,170 L300,105 L180,170 Z" fill="url(#spireGateObsidian)" stroke="url(#spireGateGold)" stroke-width="3" />
+
+  <!-- Central Hive Sovereign Seal -->
+  <polygon points="300,30 325,45 325,75 300,90 275,75 275,45" fill="#f59e0b" stroke="#fef08a" stroke-width="2.5" />
+  <polygon points="300,40 315,50 315,70 300,80 285,70 285,50" fill="#dc2626" />
+
+  <!-- Flanking Honeycomb Windows in Arch -->
+  <polygon points="230,110 250,120 250,140 230,150 210,140 210,120" fill="#090714" stroke="url(#spireGateGold)" stroke-width="1.8" />
+  <polygon points="370,110 390,120 390,140 370,150 350,140 350,120" fill="#090714" stroke="url(#spireGateGold)" stroke-width="1.8" />
+
+  <!-- Cascading Shimmering Amber Veil Between Pillars -->
+  <path d="M190,170 C190,260 210,380 210,510" stroke="url(#spireGateGold)" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+  <path d="M410,170 C410,260 390,380 390,510" stroke="url(#spireGateGold)" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+
+  <!-- Base Stone Steps Plinth -->
+  <polygon points="30,490 570,490 590,520 10,520" fill="#181428" stroke="url(#spireGateGold)" stroke-width="2" />
+</svg>

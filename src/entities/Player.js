@@ -7,6 +7,7 @@ import { assetManager } from '../renderer/AssetManager.js';
 import { characterRenderer } from '../renderer/HDCharacterRenderer.js';
 import { pixelAriaRenderer } from '../renderer/PixelCharacterRenderer.js';
 import { Collision } from '../physics/Collision.js';
+import { StarProjectile } from './StarProjectile.js';
 
 /**
  * PRINCESS ARIA
@@ -54,10 +55,19 @@ export class Player {
     this.dashCooldownTimer = 0;
     this.dashParticles = [];
 
+    // Mid-Air Double Jump (Celestial Starlight Flutter)
+    this.canDoubleJump = true;
+    this.doubleJumpParticles = [];
+
     // Extensible Primary Attack Foundation
     this.isAttacking = false;
     this.attackTimer = 0;
     this.attackCooldownTimer = 0;
+
+    // Ranged Celestial Starbeam Power
+    this.projectiles = [];
+    this.shootCooldownTimer = 0;
+    this.shootTimer = 0;
 
     // Squash & Stretch factors
     this.scaleX = 1;
@@ -324,9 +334,14 @@ export class Player {
     this.jumpBufferTimer = 0;
     this.dashTimer = 0;
     this.dashCooldownTimer = 0;
+    this.canDoubleJump = true;
+    this.doubleJumpParticles = [];
     this.isAttacking = false;
     this.attackTimer = 0;
     this.attackCooldownTimer = 0;
+    this.projectiles = [];
+    this.shootCooldownTimer = 0;
+    this.shootTimer = 0;
     this.invincibilityTimer = PHYSICS.INVINCIBILITY_TIME;
     this.scaleX = 1;
     this.scaleY = 1;
@@ -356,6 +371,8 @@ export class Player {
   }
 
   update(input, audio, dt, level = null) {
+    this.inputRef = input;
+
     // Dynamically bind illustrated rig layers once assetManager has completed preloading
     if ((!this.layersBound || !this.rig?.masterPlates?.front) && assetManager.isReady) {
       this.bindRigLayers();
@@ -390,6 +407,14 @@ export class Player {
       this.attackCooldownTimer -= dt;
     }
 
+    if (this.shootCooldownTimer > 0) {
+      this.shootCooldownTimer -= dt;
+    }
+
+    if (this.shootTimer > 0) {
+      this.shootTimer -= dt;
+    }
+
     if (this.isAttacking) {
       this.attackTimer -= dt;
       if (this.attackTimer <= 0) {
@@ -397,7 +422,7 @@ export class Player {
       }
     }
 
-    // Extensible Primary Attack Trigger
+    // Extensible Primary Attack Trigger (Melee Stardust Slash)
     if (
       input.justPressed('ATTACK') &&
       this.attackCooldownTimer <= 0 &&
@@ -412,6 +437,23 @@ export class Player {
       if (audio) {
         if (audio.playAttack) audio.playAttack();
         else if (audio.playEnemyAttack) audio.playEnemyAttack();
+      }
+      if (input && input.rumbleAttack) {
+        input.rumbleAttack();
+      }
+    }
+
+    // Extensible Ranged Power Trigger (Royal Starbeam / Stardust Shot)
+    if (
+      input.justPressed('SHOOT') &&
+      this.shootCooldownTimer <= 0 &&
+      !this.isCrouching &&
+      !this.isDead &&
+      !this.isDashing
+    ) {
+      this.shoot(audio, level);
+      if (input && input.rumbleShoot) {
+        input.rumbleShoot();
       }
     }
 
@@ -457,6 +499,9 @@ export class Player {
         if (audio.playDash) audio.playDash();
         else if (audio.playJump) audio.playJump();
       }
+      if (input && input.rumbleDash) {
+        input.rumbleDash();
+      }
     }
 
     if (this.isDashing) {
@@ -479,9 +524,10 @@ export class Player {
       this.vx = Physics.applyHorizontalMovement(this.vx, moveDir, this.isGrounded, maxSpeed, dt);
     }
 
-    // --- 4. JUMPING MECHANICS (Buffer & Coyote Time) ---
+    // --- 4. JUMPING MECHANICS (Buffer, Coyote Time & Double Jump) ---
     if (this.isGrounded) {
       this.coyoteTimer = PHYSICS.COYOTE_TIME;
+      this.canDoubleJump = true;
     } else {
       this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
     }
@@ -493,11 +539,13 @@ export class Player {
     }
 
     if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0 && !this.isCrouching) {
+      // Ground / Coyote Jump
       this.vy = PHYSICS.JUMP_VELOCITY;
       this.isGrounded = false;
       this.coyoteTimer = 0;
       this.jumpBufferTimer = 0;
       this.isDashing = false;
+      this.canDoubleJump = true;
 
       // Jump launch squash and stretch
       this.scaleX = 0.82;
@@ -505,6 +553,46 @@ export class Player {
       this.anim.play(ANIM_STATES.JUMP_START, true);
 
       if (audio && audio.playJump) audio.playJump();
+      if (input && input.rumbleJump) {
+        input.rumbleJump();
+      }
+    } else if (
+      input.justPressed('JUMP') &&
+      this.canDoubleJump &&
+      !this.isGrounded &&
+      !this.isClimbing &&
+      !this.isCrouching
+    ) {
+      // Mid-Air Double Jump (Celestial Starlight Flutter)
+      this.vy = PHYSICS.DOUBLE_JUMP_VELOCITY;
+      this.canDoubleJump = false;
+      this.jumpBufferTimer = 0;
+      this.isDashing = false;
+
+      // Double jump springy squash & stretch
+      this.scaleX = 0.78;
+      this.scaleY = 1.34;
+      this.anim.play(ANIM_STATES.JUMP_RISE, true);
+
+      // Trailing stardust flutter ring
+      this.doubleJumpParticles.push({
+        x: this.x + this.width / 2,
+        y: this.y + this.height - 4,
+        timer: 0,
+        alpha: 1.0,
+      });
+
+      if (level && level.spawnSparkles) {
+        level.spawnSparkles(this.x + this.width / 2, this.y + this.height - 4, 10);
+      }
+
+      if (audio) {
+        if (audio.playDoubleJump) audio.playDoubleJump();
+        else if (audio.playJump) audio.playJump();
+      }
+      if (input && input.rumbleDoubleJump) {
+        input.rumbleDoubleJump();
+      }
     }
 
     // Variable jump height: release early to cut jump short
@@ -605,6 +693,25 @@ export class Player {
       }
     }
 
+    // Update double jump flutter particles
+    for (let i = this.doubleJumpParticles.length - 1; i >= 0; i--) {
+      const p = this.doubleJumpParticles[i];
+      p.timer += dt;
+      p.alpha -= dt * 3.5;
+      if (p.alpha <= 0) {
+        this.doubleJumpParticles.splice(i, 1);
+      }
+    }
+
+    // Update active starbeam projectiles
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const proj = this.projectiles[i];
+      proj.update(dt, level, audio);
+      if (proj.isDead && proj.particles.length === 0) {
+        this.projectiles.splice(i, 1);
+      }
+    }
+
     // Advance animation controller & rig
     this.anim.update(dt);
     if (this.rig) {
@@ -612,22 +719,55 @@ export class Player {
     }
   }
 
+  /**
+   * Fire a Royal Starbeam projectile in the direction Aria is currently facing.
+   */
+  shoot(audio, level) {
+    this.shootCooldownTimer = 0.32;
+    this.shootTimer = 0.16;
+    this.scaleX = 0.88;
+    this.scaleY = 1.15;
+
+    const spawnX = this.facing > 0 ? this.x + this.width + 4 : this.x - 28;
+    const spawnY = this.y + this.height * 0.38;
+
+    const proj = new StarProjectile(spawnX, spawnY, this.facing);
+    this.projectiles.push(proj);
+
+    if (audio) {
+      if (audio.playStarshot) audio.playStarshot();
+      else if (audio.playAttack) audio.playAttack();
+    }
+
+    if (level && level.spawnBurst) {
+      level.spawnBurst(spawnX + 12, spawnY + 9, 6, '#38bdf8');
+    }
+  }
+
   bounceFromEnemy() {
     this.vy = PHYSICS.BOUNCE_VELOCITY;
     this.isGrounded = false;
     this.isDashing = false;
+    this.canDoubleJump = true;
     this.scaleX = 0.85;
     this.scaleY = 1.25;
     this.anim.play(ANIM_STATES.JUMP_RISE, true);
+    if (this.inputRef && this.inputRef.rumbleStomp) {
+      this.inputRef.rumbleStomp();
+    }
   }
 
   land() {
     if (!this.isGrounded) {
       this.isGrounded = true;
       this.isDashing = false;
+      this.canDoubleJump = true;
       this.scaleX = 1.26;
       this.scaleY = 0.76;
       this.anim.play(ANIM_STATES.LAND, true);
+      if (this.inputRef && this.inputRef.rumbleLand) {
+        this.inputRef.rumbleLand();
+      }
     }
   }
 
@@ -639,6 +779,9 @@ export class Player {
     this.vy = -560;
     this.vx = -this.facing * 320;
     this.anim.triggerHitReaction();
+    if (this.inputRef && this.inputRef.rumbleDamage) {
+      this.inputRef.rumbleDamage();
+    }
     return true;
   }
 
@@ -716,5 +859,8 @@ export class Player {
         ctx.restore();
       }
     }
+
+    // 4. Draw Active Starbeam Projectiles
+    this.projectiles.forEach(p => p.draw(ctx));
   }
 }

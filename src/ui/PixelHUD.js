@@ -22,13 +22,27 @@ const BITMAP_FONT = {
   'C': [0b011, 0b100, 0b100, 0b100, 0b011],
   'D': [0b110, 0b101, 0b101, 0b101, 0b110],
   'E': [0b111, 0b100, 0b110, 0b100, 0b111],
+  'F': [0b111, 0b100, 0b110, 0b100, 0b100],
+  'G': [0b011, 0b100, 0b101, 0b101, 0b011],
+  'H': [0b101, 0b101, 0b111, 0b101, 0b101],
   'I': [0b111, 0b010, 0b010, 0b010, 0b111],
+  'J': [0b001, 0b001, 0b001, 0b101, 0b010],
+  'K': [0b101, 0b110, 0b100, 0b110, 0b101],
+  'L': [0b100, 0b100, 0b100, 0b100, 0b111],
+  'M': [0b101, 0b111, 0b101, 0b101, 0b101],
+  'N': [0b110, 0b101, 0b101, 0b101, 0b101],
   'O': [0b010, 0b101, 0b101, 0b101, 0b010],
   'P': [0b110, 0b101, 0b110, 0b100, 0b100],
+  'Q': [0b010, 0b101, 0b101, 0b110, 0b011],
   'R': [0b110, 0b101, 0b110, 0b101, 0b101],
   'S': [0b011, 0b100, 0b010, 0b001, 0b110],
   'T': [0b111, 0b010, 0b010, 0b010, 0b010],
+  'U': [0b101, 0b101, 0b101, 0b101, 0b111],
+  'V': [0b101, 0b101, 0b101, 0b101, 0b010],
+  'W': [0b101, 0b101, 0b101, 0b111, 0b101],
   'X': [0b101, 0b101, 0b010, 0b101, 0b101],
+  'Y': [0b101, 0b101, 0b010, 0b010, 0b010],
+  'Z': [0b111, 0b001, 0b010, 0b100, 0b111],
   'x': [0b000, 0b101, 0b010, 0b101, 0b000],
   '0': [0b111, 0b101, 0b101, 0b101, 0b111],
   '1': [0b010, 0b110, 0b010, 0b010, 0b111],
@@ -42,6 +56,7 @@ const BITMAP_FONT = {
   '9': [0b111, 0b101, 0b111, 0b001, 0b111],
   ' ': [0b000, 0b000, 0b000, 0b000, 0b000],
   '-': [0b000, 0b000, 0b111, 0b000, 0b000],
+  ':': [0b000, 0b010, 0b000, 0b010, 0b000],
 };
 
 function drawBitmapText(ctx, text, startX, startY, color) {
@@ -115,36 +130,103 @@ export class PixelHUD {
   }
 
   /**
-   * Render the HUD directly onto the 256x240 internal canvas.
+   * Draw 3 Heroic Power Badges:
+   * 1. Melee Slash [Z] (Sword)
+   * 2. Honey-Silk Dash [X] (Wing)
+   * 3. Royal Starbeam [C] (Celestial Diamond Star)
    */
-  draw(ctx, gameState) {
+  drawAbilityIcons(ctx, x, y, player) {
+    const isMeleeCool = player && player.attackCooldownTimer > 0;
+    const isDashCool = player && player.dashCooldownTimer > 0;
+    const isShotCool = player && player.shootCooldownTimer > 0;
+
+    // --- Ability 1: MELEE [Z] ---
+    drawBitmapText(ctx, 'Z', x, y + 1, isMeleeCool ? '#64748b' : P.UI_TEXT_GOLD);
+    // 5x5 Sword icon
+    ctx.fillStyle = isMeleeCool ? '#475569' : '#fef08a';
+    ctx.fillRect(x + 5, y + 1, 1, 1);
+    ctx.fillStyle = isMeleeCool ? '#334155' : '#fbbf24';
+    ctx.fillRect(x + 4, y + 2, 1, 1);
+    ctx.fillRect(x + 3, y + 3, 3, 1); // crossguard
+    ctx.fillRect(x + 4, y + 4, 1, 1); // hilt
+
+    // --- Ability 2: DASH [X] ---
+    drawBitmapText(ctx, 'X', x + 15, y + 1, isDashCool ? '#64748b' : P.UI_TEXT_GOLD);
+    // 5x5 Wing icon
+    ctx.fillStyle = isDashCool ? '#475569' : '#fbbf24';
+    ctx.fillRect(x + 20, y + 1, 3, 1);
+    ctx.fillRect(x + 19, y + 2, 4, 1);
+    ctx.fillRect(x + 20, y + 3, 2, 1);
+    ctx.fillRect(x + 21, y + 4, 1, 1);
+
+    // --- Ability 3: STARBEAM SHOT [C] ---
+    drawBitmapText(ctx, 'C', x + 30, y + 1, isShotCool ? '#64748b' : '#38bdf8');
+    // 5x5 Celestial Star icon
+    if (isShotCool) {
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(x + 36, y + 1, 3, 1);
+      ctx.fillRect(x + 37, y, 1, 3);
+    } else {
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 36, y + 1, 3, 1);
+      ctx.fillRect(x + 37, y, 1, 3);
+      ctx.fillRect(x + 37, y + 2, 1, 1);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 37, y + 1, 1, 1); // white glint core
+    }
+  }
+
+  /**
+   * Render the HUD directly onto the internal neo-pixel canvas.
+   */
+  draw(ctx, gameState, player = null) {
     if (!gameState) return;
 
     ctx.save();
+    const width = ctx.canvas.width || 320;
 
-    // 1. Sleek minimal top bar background (10px high)
-    ctx.fillStyle = 'rgba(9, 13, 22, 0.92)';
-    ctx.fillRect(0, 0, 256, 10);
+    // 1. Sleek glassmorphism neo-pixel top bar background (11px high)
+    ctx.fillStyle = 'rgba(7, 11, 20, 0.94)';
+    ctx.fillRect(0, 0, width, 11);
+    
+    // Top specular edge
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.fillRect(0, 0, width, 1);
+    
+    // Bottom border with glowing amber divider
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(0, 10, 256, 1);
+    ctx.fillRect(0, 11, width, 1);
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
+    ctx.fillRect(0, 11, 48, 1);
+    ctx.fillRect(width - 56, 11, 56, 1);
 
     // 2. ARIA + HEARTS (Left)
     drawBitmapText(ctx, 'ARIA', 6, 3, P.UI_TEXT_GOLD);
 
     const lives = Math.max(0, gameState.lives !== undefined ? gameState.lives : 3);
     for (let i = 0; i < 3; i++) {
-      this.drawHeart(ctx, 28 + i * 7, 3, i < lives);
+      this.drawHeart(ctx, 30 + i * 8, 3, i < lives);
     }
 
-    // 3. ROYAL SHARDS (Center)
-    this.drawShardIcon(ctx, 108, 2);
-    const shards = (gameState.coins || gameState.shards || 0).toString().padStart(2, '0');
-    drawBitmapText(ctx, `x${shards}`, 115, 3, P.UI_TEXT_WHITE);
+    // 3. THREE POWERS INDICATOR: [Z] Melee  [X] Dash  [C] Starbeam
+    this.drawAbilityIcons(ctx, 60, 2, player);
 
-    // 4. SCORE (Right)
-    drawBitmapText(ctx, 'SCORE', 184, 3, P.UI_TEXT_GOLD);
+    // 4. ROYAL SHARDS (Center)
+    const midX = Math.floor(width / 2);
+    this.drawShardIcon(ctx, midX - 22, 2);
+    const shards = (gameState.coins || gameState.shards || 0).toString().padStart(2, '0');
+    drawBitmapText(ctx, `x${shards}`, midX - 14, 3, P.UI_TEXT_WHITE);
+
+    // WORLD STAGE BADGE (e.g. W1-1 or W2-1)
+    const worldNum = gameState.world || 1;
+    const stageNum = gameState.level || 1;
+    drawBitmapText(ctx, `W${worldNum}-${stageNum}`, midX + 16, 3, '#38bdf8');
+
+    // 5. SCORE (Right)
+    const rightMargin = width - 74;
+    drawBitmapText(ctx, 'SCORE', rightMargin, 3, P.UI_TEXT_GOLD);
     const scoreStr = (gameState.score || 0).toString().padStart(6, '0');
-    drawBitmapText(ctx, scoreStr, 210, 3, P.UI_TEXT_WHITE);
+    drawBitmapText(ctx, scoreStr, rightMargin + 26, 3, P.UI_TEXT_WHITE);
 
     ctx.restore();
   }

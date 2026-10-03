@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+  <defs>
+    <linearGradient id="brambleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95"/>
+      <stop offset="50%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#0f0728"/>
+    </linearGradient>
+    <linearGradient id="thornGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="60%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Tangled Bramble Root Base -->
+  <path d="M 0 35 Q 60 28 120 33 Q 180 27 240 35 L 240 60 L 0 60 Z" fill="url(#brambleGradient)"/>
+
+  <!-- Tangled Thorny Vine Runners -->
+  <path d="M 5 45 Q 40 20 80 40 Q 130 18 175 38 Q 215 22 235 45" stroke="#3b0764" stroke-width="4.5" fill="none"/>
+  <path d="M 15 50 Q 60 30 110 46 Q 160 26 210 48" stroke="#581c87" stroke-width="3" fill="none"/>
+
+  <!-- Vicious Curved Thorns (High Danger Telegraph) -->
+  <!-- Left Cluster -->
+  <path d="M 18 36 Q 22 14 30 8 Q 28 24 24 38 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1"/>
+  <path d="M 45 32 Q 52 10 62 4 Q 57 22 52 35 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1"/>
+  
+  <!-- Center Cluster -->
+  <path d="M 85 34 Q 94 8 105 2 Q 99 22 92 37 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1.2"/>
+  <path d="M 115 36 Q 120 16 128 9 Q 126 25 122 38 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1"/>
+  <path d="M 145 34 Q 155 10 168 3 Q 160 22 152 37 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1.2"/>
+
+  <!-- Right Cluster -->
+  <path d="M 182 35 Q 190 12 200 6 Q 195 24 188 38 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1"/>
+  <path d="M 215 36 Q 222 15 230 10 Q 226 26 222 39 Z" fill="url(#thornGradient)" stroke="#fca5a5" stroke-width="1"/>
+
+  <!-- Toxic Red/Purple Drops / Spores on thorn tips -->
+  <circle cx="62" cy="4" r="2.5" fill="#fca5a5"/>
+  <circle cx="105" cy="2" r="3" fill="#fca5a5"/>
+  <circle cx="168" cy="3" r="3" fill="#fca5a5"/>
+  <circle cx="200" cy="6" r="2.5" fill="#fca5a5"/>
+</svg>

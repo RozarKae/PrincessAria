@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" width="120" height="160">
+  <defs>
+    <!-- Base Obsidian Crucible Basin -->
+    <linearGradient id="geyserBasin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3730a3" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#09071a" />
+    </linearGradient>
+
+    <!-- Updraft Wind & Amber Energy Streams -->
+    <linearGradient id="updraftStream" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="rgba(245, 158, 11, 0.9)" />
+      <stop offset="40%" stop-color="rgba(251, 191, 36, 0.7)" />
+      <stop offset="75%" stop-color="rgba(254, 240, 138, 0.45)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0)" />
+    </linearGradient>
+
+    <radialGradient id="geyserCoreGlow" cx="50%" cy="85%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#78350f" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Radiant Updraft Column -->
+  <polygon points="35,130 85,130 105,10 15,10" fill="url(#updraftStream)" />
+
+  <!-- Animated-style Wind & Nectar Streamlines -->
+  <path d="M45,130 C45,90 35,50 40,15" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+  <path d="M60,125 C60,80 60,40 60,5" stroke="#fef08a" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+  <path d="M75,130 C75,90 85,50 80,15" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+
+  <path d="M50,110 C50,75 42,45 48,20" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="8 6" opacity="0.8" />
+  <path d="M70,110 C70,75 78,45 72,20" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="8 6" opacity="0.8" />
+
+  <!-- Floating Updraft Amber Particles -->
+  <circle cx="50" cy="70" r="3" fill="#ffffff" />
+  <circle cx="68" cy="55" r="2.5" fill="#fef08a" />
+  <circle cx="42" cy="35" r="2" fill="#fef08a" />
+  <circle cx="75" cy="30" r="3" fill="#ffffff" />
+
+  <!-- Obsidian Vent Crucible Platform Base -->
+  <polygon points="15,130 105,130 115,155 5,155" fill="url(#geyserBasin)" stroke="#f59e0b" stroke-width="2.5" />
+  <!-- Glowing Inner Honey Core -->
+  <ellipse cx="60" cy="132" rx="35" ry="8" fill="url(#geyserCoreGlow)" />
+  <ellipse cx="60" cy="132" rx="20" ry="4" fill="#ffffff" />
+</svg>

@@ -238,18 +238,18 @@ export class TitleScreen {
     ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = `rgba(251, 191, 36, ${pulse * 0.9})`;
     ctx.shadowBlur = 0;
-    ctx.fillText('[ PRESS ENTER OR SPACE TO BEGIN ]', centerX, startY + 54);
+    ctx.fillText('[ PRESS ENTER, SPACE OR 🎮 (A) TO BEGIN ]', centerX, startY + 54);
     ctx.restore();
 
     // --- 8. REFINED CONTROLS GUIDE BOX ---
-    const boxWidth = 860;
-    const boxHeight = 175;
+    const boxWidth = 980;
+    const boxHeight = 205;
     const boxX = centerX - boxWidth / 2;
-    const boxY = 740;
+    const boxY = 725;
 
     // Royal Obsidian Scroll
     ctx.save();
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
     ctx.strokeStyle = '#d97706';
     ctx.lineWidth = 2;
     ctx.shadowColor = 'rgba(245, 158, 11, 0.35)';
@@ -267,20 +267,28 @@ export class TitleScreen {
     // Header Badge
     ctx.fillStyle = '#fbbf24';
     ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('— ROYAL EXPLORATION CONTROLS —', centerX, boxY + 28);
+    ctx.fillText('— ROYAL EXPLORATION CONTROLS (KEYBOARD & GAMING CONTROLLERS) —', centerX, boxY + 28);
 
     // 2-Column Controls Layout
-    ctx.font = '500 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.font = '500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = '#f8fafc';
 
-    // Left Column
+    // Left Column (Movement & Aerial)
     ctx.textAlign = 'left';
-    ctx.fillText('Move Left / Right:    [A] / [D]   or   [←] / [→]', boxX + 60, boxY + 70);
-    ctx.fillText('Royal Jump & Flutter: [SPACE]   or   [W]   or   [↑]', boxX + 60, boxY + 110);
+    ctx.fillText('Move Left / Right:    [A] / [D] / [←] [→]   or   🎮 Left Stick / D-Pad', boxX + 36, boxY + 66);
+    ctx.fillText('Jump & Double Jump:   [SPACE] / [W] / [↑]   or   🎮 (A) / Cross / (B)', boxX + 36, boxY + 98);
+    ctx.fillText('Crouch & Vine Climb:  [S] / [W] / [↓] [↑]   or   🎮 D-Pad / L-Stick', boxX + 36, boxY + 130);
 
-    // Right Column
-    ctx.fillText('Honey-Silk Dash:      [SHIFT]   or   [X]   or   [K]', boxX + 460, boxY + 70);
-    ctx.fillText('Royal Stardust Burst: [Z]   or   [J]   or   [F]', boxX + 460, boxY + 110);
+    // Right Column (Princess Aria's 3 Heroic Powers)
+    ctx.fillText('Melee Stardust Slash: [Z] / [J] / [F]       or   🎮 (X) / Square', boxX + 515, boxY + 66);
+    ctx.fillText('Honey-Silk Speed Dash:[SHIFT] / [X] / [K]   or   🎮 (RB) / (R1) / (B)', boxX + 515, boxY + 98);
+    ctx.fillText('Royal Starbeam:       [C] / [L] / [E]       or   🎮 (Y) / Triangle / (RT)', boxX + 515, boxY + 130);
+
+    // Footer Feature Tagline
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('✨ Universal Controller Compatibility: Xbox, PlayStation, Switch Pro, 8BitDo & USB Gamepads with Rumble Vibration!', centerX, boxY + 172);
 
     ctx.restore();
 

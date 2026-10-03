@@ -104,7 +104,7 @@ export class Renderer {
     this.pixelRenderer.drawEntities(camera, level, player);
 
     // 5. Draw Minimal Retro HUD (Top 12px)
-    this.pixelRenderer.drawHUD(gameState);
+    this.pixelRenderer.drawHUD(gameState, player);
 
     // 6. Visual Debug Overlay (F2)
     if (this.debugVisual) {
@@ -255,13 +255,14 @@ export class Renderer {
 
     if (isClear) {
       // VICTORY / STAGE CLEAR
-      ctx.fillStyle = P.HONEY_PALE;
+      const isWorld2 = gameState?.world === 2;
+      ctx.fillStyle = isWorld2 ? P.FOREST_KING_AWAKEN_EMERALD : P.HONEY_PALE;
       ctx.font = 'bold 14px monospace';
-      ctx.fillText('STAGE CLEAR!', INTERNAL_WIDTH / 2, 48);
+      ctx.fillText(isWorld2 ? 'WORLD 2-1 CLEAR!' : 'STAGE CLEAR!', INTERNAL_WIDTH / 2, 48);
 
-      ctx.fillStyle = P.BATBOY_ACCENT;
+      ctx.fillStyle = isWorld2 ? P.FUNGUS_CYAN_GLOW : P.BATBOY_ACCENT;
       ctx.font = '8px monospace';
-      ctx.fillText('BATBOY RESCUED!', INTERNAL_WIDTH / 2, 70);
+      ctx.fillText(isWorld2 ? 'FOREST KING FREED!' : 'BATBOY RESCUED!', INTERNAL_WIDTH / 2, 70);
 
       ctx.fillStyle = P.UI_TEXT_WHITE;
       ctx.font = '8px monospace';
@@ -271,7 +272,7 @@ export class Renderer {
       const blink = Math.floor(Date.now() / 450) % 2 === 0;
       if (blink) {
         ctx.fillStyle = P.HONEY_AMBER;
-        ctx.fillText('PRESS SPACE TO PLAY AGAIN', INTERNAL_WIDTH / 2, 150);
+        ctx.fillText(isWorld2 ? 'PRESS SPACE FOR WORLD 3' : 'PRESS SPACE FOR WORLD 2', INTERNAL_WIDTH / 2, 150);
       }
     } else {
       // GAME OVER

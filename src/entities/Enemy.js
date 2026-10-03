@@ -161,10 +161,11 @@ export class Enemy {
         e.scaleY = 1.2;
 
         // Broadcast alert to nearby allies via coordinator
-        if (e.coordinator && player) {
-          e.coordinator.broadcastAlert(e, player, e.alertRadius);
-        } else {
-          e.notifyNearbyAllies(levelRef);
+        const targetPlayer = e.targetPlayer || (e.perception ? e.perception.targetPlayer : null);
+        if (e.coordinator && targetPlayer) {
+          e.coordinator.broadcastAlert(e, targetPlayer, e.alertRadius);
+        } else if (e.levelRef) {
+          e.notifyNearbyAllies(e.levelRef);
         }
       },
       update: (e, dt, level, player) => {
@@ -532,6 +533,9 @@ export class Enemy {
     // Smooth recovery of squash & stretch
     this.scaleX += (1 - this.scaleX) * 12 * dt;
     this.scaleY += (1 - this.scaleY) * 12 * dt;
+
+    this.levelRef = level;
+    this.targetPlayer = player;
 
     // 1. Sensory Perception Update (LOS, memory, reaction)
     if (this.perception) {

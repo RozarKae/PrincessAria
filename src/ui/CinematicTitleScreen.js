@@ -221,7 +221,7 @@ export class CinematicTitleScreen {
       transition: all 0.2s ease;
       backdrop-filter: blur(4px);
     `;
-    this.skipButton.textContent = 'PRESS SPACE TO SKIP ▸';
+    this.skipButton.textContent = 'PRESS SPACE / 🎮 (A) TO SKIP ▸';
     this.skipButton.addEventListener('mouseenter', () => {
       this.skipButton.style.color = '#fef08a';
       this.skipButton.style.borderColor = 'rgba(245, 158, 11, 0.6)';
@@ -329,7 +329,7 @@ export class CinematicTitleScreen {
       opacity: 0.65;
       text-align: right;
     `;
-    footerHint.textContent = 'USE ARROWS / ENTER / SPACE OR MOUSE';
+    footerHint.textContent = 'KEYBOARD: [W][S] / [ENTER]  •  CONTROLLER: 🎮 D-PAD / (A) SELECT';
     this.uiOverlay.appendChild(footerHint);
 
     this.root.appendChild(this.uiOverlay);
@@ -637,6 +637,8 @@ export class CinematicTitleScreen {
 
     this.animationFrameId = requestAnimationFrame(() => this.loop());
 
+    this.pollGamepad();
+
     const width = this.particleCanvas.width;
     const height = this.particleCanvas.height;
     if (!this.particleCtx || width === 0 || height === 0) return;
@@ -722,6 +724,70 @@ export class CinematicTitleScreen {
         e.preventDefault();
         this.selectCurrentOption();
         break;
+    }
+  }
+
+  pollGamepad() {
+    if (this.isTransitioning) return;
+    if (typeof navigator === 'undefined' || !navigator.getGamepads) return;
+    const pads = navigator.getGamepads();
+    let pad = null;
+    for (let i = 0; i < pads.length; i++) {
+      if (pads[i] && pads[i].connected) {
+        pad = pads[i];
+        break;
+      }
+    }
+    if (!pad) return;
+
+    const now = performance.now();
+    if (!this.gamepadDebounce) this.gamepadDebounce = 0;
+
+    const btnA = pad.buttons[0]?.pressed || pad.buttons[0]?.value > 0.4;
+    const btnB = pad.buttons[1]?.pressed || pad.buttons[1]?.value > 0.4;
+    const btnX = pad.buttons[2]?.pressed || pad.buttons[2]?.value > 0.4;
+    const btnY = pad.buttons[3]?.pressed || pad.buttons[3]?.value > 0.4;
+    const btnStart = pad.buttons[9]?.pressed || pad.buttons[8]?.pressed;
+
+    const dpadUp = pad.buttons[12]?.pressed || (pad.axes && pad.axes[1] < -0.42);
+    const dpadDown = pad.buttons[13]?.pressed || (pad.axes && pad.axes[1] > 0.42);
+
+    if (this.isPlayingCinematic) {
+      if (btnA || btnB || btnX || btnY || btnStart) {
+        if (now > this.gamepadDebounce) {
+          this.gamepadDebounce = now + 400;
+          this.unlockAudio();
+          this.skipToLivingMenu();
+        }
+        return;
+      }
+    }
+
+    if (this.creditsOpen) {
+      if (btnA || btnB || btnStart || btnX) {
+        if (now > this.gamepadDebounce) {
+          this.gamepadDebounce = now + 350;
+          this.toggleCredits(false);
+        }
+      }
+      return;
+    }
+
+    if (dpadUp) {
+      if (now > this.gamepadDebounce) {
+        this.gamepadDebounce = now + 220;
+        this.navigateMenu(-1);
+      }
+    } else if (dpadDown) {
+      if (now > this.gamepadDebounce) {
+        this.gamepadDebounce = now + 220;
+        this.navigateMenu(1);
+      }
+    } else if (btnA || btnStart) {
+      if (now > this.gamepadDebounce) {
+        this.gamepadDebounce = now + 400;
+        this.selectCurrentOption();
+      }
     }
   }
 

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" width="180" height="48">
+  <defs>
+    <!-- Bioluminescent Obsidian Platform Body -->
+    <linearGradient id="hexObsidian" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#312e81" />
+      <stop offset="25%" stop-color="#1e1b4b" />
+      <stop offset="65%" stop-color="#0f0d24" />
+      <stop offset="100%" stop-color="#05030d" />
+    </linearGradient>
+
+    <!-- Sovereign Gold Edge Highlight -->
+    <linearGradient id="hexGoldTrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Translucent Amber Honey Cell Insert -->
+    <linearGradient id="hexCellAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(254, 240, 138, 0.9)" />
+      <stop offset="50%" stop-color="rgba(245, 158, 11, 0.75)" />
+      <stop offset="100%" stop-color="rgba(180, 83, 9, 0.4)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Hexagonal Stepped Platform Profile -->
+  <polygon points="12,4 168,4 176,14 176,38 168,44 12,44 4,38 4,14" fill="url(#hexObsidian)" stroke="#4338ca" stroke-width="2" />
+
+  <!-- Top Walkable Surface Bevel (Golden Honey Vein) -->
+  <path d="M14,6 L166,6" stroke="url(#hexGoldTrim)" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M12,4 L4,14 L12,24" stroke="url(#hexGoldTrim)" stroke-width="1.8" />
+  <path d="M168,4 L176,14 L168,24" stroke="url(#hexGoldTrim)" stroke-width="1.8" />
+
+  <!-- Embedded Honeycomb Hex Cells along the Platform Face -->
+  <!-- Left Hex Cell -->
+  <polygon points="36,16 48,10 60,16 60,28 48,34 36,28" fill="#090714" stroke="url(#hexGoldTrim)" stroke-width="1.5" />
+  <polygon points="39,18 48,13 57,18 57,26 48,31 39,26" fill="url(#hexCellAmber)" />
+
+  <!-- Center Hex Cell -->
+  <polygon points="78,16 90,10 102,16 102,28 90,34 78,28" fill="#090714" stroke="url(#hexGoldTrim)" stroke-width="1.8" />
+  <polygon points="81,18 90,13 99,18 99,26 90,31 81,26" fill="url(#hexCellAmber)" />
+
+  <!-- Right Hex Cell -->
+  <polygon points="120,16 132,10 144,16 144,28 132,34 120,28" fill="#090714" stroke="url(#hexGoldTrim)" stroke-width="1.5" />
+  <polygon points="123,18 132,13 141,18 141,26 132,31 123,26" fill="url(#hexCellAmber)" />
+
+  <!-- Bottom Hanging Honey Drops -->
+  <circle cx="48" cy="45" r="2.5" fill="#f59e0b" />
+  <circle cx="90" cy="46" r="3" fill="#fbbf24" />
+  <circle cx="132" cy="45" r="2.5" fill="#f59e0b" />
+</svg>

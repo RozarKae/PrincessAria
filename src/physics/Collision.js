@@ -50,11 +50,31 @@ export class Collision {
             player.scaleX = 0.72;
             player.scaleY = 1.38;
             result.bounced = true;
+          } else if (platform.type === 'bouncy_mushroom' || platform.type === 'mushroom') {
+            player.vy = -860; // High elastic fungal trampoline bounce!
+            player.isGrounded = false;
+            player.scaleX = 0.68;
+            player.scaleY = 1.42;
+            result.bounced = true;
+            result.shroomBounce = true;
+          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes') {
+            result.hazard = true;
+          } else if (platform.type === 'honey_geyser' || platform.type === 'geyser') {
+            player.vy = -920; // High vertical updraft catapult into high spire galleries!
+            player.isGrounded = false;
+            player.scaleX = 0.65;
+            player.scaleY = 1.45;
+            result.geyserLaunch = true;
+          } else if (platform.type === 'sticky_amber') {
+            player.vy = 0;
+            player.isGrounded = true;
+            player.vx *= 0.45; // Viscous nectar friction
+            result.landed = true;
           } else {
             player.vy = 0;
             player.isGrounded = true;
             result.landed = true;
-            if ((platform.type === 'crumble_block' || platform.type === 'crumble') && !platform.isShaking && !platform.isBroken) {
+            if ((platform.type === 'crumble_block' || platform.type === 'crumble' || platform.type === 'crumble_bark') && !platform.isShaking && !platform.isBroken) {
               platform.isShaking = true;
               platform.shakeTimer = 0.65;
               result.crumbled = true;

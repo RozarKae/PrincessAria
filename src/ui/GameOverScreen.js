@@ -52,22 +52,30 @@ export class GameOverScreen {
     ctx.textBaseline = 'middle';
 
     if (isVictory) {
+      const isWorld2 = gameState && gameState.world === 2;
+
       // Radiant Emerald / Gold Victory Header
       ctx.font = '900 78px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.shadowColor = '#fbbf24';
       ctx.shadowBlur = 24;
       ctx.fillStyle = '#4ade80';
-      ctx.fillText('WORLD 1-1 CLEARED!', centerX, centerY - 80);
+      ctx.fillText(isWorld2 ? 'WORLD 2-1 CLEARED!' : 'WORLD 1-1 CLEARED!', centerX, centerY - 80);
       ctx.shadowBlur = 0;
 
       ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#fde047';
-      ctx.fillText('BATBOY RESCUED FROM HONEYCOMB CAGE!', centerX, centerY - 15);
+      ctx.fillText(isWorld2 ? 'THE FOREST KING LIBERATED!' : 'BATBOY RESCUED FROM HONEYCOMB CAGE!', centerX, centerY - 15);
 
       // Quest Lore Subtitle
       ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#94a3b8';
-      ctx.fillText('The Queen Bee has retreated deeper into the Hive Fortress...', centerX, centerY + 30);
+      ctx.fillText(
+        isWorld2
+          ? '"The Bee Queen has taken the Bat Boy beyond the mechanical lands..."'
+          : 'Queen Bee Fimabi fled into the mysterious Whispering Forest...',
+        centerX,
+        centerY + 30
+      );
 
       // Card Container for Score & Royal Shards
       const cardW = 540;
@@ -92,9 +100,9 @@ export class GameOverScreen {
       ctx.fillStyle = '#cbd5e1';
       ctx.fillText('ROYAL SHARDS:', centerX - 80, cardY + 76);
       ctx.fillStyle = '#fbbf24';
-      ctx.fillText(`${gameState.coins || 0} / ${levelInfo.totalShards || 30}`, centerX + 120, cardY + 76);
+      ctx.fillText(`${gameState.coins || 0} / ${levelInfo.totalShards || 40}`, centerX + 120, cardY + 76);
 
-      // Interactive CONTINUE TO WORLD 1-2 Button
+      // Interactive CONTINUE TO NEXT WORLD Button
       const b = this.continueBtn;
       b.y = centerY + 200;
       const pulse = 0.5 + Math.sin(this.timer * 4) * 0.5;
@@ -110,11 +118,11 @@ export class GameOverScreen {
 
       ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#0f172a';
-      ctx.fillText('CONTINUE TO WORLD 1-2 ➔', centerX, b.y + b.height / 2);
+      ctx.fillText(isWorld2 ? 'CONTINUE TO WORLD 3 ➔' : 'CONTINUE TO WORLD 2 ➔', centerX, b.y + b.height / 2);
 
       ctx.font = '500 15px monospace';
       ctx.fillStyle = '#94a3b8';
-      ctx.fillText('[ Press ENTER or Click to Proceed / Press R to Replay ]', centerX, b.y + b.height + 32);
+      ctx.fillText('[ Press ENTER / Click / 🎮 (A) to Proceed  •  Press R / 🎮 (X) to Replay ]', centerX, b.y + b.height + 32);
     } else {
       // Game Over Screen
       ctx.font = '900 84px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -135,7 +143,7 @@ export class GameOverScreen {
       const pulseAlpha = 0.5 + Math.sin(this.timer * 4.5) * 0.5;
       ctx.font = '800 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = `rgba(251, 191, 36, ${pulseAlpha})`;
-      ctx.fillText('PRESS [ENTER] OR [R] TO TRY AGAIN', centerX, centerY + 180);
+      ctx.fillText('PRESS [ENTER] / [R] OR 🎮 (A) / (START) TO TRY AGAIN', centerX, centerY + 180);
     }
 
     ctx.restore();

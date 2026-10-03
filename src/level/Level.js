@@ -3,6 +3,11 @@ import { HiveGrub } from '../entities/HiveGrub.js';
 import { HoneyWisp } from '../entities/HoneyWisp.js';
 import { HoneyBeetle } from '../entities/HoneyBeetle.js';
 import { HiveFirefly } from '../entities/HiveFirefly.js';
+import { ShadowSquirrel } from '../entities/ShadowSquirrel.js';
+import { ThornGoblin } from '../entities/ThornGoblin.js';
+import { VineCrawler } from '../entities/VineCrawler.js';
+import { SporeBomber } from '../entities/SporeBomber.js';
+import { ForestKing } from '../entities/ForestKing.js';
 import { MovingPlatform } from '../entities/MovingPlatform.js';
 import { Particle } from '../entities/Particle.js';
 import { Batboy } from '../entities/Batboy.js';
@@ -61,6 +66,7 @@ export class Level {
     this.secretAreaDiscovered = false;
     this.apiaryDiscovered = false;
     this.armoryDiscovered = false;
+    this.spireSecretDiscovered = false;
     this.secretBannerTimer = 0;
     this.secretBannerText = '';
 
@@ -69,6 +75,8 @@ export class Level {
     this.hollowRedwoodTriggered = false;
     this.outpostTriggered = false;
     this.watchtowerTriggered = false;
+    this.spireGatewayTriggered = false;
+    this.sovereignThroneTriggered = false;
     this.shrineBannerTimer = 0;
     this.shrineBannerText = '';
 
@@ -79,7 +87,10 @@ export class Level {
     this.debugAI = false;
 
     // AI Level Director Engine
-    this.director = new LevelDirector();
+    this.director = new LevelDirector({
+      world: this.world,
+      levelData: this.data,
+    });
 
     this.initButterflies();
     this.reset();
@@ -133,12 +144,28 @@ export class Level {
         case 'firefly':
         case 'hive_firefly':
           return new HiveFirefly(e.x, e.y, { patrolLeft: pLeft, patrolRight: pRight });
+        case 'shadow_squirrel':
+        case 'squirrel':
+          return new ShadowSquirrel(e.x, e.y, pLeft, pRight);
+        case 'thorn_goblin':
+        case 'goblin':
+          return new ThornGoblin(e.x, e.y, pLeft, pRight);
+        case 'vine_crawler':
+        case 'crawler':
+          return new VineCrawler(e.x, e.y, { patrolLeft: pLeft, patrolRight: pRight });
+        case 'spore_bomber':
+        case 'bomber':
+          return new SporeBomber(e.x, e.y, { amplitude: e.amplitude, frequency: e.frequency });
+        case 'forest_king':
+          return new ForestKing(e.x, e.y);
         case 'grub':
         case 'hive_grub':
         default:
           return new HiveGrub(e.x, e.y, pLeft, pRight);
       }
     });
+
+    this.forestKing = this.enemies.find(e => e instanceof ForestKing) || null;
 
     // Register enemies with Encounter Coordinator
     if (this.encounterCoordinator) {
@@ -154,12 +181,17 @@ export class Level {
     this.secretAreaDiscovered = false;
     this.apiaryDiscovered = false;
     this.armoryDiscovered = false;
+    this.spireSecretDiscovered = false;
     this.secretBannerTimer = 0;
     this.shrineCinematicTriggered = false;
     this.hollowRedwoodTriggered = false;
     this.outpostTriggered = false;
     this.watchtowerTriggered = false;
+    this.spireGatewayTriggered = false;
+    this.sovereignThroneTriggered = false;
     this.shrineBannerTimer = 0;
+    this.batboy.x = this.goal.x + 10;
+    this.batboy.y = this.goal.y + 40;
 
     // Reset crumble blocks
     if (this.platforms) {
@@ -229,6 +261,7 @@ export class Level {
   }
 
   update(player, gameState, audio, camera, dt) {
+    this.gameState = gameState;
     this.audioRef = audio;
     this.batboy.update(dt);
 
@@ -260,10 +293,11 @@ export class Level {
 
         // A. PLAYER ATTACK INTERACTION (Royal Stardust Burst)
         if (attackBounds && Collision.intersects(attackBounds, enemyBounds)) {
-          // If attacking beetle from the front while active, shell deflects!
+          // If attacking beetle or thorn goblin from the front while active, armor/shield deflects!
           const isBeetle = enemy instanceof HoneyBeetle;
+          const isGoblin = enemy instanceof ThornGoblin;
           const playerFacingEnemy = (player.facing > 0 && enemy.x > player.x) || (player.facing < 0 && enemy.x < player.x);
-          const isFrontal = isBeetle && !enemy.isVulnerable && ((enemy.facing < 0 && player.facing > 0) || (enemy.facing > 0 && player.facing < 0));
+          const isFrontal = (isBeetle || isGoblin) && !enemy.isVulnerable && ((enemy.facing < 0 && player.facing > 0) || (enemy.facing > 0 && player.facing < 0));
 
           if (isFrontal) {
             // Deflected by armor
@@ -328,83 +362,203 @@ export class Level {
     });
 
     // 5. Secret Area Discovery Checks
-    // Secret 1: Sunstone Canopy Sanctum (x: 1240-1460, y <= 490)
-    if (!this.secretAreaDiscovered && player.x >= 1240 && player.x <= 1460 && player.y <= 490) {
-      this.secretAreaDiscovered = true;
-      this.secretBannerText = '✨ SECRET DISCOVERY: SUNSTONE CANOPY SANCTUM (+500 PTS)';
-      this.secretBannerTimer = 3.5;
-      gameState.addScore(500);
-      this.spawnSparkles(player.x + player.width / 2, player.y, 24);
-      if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
-      else if (audio && audio.playCollect) audio.playCollect();
-    }
+    if (this.world === 2) {
+      // WORLD 2 SECRETS
+      // Secret 1: The Giggling Fungus Hollow (x: 1200-1460, y <= 480)
+      if (!this.secretAreaDiscovered && player.x >= 1200 && player.x <= 1460 && player.y <= 480) {
+        this.secretAreaDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE GIGGLING FUNGUS HOLLOW (+500 PTS)';
+        this.secretBannerTimer = 3.5;
+        gameState.addScore(500);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 24);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
 
-    // Secret 2: The Forgotten Royal Apiary Sanctuary (Section 2: x: 4350-4650, y <= 360)
-    if (!this.apiaryDiscovered && player.x >= 4350 && player.x <= 4650 && player.y <= 360) {
-      this.apiaryDiscovered = true;
-      this.secretBannerText = '✨ SECRET DISCOVERY: THE FORGOTTEN ROYAL APIARY (+750 PTS)';
-      this.secretBannerTimer = 3.8;
-      gameState.addScore(750);
-      this.spawnSparkles(player.x + player.width / 2, player.y, 32);
-      if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
-      else if (audio && audio.playCollect) audio.playCollect();
-    }
+      // Secret 2: The Fairy Ring Sanctuary (x: 4380-4680, y <= 380)
+      if (!this.apiaryDiscovered && player.x >= 4380 && player.x <= 4680 && player.y <= 380) {
+        this.apiaryDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE FAIRY RING SANCTUARY (+750 PTS)';
+        this.secretBannerTimer = 3.8;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 32);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
 
-    // Secret 3: The Sunstone Armory Vault (Section 3: x: 6160-6440, y <= 420)
-    if (!this.armoryDiscovered && player.x >= 6160 && player.x <= 6440 && player.y <= 420) {
-      this.armoryDiscovered = true;
-      this.secretBannerText = '🗝️ SECRET DISCOVERED: THE SUNSTONE ARMORY VAULT (+750 PTS)';
-      this.secretBannerTimer = 4.0;
-      gameState.addScore(750);
-      this.spawnSparkles(player.x + player.width / 2, player.y, 36);
-      if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
-      else if (audio && audio.playCollect) audio.playCollect();
+      // Secret 3: The Druidic Root Vault (x: 6180-6440, y <= 420)
+      if (!this.armoryDiscovered && player.x >= 6180 && player.x <= 6440 && player.y <= 420) {
+        this.armoryDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE DRUIDIC ROOT VAULT (+750 PTS)';
+        this.secretBannerTimer = 4.0;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 36);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 4: The Elder Crown Canopy (x: 9250-9500, y <= 380)
+      if (!this.spireSecretDiscovered && player.x >= 9250 && player.x <= 9500 && player.y <= 380) {
+        this.spireSecretDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE ELDER CROWN CANOPY (+1,000 PTS)';
+        this.secretBannerTimer = 4.2;
+        gameState.addScore(1000);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 40);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // WORLD 2 LANDMARKS
+      // Landmark 1: The Whispering Elder Oak (x >= 1950 and x < 2400)
+      if (!this.shrineCinematicTriggered && player.x >= 1950 && player.x < 2400) {
+        this.shrineCinematicTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE WHISPERING ELDER OAK AWAKENS';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(2100, 840, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(2100, 750, 2.2);
+      }
+
+      // Landmark 2: The Bioluminescent Mycelium Shrine (x >= 3800 and x < 4300)
+      if (!this.hollowRedwoodTriggered && player.x >= 3800 && player.x < 4300) {
+        this.hollowRedwoodTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE BIOLUMINESCENT MYCELIUM SHRINE';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(4000, 600, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(4000, 600, 2.5);
+      }
+
+      // Landmark 3: The Briar Gate of Ancient Thorns (x >= 7000 and x < 7500)
+      if (!this.watchtowerTriggered && player.x >= 7000 && player.x < 7500) {
+        this.watchtowerTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE BRIAR GATE OF ANCIENT THORNS';
+        this.shrineBannerTimer = 4.0;
+        this.spawnSparkles(7200, 520, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(7200, 500, 2.5);
+      }
+
+      // Landmark 4: The Forest King's Sacred Grove (x >= 10000)
+      if (!this.sovereignThroneTriggered && player.x >= 10000) {
+        this.sovereignThroneTriggered = true;
+        this.shrineBannerText = '👑 CLIMAX: THE CORRUPTED FOREST KING AWAKENS!';
+        this.shrineBannerTimer = 4.5;
+        this.spawnSparkles(10200, 600, 48);
+        if (audio && audio.playQueenBeeAppearance) audio.playQueenBeeAppearance();
+        if (camera && camera.focus) camera.focus(10200, 560, 2.8);
+        if (camera && camera.shake) camera.shake(10, 0.4);
+      }
+    } else {
+      // WORLD 1 SECRETS & LANDMARKS
+      // Secret 1: Sunstone Canopy Sanctum (x: 1240-1460, y <= 490)
+      if (!this.secretAreaDiscovered && player.x >= 1240 && player.x <= 1460 && player.y <= 490) {
+        this.secretAreaDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: SUNSTONE CANOPY SANCTUM (+500 PTS)';
+        this.secretBannerTimer = 3.5;
+        gameState.addScore(500);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 24);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 2: The Forgotten Royal Apiary Sanctuary (Section 2: x: 4350-4650, y <= 360)
+      if (!this.apiaryDiscovered && player.x >= 4350 && player.x <= 4650 && player.y <= 360) {
+        this.apiaryDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE FORGOTTEN ROYAL APIARY (+750 PTS)';
+        this.secretBannerTimer = 3.8;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 32);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 3: The Sunstone Armory Vault (Section 3: x: 6160-6440, y <= 420)
+      if (!this.armoryDiscovered && player.x >= 6160 && player.x <= 6440 && player.y <= 420) {
+        this.armoryDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE SUNSTONE ARMORY VAULT (+750 PTS)';
+        this.secretBannerTimer = 4.0;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 36);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 4: The Queen's Forbidden Secret Vault (Section 4: x: 9240-9520, y <= 380)
+      if (!this.spireSecretDiscovered && player.x >= 9240 && player.x <= 9520 && player.y <= 380) {
+        this.spireSecretDiscovered = true;
+        this.secretBannerText = "🗝️ SECRET DISCOVERED: THE QUEEN'S FORBIDDEN VAULT (+1,000 PTS)";
+        this.secretBannerTimer = 4.2;
+        gameState.addScore(1000);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 40);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Landmark 1: The Sunstone Ruin Arch & Altar (Section 1: x >= 1950)
+      if (!this.shrineCinematicTriggered && player.x >= 1950 && player.x < 2400) {
+        this.shrineCinematicTriggered = true;
+        this.shrineBannerText = '✨ THE ANCIENT SUNSTONE SHRINE AWAKENS';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(2100, 840, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(2100, 750, 2.2);
+      }
+
+      // Landmark 2: The Great Hollow Redwood & Amber Cataract (Section 2: x >= 3700)
+      if (!this.hollowRedwoodTriggered && player.x >= 3700 && player.x < 4250) {
+        this.hollowRedwoodTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE GREAT HOLLOW REDWOOD & AMBER CATARACT';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(3900, 600, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(3900, 600, 2.5);
+      }
+
+      // Landmark 3: The Overgrown Outpost Gateway (Section 2 Exit: x >= 4900)
+      if (!this.outpostTriggered && player.x >= 4900 && player.x < 5500) {
+        this.outpostTriggered = true;
+        this.shrineBannerText = '✨ OUTPOST GATEWAY: APPROACHING CRUMBLING FORTRESS';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(5020, 720, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+      }
+
+      // Landmark 4: The Sunstone Fortress Watchtower (Section 3: x >= 6800)
+      if (!this.watchtowerTriggered && player.x >= 6800 && player.x < 8000) {
+        this.watchtowerTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE SUNSTONE FORTRESS WATCHTOWER';
+        this.shrineBannerTimer = 4.0;
+        this.spawnSparkles(7100, 520, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(7100, 500, 2.5);
+      }
+
+      // Landmark 5: The Spire Gateway Colonnade (Section 4 Entry: x >= 8080 and x < 8500)
+      if (!this.spireGatewayTriggered && player.x >= 8080 && player.x < 8500) {
+        this.spireGatewayTriggered = true;
+        this.shrineBannerText = '✨ SPIRE GATEWAY: ENTERING THE SOVEREIGN HIVE SPIRE';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(8180, 720, 32);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(8180, 680, 2.5);
+      }
+
+      // Landmark 6: The Sovereign Royal Chrysalis Throne (Section 4 Climax: x >= 10180)
+      if (!this.sovereignThroneTriggered && player.x >= 10180) {
+        this.sovereignThroneTriggered = true;
+        this.shrineBannerText = '👑 CLIMAX: THE SOVEREIGN HIVE SPIRE — RESCUE KHAN!';
+        this.shrineBannerTimer = 4.5;
+        this.spawnSparkles(10400, 600, 48);
+        if (audio && audio.playQueenBeeAppearance) audio.playQueenBeeAppearance();
+        if (camera && camera.focus) camera.focus(10400, 560, 2.8);
+        if (camera && camera.shake) camera.shake(10, 0.4);
+      }
     }
 
     if (this.secretBannerTimer > 0) {
       this.secretBannerTimer -= dt;
     }
-
-    // 5B. Memorable Landmarks & Cinematic Triggers
-    // Landmark 1: The Sunstone Ruin Arch & Altar (Section 1: x >= 1950)
-    if (!this.shrineCinematicTriggered && player.x >= 1950 && player.x < 2400) {
-      this.shrineCinematicTriggered = true;
-      this.shrineBannerText = '✨ THE ANCIENT SUNSTONE SHRINE AWAKENS';
-      this.shrineBannerTimer = 3.5;
-      this.spawnSparkles(2100, 840, 28);
-      if (audio && audio.playCheckpoint) audio.playCheckpoint();
-      if (camera && camera.focus) camera.focus(2100, 750, 2.2);
-    }
-
-    // Landmark 2: The Great Hollow Redwood & Amber Cataract (Section 2: x >= 3700)
-    if (!this.hollowRedwoodTriggered && player.x >= 3700 && player.x < 4250) {
-      this.hollowRedwoodTriggered = true;
-      this.shrineBannerText = '✨ LANDMARK: THE GREAT HOLLOW REDWOOD & AMBER CATARACT';
-      this.shrineBannerTimer = 3.8;
-      this.spawnSparkles(3900, 600, 36);
-      if (audio && audio.playCheckpoint) audio.playCheckpoint();
-      if (camera && camera.focus) camera.focus(3900, 600, 2.5);
-    }
-
-    // Landmark 3: The Overgrown Outpost Gateway (Section 2 Exit: x >= 4900)
-    if (!this.outpostTriggered && player.x >= 4900 && player.x < 5500) {
-      this.outpostTriggered = true;
-      this.shrineBannerText = '✨ OUTPOST GATEWAY: APPROACHING CRUMBLING FORTRESS';
-      this.shrineBannerTimer = 3.5;
-      this.spawnSparkles(5020, 720, 28);
-      if (audio && audio.playCheckpoint) audio.playCheckpoint();
-    }
-
-    // Landmark 4: The Sunstone Fortress Watchtower (Section 3: x >= 6800)
-    if (!this.watchtowerTriggered && player.x >= 6800) {
-      this.watchtowerTriggered = true;
-      this.shrineBannerText = '✨ LANDMARK: THE SUNSTONE FORTRESS WATCHTOWER';
-      this.shrineBannerTimer = 4.0;
-      this.spawnSparkles(7100, 520, 36);
-      if (audio && audio.playCheckpoint) audio.playCheckpoint();
-      if (camera && camera.focus) camera.focus(7100, 500, 2.5);
-    }
-
     if (this.shrineBannerTimer > 0) {
       this.shrineBannerTimer -= dt;
     }
@@ -431,6 +585,18 @@ export class Level {
               this.spawnSparkles(plat.x + plat.width / 2, plat.y + plat.height / 2, 12);
             }
           }
+        }
+      });
+    }
+
+    // 5D. Honey Geyser Ambient Rising Particles
+    if (this.platforms && Math.random() < 0.45) {
+      this.platforms.forEach(plat => {
+        if (plat.type === 'honey_geyser' || plat.type === 'geyser') {
+          const gx = plat.x + Math.random() * plat.width;
+          const gy = plat.y + plat.height * 0.7;
+          const vy = -180 - Math.random() * 120;
+          this.particles.push(new Particle(gx, gy, (Math.random() - 0.5) * 20, vy, 'sparkle', '#fef08a', 0.6, 5));
         }
       });
     }

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <!-- Deep Mystical Twilight Forest Sky Gradient -->
+    <linearGradient id="twilightSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b0618"/>
+      <stop offset="25%" stop-color="#190e34"/>
+      <stop offset="55%" stop-color="#2a144e"/>
+      <stop offset="80%" stop-color="#3d1d5a"/>
+      <stop offset="100%" stop-color="#142838"/>
+    </linearGradient>
+
+    <!-- Star / Firefly Glow -->
+    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#0b0618" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky Base -->
+  <rect width="1920" height="1080" fill="url(#twilightSky)"/>
+
+  <!-- Ancient Luminous Crescent Moon -->
+  <path d="M 1520 180 A 70 70 0 1 0 1620 280 A 55 55 0 1 1 1520 180 Z" fill="#fef08a" opacity="0.9"/>
+  <circle cx="1550" cy="230" r="95" fill="#fef08a" opacity="0.08"/>
+
+  <!-- Distant Twinkling Celestial Forest Stars -->
+  <circle cx="180" cy="90" r="2.5" fill="#ffffff" opacity="0.8"/>
+  <circle cx="280" cy="140" r="3" fill="#bae6fd" opacity="0.9"/>
+  <circle cx="450" cy="70" r="2" fill="#ffffff" opacity="0.75"/>
+  <circle cx="620" cy="110" r="3.5" fill="#fef08a" opacity="0.85"/>
+  <circle cx="780" cy="80" r="2.5" fill="#ffffff" opacity="0.8"/>
+  <circle cx="940" cy="130" r="3" fill="#bae6fd" opacity="0.9"/>
+  <circle cx="1120" cy="60" r="2" fill="#ffffff" opacity="0.7"/>
+  <circle cx="1310" cy="100" r="3.5" fill="#fef08a" opacity="0.85"/>
+  <circle cx="1440" cy="70" r="2" fill="#ffffff" opacity="0.75"/>
+  <circle cx="1720" cy="120" r="3" fill="#bae6fd" opacity="0.9"/>
+
+  <!-- Swirling Aurora of Forest Spirits / Spores -->
+  <path d="M 0 320 Q 480 220 960 300 Q 1440 380 1920 260 L 1920 450 Q 1440 540 960 460 Q 480 380 0 480 Z" fill="#065f46" opacity="0.18"/>
+  <path d="M 0 380 Q 520 300 1020 370 Q 1500 440 1920 350 L 1920 520 Q 1460 600 980 530 Q 460 460 0 540 Z" fill="#0284c7" opacity="0.15"/>
+</svg>

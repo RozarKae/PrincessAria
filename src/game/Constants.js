@@ -20,6 +20,8 @@ export const PHYSICS = {
   DASH_DURATION: 0.22,       // Duration of dash burst in seconds
   DASH_COOLDOWN: 0.5,        // Delay between dashes
   JUMP_VELOCITY: -1020,      // Launch impulse (negative = upward)
+  DOUBLE_JUMP_VELOCITY: -920,// Mid-air celestial flutter impulse
+  MAX_JUMPS: 2,              // Double jump capacity
   JUMP_CUT_MULTIPLIER: 0.5,  // Releasing jump key early cuts upward velocity (variable jump height)
   BOUNCE_VELOCITY: -760,     // Upward bounce when stomping an enemy
   COYOTE_TIME: 0.1,          // Grace window (seconds) to jump after stepping off a platform
@@ -41,14 +43,19 @@ export const GAME_STATES = {
 export const KEY_BINDINGS = {
   LEFT: ['KeyA', 'ArrowLeft'],
   RIGHT: ['KeyD', 'ArrowRight'],
+  UP: ['KeyW', 'ArrowUp'],
+  DOWN: ['KeyS', 'ArrowDown'],
   JUMP: ['Space', 'KeyW', 'ArrowUp'],
   CROUCH: ['KeyS', 'ArrowDown'],
   DASH: ['ShiftLeft', 'ShiftRight', 'KeyX', 'KeyK'],
   ATTACK: ['KeyZ', 'KeyJ', 'KeyF'],
+  SHOOT: ['KeyC', 'KeyL', 'KeyE', 'KeyQ'],
   START: ['Enter', 'Space'],
   RESTART: ['KeyR', 'Enter'],
   DEBUG: ['F3', 'KeyO', 'Backquote'],
   DEBUG_AI: ['F1', 'KeyB'],
   DEBUG_VISUAL: ['F2', 'KeyV'],
   MUTE: ['KeyM'],
+  WORLD_1: ['Digit1', 'Numpad1'],
+  WORLD_2: ['Digit2', 'Numpad2'],
 };

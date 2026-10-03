@@ -21,24 +21,27 @@ import { PIXEL_PALETTE } from './PixelPalette.js';
 
 const P = PIXEL_PALETTE;
 
-// Color mapping for ASCII sprite definitions
+// Color mapping for ASCII sprite definitions with modern hi-bit shading
 const COLOR_MAP = {
   '.': null, // Transparent
-  '#': P.ARIA_OUTLINE,      // Dark purple-black silhouette outline
-  'C': P.ARIA_CROWN,        // Brilliant gold crown
-  'c': P.ARIA_CROWN_BASE,   // Dark gold crown base
-  'H': P.ARIA_HAIR_MID,     // Warm chestnut/amber hair
-  'h': P.ARIA_HAIR_LIGHT,   // Golden amber highlight
-  'D': P.ARIA_HAIR_DARK,    // Dark hair shadow
-  'S': P.ARIA_SKIN,         // Pale peach skin
-  's': P.ARIA_SKIN_SHADOW,  // Warm skin shadow
-  'E': P.ARIA_EYES,         // Eye dot
-  'W': P.ARIA_WHITE,        // White collar / trim
-  'V': P.ARIA_DRESS_LIGHT,  // Light royal purple dress highlight
-  'P': P.ARIA_DRESS_MID,    // Royal purple dress
-  'K': P.ARIA_DRESS_DARK,   // Deep purple dress shadow
-  'B': P.ARIA_BOOTS,        // Deep violet boots
-  'G': '#ffffff',           // Pure white crown glint
+  '#': P.ARIA_OUTLINE,         // Dark indigo silhouette outline
+  'C': P.ARIA_CROWN,           // Brilliant cyber-gold crown
+  'c': P.ARIA_CROWN_BASE,      // Warm amber crown base
+  'g': P.ARIA_CROWN_GLINT,     // Pure white specular crown sparkle
+  'G': P.ARIA_CROWN_GLINT,     // White specular flare
+  'H': P.ARIA_HAIR_MID,        // Rich amber chestnut hair
+  'h': P.ARIA_HAIR_LIGHT,      // Golden sunset highlight
+  'D': P.ARIA_HAIR_DARK,       // Deep chocolate shadow
+  'S': P.ARIA_SKIN,            // Soft radiant peach skin
+  's': P.ARIA_SKIN_SHADOW,     // Warm skin ambient shadow
+  'E': P.ARIA_EYES,            // Dark eye contour
+  'I': P.ARIA_EYES_IRIS,       // Radiant celestial cyan iris
+  'W': P.ARIA_WHITE,           // Pure white lace/cuff trim
+  'V': P.ARIA_DRESS_ACCENT,    // Bright neon-violet dress rim
+  'P': P.ARIA_DRESS_MID,       // Royal magenta-purple dress
+  'K': P.ARIA_DRESS_DARK,      // Deep cosmic velvet dress shadow
+  'B': P.ARIA_BOOTS,           // Midnight violet boots
+  'b': P.ARIA_BOOTS_HIGHLIGHT, // Soft lilac boot edge highlight
 };
 
 // 16 pixels wide x 22 pixels tall frames
@@ -614,14 +617,38 @@ export class PixelCharacterRenderer {
       ctx.drawImage(spriteCanvas, px, py);
     }
 
-    // Dash trailing pixel ghost
-    if (player.isDashing) {
-      ctx.globalAlpha = 0.4;
-      const ghostOffset = player.facing > 0 ? -6 : 6;
+    // Modern Futuristic Visual Flourishes:
+    // 1. Crown Specular Shimmer (Cyber-gold sub-pixel gleam)
+    const crownGleam = Math.floor(performance.now() * 0.005) % 8 === 0;
+    if (crownGleam) {
+      ctx.fillStyle = '#ffffff';
+      const gleamX = player.facing < 0 ? (px + this.spriteWidth - 9) : (px + 7);
+      ctx.fillRect(gleamX, py + 1, 1, 1);
+      ctx.fillStyle = 'rgba(253, 224, 71, 0.6)';
+      ctx.fillRect(gleamX - 1, py + 1, 3, 1);
+      ctx.fillRect(gleamX, py, 1, 3);
+    }
+
+    // 2. Dash & Speed Trailing Chromatic Quantum Ghosts
+    if (player.isDashing || Math.abs(player.vx) > 340) {
+      ctx.globalAlpha = 0.45;
+      const ghostOffset1 = player.facing > 0 ? -5 : 5;
+      const ghostOffset2 = player.facing > 0 ? -10 : 10;
+      
+      // Violet primary shadow
+      ctx.fillStyle = '#c084fc';
       if (player.facing < 0) {
-        ctx.drawImage(spriteCanvas, ghostOffset, 0);
+        ctx.drawImage(spriteCanvas, ghostOffset1, 0);
       } else {
-        ctx.drawImage(spriteCanvas, px + ghostOffset, py);
+        ctx.drawImage(spriteCanvas, px + ghostOffset1, py);
+      }
+
+      // Cyan secondary quantum trail
+      ctx.globalAlpha = 0.22;
+      if (player.facing < 0) {
+        ctx.drawImage(spriteCanvas, ghostOffset2, 0);
+      } else {
+        ctx.drawImage(spriteCanvas, px + ghostOffset2, py);
       }
       ctx.globalAlpha = 1.0;
     }

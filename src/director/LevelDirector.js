@@ -47,9 +47,16 @@ import { HiveGrub } from '../entities/HiveGrub.js';
 import { HoneyWisp } from '../entities/HoneyWisp.js';
 import { HoneyBeetle } from '../entities/HoneyBeetle.js';
 import { HiveFirefly } from '../entities/HiveFirefly.js';
+import { ShadowSquirrel } from '../entities/ShadowSquirrel.js';
+import { ThornGoblin } from '../entities/ThornGoblin.js';
+import { VineCrawler } from '../entities/VineCrawler.js';
+import { SporeBomber } from '../entities/SporeBomber.js';
+import { ForestKing } from '../entities/ForestKing.js';
 
 export class LevelDirector {
   constructor(config = {}) {
+    this.world = config.world || (config.levelData ? config.levelData.world : 1);
+    this.levelData = config.levelData || null;
     this.telemetry = new DirectorTelemetry();
     this.routeManager = config.routeManager || RouteManager.createDefaultHoneywoodRoutes();
     this.pacingCurve = config.pacingCurve || PacingCurve.createDefaultHoneywoodCurve();
@@ -77,9 +84,20 @@ export class LevelDirector {
   }
 
   /**
-   * Register authored templates for Honeywood Glade Vertical Slice.
+   * Register authored templates according to current World.
    */
   initDefaultTemplates() {
+    if (this.world === 2) {
+      this.initWorld2Templates();
+    } else {
+      this.initWorld1Templates();
+    }
+  }
+
+  /**
+   * Register authored templates for Honeywood Glade & Spire (World 1).
+   */
+  initWorld1Templates() {
     // 1. Encounter Template: Under-bridge & terrace encounter
     this.addEncounterTemplate(
       new EncounterTemplate({
@@ -333,6 +351,276 @@ export class LevelDirector {
         },
       })
     );
+
+    // 16. Section 4 Landmark Cinematic: The Spire Gateway Colonnade
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'spire_gateway_landmark_cinematic',
+        name: 'The Spire Gateway Colonnade',
+        triggerX: 8080,
+        letterboxHeight: 48,
+        duration: 3.8,
+        cameraFocusX: 8180,
+        cameraFocusY: 680,
+        bannerTitle: '✨ LANDMARK: THE SPIRE GATEWAY COLONNADE ✨',
+        bannerSubtitle: 'Bioluminescent obsidian and golden hex colonnade marking threshold to the Sovereign Spire',
+      })
+    );
+
+    // 17. Section 4 Secret: The Queen\'s Forbidden Secret Vault
+    this.addSecretTemplate(
+      new SecretTemplate({
+        id: 'queen_secret_vault',
+        name: "The Queen's Forbidden Secret Vault",
+        triggerBounds: { minX: 9240, maxX: 9520, minY: 200, maxY: 400 },
+        bannerText: "🗝️ SECRET DISCOVERED: THE QUEEN'S FORBIDDEN VAULT (+1,000 PTS)",
+        rewardScore: 1000,
+        soundHook: 'playCheckpoint',
+      })
+    );
+
+    // 18. Section 4 Landmark Cinematic: The Sovereign Royal Chrysalis Throne
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'sovereign_throne_landmark_cinematic',
+        name: 'The Sovereign Royal Chrysalis Throne',
+        triggerX: 10180,
+        letterboxHeight: 52,
+        duration: 4.5,
+        cameraFocusX: 10400,
+        cameraFocusY: 560,
+        bannerTitle: '👑 CLIMAX: THE SOVEREIGN HIVE SPIRE — RESCUE KHAN! 👑',
+        bannerSubtitle: 'Shatter the enchanted amber chrysalis to liberate Khan the Bat Boy!',
+      })
+    );
+
+    // 19. Section 4 Encounter: The Sovereign Royal Guard (Beetle + Firefly + Wisp)
+    this.addEncounterTemplate(
+      new EncounterTemplate({
+        id: 'sovereign_royal_guard_encounter',
+        name: 'The Sovereign Throne Royal Guard',
+        beatAffinity: PACING_BEATS.ESCALATION,
+        triggerX: 9800,
+        activationRadius: 480,
+        variants: {
+          RELAXED: [
+            { type: 'beetle', x: 9940, y: 662, patrolLeft: 9840, patrolRight: 10120 },
+          ],
+          STANDARD: [
+            { type: 'beetle', x: 9940, y: 662, patrolLeft: 9840, patrolRight: 10120 },
+            { type: 'firefly', x: 10050, y: 390, patrolLeft: 9880, patrolRight: 10250 },
+            { type: 'wisp', x: 10180, y: 540, amplitude: 55, frequency: 2.2 },
+          ],
+          TACTICAL: [
+            { type: 'beetle', x: 9940, y: 662, patrolLeft: 9840, patrolRight: 10120 },
+            { type: 'firefly', x: 10050, y: 390, patrolLeft: 9880, patrolRight: 10250 },
+            { type: 'wisp', x: 10180, y: 540, amplitude: 55, frequency: 2.2 },
+          ],
+        },
+      })
+    );
+  }
+
+  /**
+   * Register authored templates for The Whispering Forest (World 2).
+   */
+  initWorld2Templates() {
+    // 1. Encounter Template: Spore Glade Ambush (Shadow Squirrel + Spore Bomber)
+    this.addEncounterTemplate(
+      new EncounterTemplate({
+        id: 'spore_glade_ambush_encounter',
+        name: 'The Spore Glade Ambusher',
+        beatAffinity: PACING_BEATS.CHALLENGE,
+        triggerX: 860,
+        activationRadius: 400,
+        variants: {
+          RELAXED: [
+            { type: 'shadow_squirrel', x: 1040, y: 836, patrolLeft: 920, patrolRight: 1220 },
+          ],
+          STANDARD: [
+            { type: 'shadow_squirrel', x: 1040, y: 836, patrolLeft: 920, patrolRight: 1220 },
+            { type: 'spore_bomber', x: 1120, y: 520, amplitude: 45, frequency: 2.0 },
+          ],
+          TACTICAL: [
+            { type: 'shadow_squirrel', x: 1040, y: 836, patrolLeft: 920, patrolRight: 1220 },
+            { type: 'spore_bomber', x: 1120, y: 520, amplitude: 50, frequency: 2.2 },
+          ],
+        },
+      })
+    );
+
+    // 2. Traversal Template: Bouncy Mushroom Trampoline
+    this.addTraversalTemplate(
+      new TraversalTemplate({
+        id: 'bouncy_mushroom_traversal',
+        name: 'Bouncy Bioluminescent Mushroom Trampoline',
+        beatAffinity: PACING_BEATS.CHALLENGE,
+        graceAid: {
+          type: 'climbable_vine',
+          x: 1180,
+          y: 720,
+          width: 48,
+          height: 160,
+          description: 'Hanging liana vine assisting traversal near first bouncy mushroom',
+        },
+      })
+    );
+
+    // 3. Secret Template: Giggling Fungus Hollow
+    this.addSecretTemplate(
+      new SecretTemplate({
+        id: 'giggling_fungus_secret',
+        name: 'Giggling Fungus Hollow',
+        triggerBounds: { minX: 1260, maxX: 1480, minY: 320, maxY: 480 },
+        bannerText: '✨ SECRET DISCOVERY: GIGGLING FUNGUS HOLLOW (+500 PTS)',
+        rewardScore: 500,
+        soundHook: 'playCheckpoint',
+      })
+    );
+
+    // 4. Landmark Cinematic: The Whispering Elder Oak
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'elder_oak_landmark_cinematic',
+        name: 'The Whispering Elder Oak',
+        triggerX: 1960,
+        letterboxHeight: 48,
+        duration: 3.5,
+        cameraFocusX: 2100,
+        cameraFocusY: 840,
+        bannerTitle: '✨ LANDMARK: THE WHISPERING ELDER OAK AWAKENS ✨',
+        bannerSubtitle: 'Ancient fairytale oak murmuring warnings of the corrupted forest depths',
+      })
+    );
+
+    // 5. Encounter Template: The Whispering Oak Vigil
+    this.addEncounterTemplate(
+      new EncounterTemplate({
+        id: 'whispering_oak_vigil_encounter',
+        name: 'The Whispering Oak Vigil',
+        beatAffinity: PACING_BEATS.CHALLENGE,
+        triggerX: 1620,
+        activationRadius: 420,
+        variants: {
+          RELAXED: [
+            { type: 'shadow_squirrel', x: 1620, y: 596, patrolLeft: 1540, patrolRight: 1860 },
+          ],
+          STANDARD: [
+            { type: 'shadow_squirrel', x: 1620, y: 596, patrolLeft: 1540, patrolRight: 1860 },
+            { type: 'vine_crawler', x: 1780, y: 842, patrolLeft: 1680, patrolRight: 1980 },
+          ],
+          TACTICAL: [
+            { type: 'shadow_squirrel', x: 1620, y: 596, patrolLeft: 1540, patrolRight: 1860 },
+            { type: 'vine_crawler', x: 1780, y: 842, patrolLeft: 1680, patrolRight: 1980 },
+          ],
+        },
+      })
+    );
+
+    // 6. Section 2 Encounter: Fungal Hollows Aerial Ambush
+    this.addEncounterTemplate(
+      new EncounterTemplate({
+        id: 'fungal_hollows_aerial_ambush_encounter',
+        name: 'The Fungal Hollows Aerial Ambush',
+        beatAffinity: PACING_BEATS.CHALLENGE,
+        triggerX: 2900,
+        activationRadius: 450,
+        variants: {
+          RELAXED: [
+            { type: 'spore_bomber', x: 3100, y: 480, amplitude: 52, frequency: 2.2 },
+          ],
+          STANDARD: [
+            { type: 'spore_bomber', x: 3100, y: 480, amplitude: 52, frequency: 2.2 },
+            { type: 'vine_crawler', x: 3220, y: 602, patrolLeft: 3080, patrolRight: 3340 },
+          ],
+          TACTICAL: [
+            { type: 'spore_bomber', x: 3100, y: 480, amplitude: 52, frequency: 2.2 },
+            { type: 'vine_crawler', x: 3220, y: 602, patrolLeft: 3080, patrolRight: 3340 },
+          ],
+        },
+      })
+    );
+
+    // 7. Section 2 Landmark Cinematic: The Bioluminescent Mycelium Shrine
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'mycelium_shrine_cinematic',
+        name: 'The Bioluminescent Mycelium Shrine',
+        triggerX: 3860,
+        letterboxHeight: 48,
+        duration: 3.8,
+        cameraFocusX: 4000,
+        cameraFocusY: 600,
+        bannerTitle: '✨ LANDMARK: THE BIOLUMINESCENT MYCELIUM SHRINE ✨',
+        bannerSubtitle: 'Glowering fungal sanctum illuminating ancient forest secrets',
+      })
+    );
+
+    // 8. Section 2 Secret: The Fairy Ring Sanctuary
+    this.addSecretTemplate(
+      new SecretTemplate({
+        id: 'fairy_ring_secret',
+        name: 'The Fairy Ring Sanctuary',
+        triggerBounds: { minX: 4380, maxX: 4660, minY: 220, maxY: 380 },
+        bannerText: '✨ SECRET DISCOVERY: THE FAIRY RING SANCTUARY (+750 PTS)',
+        rewardScore: 750,
+        soundHook: 'playCheckpoint',
+      })
+    );
+
+    // 9. Section 3 Secret: The Druidic Root Vault
+    this.addSecretTemplate(
+      new SecretTemplate({
+        id: 'druidic_root_vault_secret',
+        name: 'The Druidic Root Vault',
+        triggerBounds: { minX: 6240, maxX: 6480, minY: 240, maxY: 420 },
+        bannerText: '🗝️ SECRET DISCOVERED: THE DRUIDIC ROOT VAULT (+750 PTS)',
+        rewardScore: 750,
+        soundHook: 'playCheckpoint',
+      })
+    );
+
+    // 10. Section 3 Landmark Cinematic: The Briar Gate of Ancient Thorns
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'briar_gate_cinematic',
+        name: 'The Briar Gate of Ancient Thorns',
+        triggerX: 7060,
+        letterboxHeight: 48,
+        duration: 4.0,
+        cameraFocusX: 7200,
+        cameraFocusY: 500,
+        bannerTitle: '✨ LANDMARK: THE BRIAR GATE OF ANCIENT THORNS ✨',
+        bannerSubtitle: 'Twisting thorn brambles guarding the boundary of the Forest King',
+      })
+    );
+
+    // 11. Section 4 Secret: The Elder Crown Canopy
+    this.addSecretTemplate(
+      new SecretTemplate({
+        id: 'elder_crown_canopy_secret',
+        name: 'The Elder Crown Canopy',
+        triggerBounds: { minX: 9280, maxX: 9540, minY: 220, maxY: 380 },
+        bannerText: '🗝️ SECRET DISCOVERED: THE ELDER CROWN CANOPY (+1,000 PTS)',
+        rewardScore: 1000,
+        soundHook: 'playCheckpoint',
+      })
+    );
+
+    // 12. Section 4 Landmark Cinematic: The Sacred Grove of the Forest King
+    this.addCinematicTemplate(
+      new CinematicTemplate({
+        id: 'forest_king_grove_cinematic',
+        name: 'The Sacred Grove of the Forest King',
+        triggerX: 10060,
+        letterboxHeight: 52,
+        duration: 4.5,
+        cameraFocusX: 10200,
+        cameraFocusY: 560,
+        bannerTitle: '👑 CLIMAX: THE CORRUPTED FOREST KING AWAKENS! 👑',
+        bannerSubtitle: 'Defeat the colossal thorn titan to restore the Whispering Forest!',
+      })
+    );
   }
 
   // --- Registration helpers ---
@@ -435,29 +723,70 @@ export class LevelDirector {
   }
 
   /**
-   * Safely instantiate authored enemy variant without duplicate spawning.
+   * Safely coordinate authored encounters without duplicate pop-in spawning.
    */
   deployEncounterVariant(level, enemyDefs) {
     if (!level || !enemyDefs) return;
+
+    // When level data has authored enemies, all enemies are already loaded into level.enemies
+    // at level initialization (Level.js reset()). Spawning new enemy objects mid-game causes
+    // pop-in/duplicate bugs (such as a caterpillar popping out of nowhere when moving forward).
+    if (level.data && level.data.enemies && level.data.enemies.length > 0) {
+      if (level.encounterCoordinator && level.enemies) {
+        // Coordinate existing nearby enemies in that encounter zone
+        const encounterRadius = 600;
+        level.enemies.forEach(e => {
+          if (enemyDefs.some(def => Math.abs(e.x - def.x) < encounterRadius)) {
+            if (e.alert) e.alert();
+          }
+        });
+      }
+      return;
+    }
+
+    // Fallback only for procedural / blank levels without pre-authored enemies
     for (const def of enemyDefs) {
-      // Check if an enemy is already at or near this coordinate
+      // Check if an enemy is already at or near this coordinate or patrol zone
       const exists = level.enemies.some(
-        e => Math.abs(e.x - def.x) < 40 && Math.abs(e.y - def.y) < 40
+        e => Math.abs(e.x - def.x) < 150 || (e.patrolLeft && def.patrolLeft && Math.abs(e.patrolLeft - def.patrolLeft) < 100)
       );
       if (exists) continue;
 
       let newEnemy = null;
       switch (def.type) {
         case 'wisp':
+        case 'honey_wisp':
           newEnemy = new HoneyWisp(def.x, def.y, { amplitude: def.amplitude, frequency: def.frequency });
           break;
         case 'beetle':
+        case 'honey_beetle':
           newEnemy = new HoneyBeetle(def.x, def.y, def.patrolLeft, def.patrolRight);
           break;
         case 'firefly':
+        case 'hive_firefly':
           newEnemy = new HiveFirefly(def.x, def.y, { patrolLeft: def.patrolLeft, patrolRight: def.patrolRight });
           break;
+        case 'shadow_squirrel':
+        case 'squirrel':
+          newEnemy = new ShadowSquirrel(def.x, def.y, def.patrolLeft, def.patrolRight);
+          break;
+        case 'thorn_goblin':
+        case 'goblin':
+          newEnemy = new ThornGoblin(def.x, def.y, def.patrolLeft, def.patrolRight);
+          break;
+        case 'vine_crawler':
+        case 'crawler':
+          newEnemy = new VineCrawler(def.x, def.y, { patrolLeft: def.patrolLeft, patrolRight: def.patrolRight });
+          break;
+        case 'spore_bomber':
+        case 'bomber':
+          newEnemy = new SporeBomber(def.x, def.y, { amplitude: def.amplitude, frequency: def.frequency });
+          break;
+        case 'forest_king':
+          newEnemy = new ForestKing(def.x, def.y);
+          break;
         case 'grub':
+        case 'hive_grub':
         default:
           newEnemy = new HiveGrub(def.x, def.y, def.patrolLeft, def.patrolRight);
           break;
@@ -550,13 +879,17 @@ export class LevelDirector {
     for (const cin of this.cinematicTemplates.values()) {
       if (cin.checkTrigger(player.x)) {
         this.logDecision(`Cinematic moment activated: ${cin.name}`, 'CINEMATIC');
-        level.shrineCinematicTriggered = true;
-        level.shrineBannerTimer = cin.duration;
+        if (cin.bannerTitle && !level.shrineCinematicTriggered) {
+          level.shrineBannerText = cin.bannerTitle;
+          level.shrineBannerTimer = cin.duration || 3.5;
+        }
         if (camera) {
           camera.shake(6, 0.4);
         }
-        if (audio && audio.playLevelComplete) {
-          audio.playLevelComplete();
+        if (cin.soundHook && audio && audio[cin.soundHook]) {
+          audio[cin.soundHook]();
+        } else if (audio && audio.playCheckpoint) {
+          audio.playCheckpoint();
         }
       }
     }

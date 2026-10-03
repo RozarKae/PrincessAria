@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 980" width="840" height="980">
+  <defs>
+    <!-- Deep Bioluminescent Obsidian Carapace -->
+    <linearGradient id="obsidianGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="35%" stop-color="#0f0e1a" />
+      <stop offset="75%" stop-color="#090812" />
+      <stop offset="100%" stop-color="#020108" />
+    </linearGradient>
+
+    <!-- Royal Sovereign Gold & Amber Nectar -->
+    <linearGradient id="sovereignGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Translucent Shimmering Nectar Cascade -->
+    <linearGradient id="nectarCascade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(254, 240, 138, 0.95)" />
+      <stop offset="45%" stop-color="rgba(245, 158, 11, 0.75)" />
+      <stop offset="85%" stop-color="rgba(217, 119, 6, 0.85)" />
+      <stop offset="100%" stop-color="rgba(180, 83, 9, 0.3)" />
+    </linearGradient>
+
+    <!-- Bioluminescent Hex Pillar Glow -->
+    <linearGradient id="hexPillarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#181428" />
+      <stop offset="40%" stop-color="#2d224d" />
+      <stop offset="70%" stop-color="#181428" />
+      <stop offset="100%" stop-color="#090712" />
+    </linearGradient>
+
+    <!-- Radiant Throne Aura -->
+    <radialGradient id="throneAura" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="rgba(245, 158, 11, 0.45)" />
+      <stop offset="40%" stop-color="rgba(185, 28, 28, 0.22)" />
+      <stop offset="75%" stop-color="rgba(88, 28, 135, 0.12)" />
+      <stop offset="100%" stop-color="rgba(0, 0, 0, 0)" />
+    </radialGradient>
+
+    <!-- Ruby Monarch Eye Glow -->
+    <radialGradient id="rubyEyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#f87171" />
+      <stop offset="70%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#7f1d1d" />
+    </radialGradient>
+  </defs>
+
+  <!-- Atmospheric Background Glow -->
+  <circle cx="420" cy="460" r="390" fill="url(#throneAura)" />
+
+  <!-- Outer Spire Flanking Hex Pillars (Left Flank) -->
+  <polygon points="120,380 180,350 240,380 240,940 180,970 120,940" fill="url(#hexPillarGrad)" stroke="#382d5c" stroke-width="2" />
+  <polygon points="40,460 90,430 140,460 140,950 90,980 40,950" fill="url(#hexPillarGrad)" stroke="#2b2146" stroke-width="2" />
+
+  <!-- Outer Spire Flanking Hex Pillars (Right Flank) -->
+  <polygon points="600,380 660,350 720,380 720,940 660,970 600,940" fill="url(#hexPillarGrad)" stroke="#382d5c" stroke-width="2" />
+  <polygon points="700,460 750,430 800,460 800,950 750,980 700,950" fill="url(#hexPillarGrad)" stroke="#2b2146" stroke-width="2" />
+
+  <!-- Golden Hex Inlay Tracery on Outer Pillars -->
+  <path d="M180,380 L180,920 M660,380 L660,920" stroke="url(#sovereignGold)" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.8" />
+  <path d="M90,460 L90,920 M750,460 L750,920" stroke="url(#sovereignGold)" stroke-width="1.8" stroke-dasharray="6 6" opacity="0.6" />
+
+  <!-- Main Sovereign Throne Spire Body -->
+  <path d="M220,960 L240,340 L340,160 L420,80 L500,160 L600,340 L620,960 Z" fill="url(#obsidianGrad)" stroke="#4a3b78" stroke-width="3" />
+
+  <!-- Spire Crest: Crown of the Eternal Hive -->
+  <polygon points="420,50 440,110 490,90 460,150 510,170 420,180 330,170 380,150 350,90 400,110" fill="url(#sovereignGold)" stroke="#78350f" stroke-width="2.5" />
+  <!-- Central Spire Crest Gem -->
+  <circle cx="420" cy="130" r="16" fill="url(#rubyEyeGlow)" stroke="#fef08a" stroke-width="2" />
+
+  <!-- Crystalline Hexagonal Window Apertures (Monarch Hive Vault) -->
+  <!-- Center Giant Hexagon -->
+  <polygon points="420,240 480,275 480,345 420,380 360,345 360,275" fill="#05030a" stroke="url(#sovereignGold)" stroke-width="4" />
+  <polygon points="420,255 465,282 465,338 420,365 375,338 375,282" fill="url(#nectarCascade)" opacity="0.75" />
+
+  <!-- Flanking Honeycomb Cells -->
+  <polygon points="340,360 380,382 380,428 340,450 300,428 300,382" fill="#090714" stroke="url(#sovereignGold)" stroke-width="2.5" />
+  <polygon points="500,360 540,382 540,428 500,450 460,428 460,382" fill="#090714" stroke="url(#sovereignGold)" stroke-width="2.5" />
+  <polygon points="420,410 460,432 460,478 420,500 380,478 380,432" fill="#090714" stroke="url(#sovereignGold)" stroke-width="2.5" />
+
+  <!-- Shimmering Cascades of Royal Honey Nectar Falling from Throne Vault -->
+  <path d="M410,380 C410,480 395,640 400,940" stroke="url(#nectarCascade)" stroke-width="12" fill="none" opacity="0.9" stroke-linecap="round" />
+  <path d="M430,380 C430,480 445,640 440,940" stroke="url(#nectarCascade)" stroke-width="12" fill="none" opacity="0.9" stroke-linecap="round" />
+  <path d="M420,380 L420,950" stroke="#fef08a" stroke-width="4" opacity="0.8" />
+
+  <path d="M330,450 C330,560 320,720 325,940" stroke="url(#nectarCascade)" stroke-width="7" fill="none" opacity="0.8" />
+  <path d="M510,450 C510,560 520,720 515,940" stroke="url(#nectarCascade)" stroke-width="7" fill="none" opacity="0.8" />
+
+  <!-- Monarch Queen Bee Relief Carvings & Obsidian Wings on Throne -->
+  <path d="M420,520 C340,480 260,540 240,620 C270,640 330,620 420,580" fill="#1e1832" stroke="url(#sovereignGold)" stroke-width="2" />
+  <path d="M420,520 C500,480 580,540 600,620 C570,640 510,620 420,580" fill="#1e1832" stroke="url(#sovereignGold)" stroke-width="2" />
+
+  <!-- Grand Throne Dais & Runic Hex Pedestal Platform -->
+  <polygon points="180,880 660,880 700,960 140,960" fill="url(#hexPillarGrad)" stroke="url(#sovereignGold)" stroke-width="3.5" />
+  <!-- Upper Dais Step -->
+  <polygon points="230,830 610,830 640,880 200,880" fill="#241b3d" stroke="url(#sovereignGold)" stroke-width="2.5" />
+  <!-- Runic Glyphs on Pedestal Face -->
+  <circle cx="300" cy="920" r="14" fill="none" stroke="url(#sovereignGold)" stroke-width="2" />
+  <polygon points="300,910 310,925 290,925" fill="url(#sovereignGold)" />
+  <circle cx="420" cy="920" r="18" fill="none" stroke="url(#sovereignGold)" stroke-width="2.5" />
+  <polygon points="420,906 432,927 408,927" fill="url(#sovereignGold)" />
+  <circle cx="540" cy="920" r="14" fill="none" stroke="url(#sovereignGold)" stroke-width="2" />
+  <polygon points="540,910 550,925 530,925" fill="url(#sovereignGold)" />
+
+  <!-- Floating Amber Energy Motes -->
+  <circle cx="280" cy="320" r="4.5" fill="#fef08a" opacity="0.9" />
+  <circle cx="560" cy="310" r="4" fill="#fef08a" opacity="0.9" />
+  <circle cx="360" cy="220" r="3.5" fill="#fbbf24" opacity="0.85" />
+  <circle cx="480" cy="210" r="4" fill="#fbbf24" opacity="0.85" />
+  <circle cx="210" cy="450" r="3" fill="#f59e0b" opacity="0.75" />
+  <circle cx="630" cy="440" r="3.5" fill="#f59e0b" opacity="0.75" />
+</svg>

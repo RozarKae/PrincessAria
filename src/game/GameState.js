@@ -12,12 +12,12 @@ export class GameState {
     this.highScore = this.loadHighScore();
   }
 
-  resetForNewGame() {
+  resetForNewGame(world = 1, level = 1) {
     this.lives = this.defaultLives;
     this.coins = 0;
     this.score = 0;
-    this.world = 1;
-    this.level = 1;
+    this.world = world;
+    this.level = level;
   }
 
   addCoins(amount = 1) {

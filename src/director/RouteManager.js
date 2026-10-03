@@ -421,15 +421,129 @@ export class RouteManager {
       bounds: { minX: 7650, maxX: 8000, minY: 680, maxY: 900 },
       entryPoint: { x: 7680, y: 760 },
       reconnectPoint: {
-        x: 7860,
-        y: 700,
+        x: 8000,
+        y: 760,
         targetRouteType: ROUTE_TYPES.SAFE,
-        targetBeatName: 'CLIMAX',
-        description: 'Reaches Batboy rescue sanctuary at the fortress citadel gatehouse',
+        targetBeatName: 'DISCOVERY',
+        description: 'Crosses citadel bridge to Spire Threshold Gateway at x: 8000',
       },
       riskLevel: 1,
       rewardMultiplier: 1.0,
-      description: 'Grand royal citadel bridge leading to the Batboy chrysalis cage and Hive Spire threshold.',
+      description: 'Grand royal citadel bridge leading to the Spire threshold colonnade.',
+    });
+
+    // 13. SAFE ROUTE: Spire Threshold Colonnade (x: 8000 to 8460, y: 680 to 900)
+    rm.addRouteZone({
+      id: 'spire_threshold_gateway',
+      name: 'The Spire Gateway Colonnade (Safe Route)',
+      type: ROUTE_TYPES.SAFE,
+      bounds: { minX: 8000, maxX: 8460, minY: 680, maxY: 900 },
+      entryPoint: { x: 8000, y: 760 },
+      reconnectPoint: {
+        x: 8460,
+        y: 680,
+        targetRouteType: ROUTE_TYPES.ADVANCED,
+        targetBeatName: 'CHALLENGE',
+        description: 'Reaches the edge of the Hexagonal Gauntlet at x: 8460',
+      },
+      riskLevel: 1,
+      rewardMultiplier: 1.0,
+      description: 'Grand obsidian hex pillars and Checkpoint 5 marking entry into the Sovereign Spire.',
+    });
+
+    // 14. ADVANCED ROUTE: Hex Gauntlet & Geysers (x: 8460 to 9100, y: 460 to 820)
+    rm.addRouteZone({
+      id: 'hex_gauntlet_geysers',
+      name: 'The Hexagonal Gauntlet & Honey Geysers (Advanced Route)',
+      type: ROUTE_TYPES.ADVANCED,
+      bounds: { minX: 8460, maxX: 9100, minY: 460, maxY: 820 },
+      entryPoint: { x: 8460, y: 680 },
+      reconnectPoint: {
+        x: 8980,
+        y: 380,
+        targetRouteType: ROUTE_TYPES.SECRET,
+        targetBeatName: 'EXPLORATION',
+        description: 'Launches up into High Spire Gallery at x: 8980',
+      },
+      riskLevel: 4,
+      rewardMultiplier: 2.5,
+      description: 'Moving obsidian hex lifts and vertical golden updraft geysers over bottomless void.',
+    });
+
+    // 15. SECRET ROUTE: The Queen\'s Forbidden Secret Vault (x: 9100 to 9560, y: 220 to 420)
+    rm.addRouteZone({
+      id: 'queen_secret_vault',
+      name: "The Queen's Forbidden Vault (Secret Route)",
+      type: ROUTE_TYPES.SECRET,
+      bounds: { minX: 9100, maxX: 9560, minY: 220, maxY: 420 },
+      entryPoint: { x: 9260, y: 340 },
+      reconnectPoint: {
+        x: 9840,
+        y: 720,
+        targetRouteType: ROUTE_TYPES.STANDARD,
+        targetBeatName: 'ESCALATION',
+        description: 'Descends to the Royal Ante-Chamber at x: 9840',
+      },
+      riskLevel: 3,
+      rewardMultiplier: 4.0,
+      description: "High secret sanctuary housing Khan's enchanted bat keepsake and royal shard cache.",
+    });
+
+    // 16. STANDARD ROUTE: Sticky Amber Nectar Run (x: 9200 to 9700, y: 640 to 820)
+    rm.addRouteZone({
+      id: 'sticky_amber_run',
+      name: 'Sticky Amber Nectar Run (Standard Route)',
+      type: ROUTE_TYPES.STANDARD,
+      bounds: { minX: 9200, maxX: 9700, minY: 640, maxY: 820 },
+      entryPoint: { x: 9240, y: 760 },
+      reconnectPoint: {
+        x: 9840,
+        y: 720,
+        targetRouteType: ROUTE_TYPES.STANDARD,
+        targetBeatName: 'ESCALATION',
+        description: 'Transitions to Ante-Chamber terrace at x: 9840',
+      },
+      riskLevel: 2,
+      rewardMultiplier: 1.5,
+      description: 'Lower viscous amber nectar corridor requiring momentum control under beetle patrol.',
+    });
+
+    // 17. STANDARD ROUTE: Royal Guard Ante-Chamber (x: 9700 to 10180, y: 440 to 820)
+    rm.addRouteZone({
+      id: 'royal_antechamber_ascent',
+      name: 'Royal Chrysalis Ante-Chamber (Standard Route)',
+      type: ROUTE_TYPES.STANDARD,
+      bounds: { minX: 9700, maxX: 10180, minY: 440, maxY: 820 },
+      entryPoint: { x: 9840, y: 720 },
+      reconnectPoint: {
+        x: 10320,
+        y: 720,
+        targetRouteType: ROUTE_TYPES.SAFE,
+        targetBeatName: 'CLIMAX',
+        description: 'Launches onto Sovereign Throne Dais at x: 10320',
+      },
+      riskLevel: 3,
+      rewardMultiplier: 2.2,
+      description: "Vertical hex elevator and stepped ramparts under the Queen's elite royal guard defense.",
+    });
+
+    // 18. SAFE ROUTE: The Sovereign Royal Chrysalis Throne (x: 10180 to 10800, y: 480 to 900)
+    rm.addRouteZone({
+      id: 'sovereign_throne_climax',
+      name: 'The Sovereign Chrysalis Throne (Climax Route)',
+      type: ROUTE_TYPES.SAFE,
+      bounds: { minX: 10180, maxX: 10800, minY: 480, maxY: 900 },
+      entryPoint: { x: 10320, y: 720 },
+      reconnectPoint: {
+        x: 10480,
+        y: 520,
+        targetRouteType: ROUTE_TYPES.SAFE,
+        targetBeatName: 'CLIMAX',
+        description: 'Reaches Batboy rescue sanctuary at the Sovereign Hive Throne',
+      },
+      riskLevel: 1,
+      rewardMultiplier: 1.0,
+      description: 'The monumental climax of World 1: confronting the Queen Bee and shattering the Chrysalis to rescue Khan!',
     });
 
     return rm;

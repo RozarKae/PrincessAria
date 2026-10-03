@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80">
+  <defs>
+    <linearGradient id="barkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a3525"/>
+      <stop offset="30%" stop-color="#382417"/>
+      <stop offset="70%" stop-color="#24150c"/>
+      <stop offset="100%" stop-color="#140b06"/>
+    </linearGradient>
+    <linearGradient id="mossGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="40%" stop-color="#22c55e"/>
+      <stop offset="85%" stop-color="#15803d"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Gnarled Organic Ancient Bark Bough -->
+  <path d="M 8 24 Q 50 18 100 22 Q 180 16 272 24 L 265 65 Q 190 75 110 68 Q 40 72 15 65 Z" fill="url(#barkGradient)" stroke="#1c1109" stroke-width="2"/>
+
+  <!-- Bark Striations and Rings -->
+  <path d="M 30 35 Q 90 32 150 36 Q 210 32 250 38" stroke="#24150c" stroke-width="2.5" fill="none"/>
+  <path d="M 45 48 Q 120 44 200 48 Q 235 46 255 50" stroke="#1c1109" stroke-width="2" fill="none"/>
+  <path d="M 25 58 Q 70 56 120 60 Q 180 57 240 60" stroke="#140b06" stroke-width="1.8" fill="none"/>
+
+  <!-- Overgrown Emerald Moss Cushion on top -->
+  <path d="M 12 22 Q 35 12 60 18 Q 85 11 115 17 Q 155 10 195 16 Q 235 12 268 22 Q 250 28 210 26 Q 160 29 110 26 Q 50 29 12 22 Z" fill="url(#mossGradient)"/>
+  
+  <!-- Moss tufts dangling down sides -->
+  <path d="M 40 26 Q 45 36 50 26 M 120 27 Q 126 38 132 27 M 210 26 Q 215 37 220 26" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+  <!-- Subtle Bioluminescent Tiny Fungi Sprouts -->
+  <circle cx="85" cy="14" r="3" fill="#38bdf8"/>
+  <circle cx="92" cy="12" r="2" fill="#7dd3fc"/>
+  <circle cx="175" cy="13" r="3.5" fill="#f43f5e"/>
+  <circle cx="182" cy="15" r="2.5" fill="#fb7185"/>
+</svg>

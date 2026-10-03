@@ -74,6 +74,32 @@ async function captureCanvas(cdp, filename) {
   throw new Error('Failed to capture canvas screenshot');
 }
 
+async function setPlayerPosition(cdp, x, y, opts = {}) {
+  await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      if (!g || !g.player) return false;
+      g.state = 'PLAYING';
+      g.gameState.lives = 99;
+      g.player.isDead = false;
+      g.player.isInvincible = false;
+      g.player.invincibilityTimer = 0;
+      g.respawnTimer = 0;
+      g.player.x = ${x};
+      g.player.y = ${y};
+      g.player.vx = ${opts.vx || 0};
+      g.player.vy = ${opts.vy || 0};
+      if (${opts.isGrounded !== undefined}) {
+        g.player.isGrounded = ${opts.isGrounded};
+      }
+      if (${opts.cameraX !== undefined}) {
+        g.camera.x = ${opts.cameraX};
+      }
+      return true;
+    })()`,
+  });
+}
+
 async function run() {
   const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
   const port = 9338;
@@ -90,7 +116,7 @@ async function run() {
       '--no-default-browser-check',
       '--disable-gpu',
       '--window-size=1600,900',
-      'http://localhost:5173/?play=true',
+      'http://localhost:5173/PrincessAria/?play=true',
     ],
     { stdio: 'ignore' }
   );
@@ -107,7 +133,7 @@ async function run() {
   }
 
   const targets = JSON.parse(rawList);
-  const page = targets.find(t => t.type === 'page' && t.url.includes('localhost:5173'));
+  const page = targets.find(t => t.type === 'page' && (t.url.includes('localhost:5173') || t.url.includes('PrincessAria')));
   if (!page || !page.webSocketDebuggerUrl) {
     console.error('[CDP] Page target not found');
     chrome.kill();
@@ -118,10 +144,23 @@ async function run() {
   await cdp.connect();
   console.log('[CDP] WebSocket connected to game page.');
 
-  // Let game initialize assets and game loop
-  await sleep(1500);
+  // Wait for game initialization
+  console.log('[CDP] Waiting for game initialization and PLAYING state...');
+  let gameReady = false;
+  for (let i = 0; i < 30; i++) {
+    const readyRes = await cdp.send('Runtime.evaluate', {
+      expression: `!!(window.__game && window.__game.player && window.__game.state === 'PLAYING')`,
+      returnByValue: true,
+    });
+    if (readyRes?.result?.value) {
+      gameReady = true;
+      break;
+    }
+    await sleep(400);
+  }
+  console.log(`[CDP] Game engine ready: ${gameReady}`);
 
-  // 1. Initial State (Glade Arrival)
+  // 1. Initial State (Section 1: Glade Arrival)
   const initialInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
       const g = window.__game || window.game;
@@ -133,43 +172,24 @@ async function run() {
         platforms: g?.level?.platforms?.length,
         enemies: g?.level?.enemies?.length,
         checkpoints: g?.level?.checkpoints?.length,
+        biome: g?.audio?.currentBiome,
       };
     })()`,
     returnByValue: true,
   });
-  console.log('[CDP] Initial Game State:', initialInfo?.result?.value);
+  console.log('[CDP] Initial Game State (Section 1):', initialInfo?.result?.value);
+  await sleep(500);
   await captureCanvas(cdp, 'expansion_beat1_glade_arrival.png');
 
-  // 2. Teleport Aria to the Chasm Brink (x: 2420, y: 790) to test transition
+  // 2. Beat 5: Section 2 Whispering Canopy Chasm Brink (x: 2420, y: 790)
   console.log('[CDP] Testing Transition to Section 2 Chasm Brink (x: 2420)...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 2420;
-        g.player.y = 790;
-        g.player.vx = 0;
-        g.player.vy = 0;
-        g.camera.x = 2200;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 2420, 790, { cameraX: 2200 });
   await sleep(800);
   await captureCanvas(cdp, 'expansion_beat5_chasm_brink.png');
 
-  // 3. Test Bouncy Amber Raft at x: 2680
-  console.log('[CDP] Testing Bouncy Amber Raft at x: 2680...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 2700;
-        g.player.y = 700;
-        g.player.vy = 120; // falling down onto raft
-        g.camera.x = 2500;
-      }
-    })()`,
-  });
+  // 3. Beat 6: Bouncy Amber Raft at x: 2700
+  console.log('[CDP] Testing Bouncy Amber Raft at x: 2700...');
+  await setPlayerPosition(cdp, 2700, 700, { vy: 120, cameraX: 2500, isGrounded: false });
   await sleep(400); // allow bounce resolution
   const bounceInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -186,17 +206,14 @@ async function run() {
   console.log('[CDP] Amber Bounce Physics & Biome State:', bounceInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat6_amber_bounce.png');
 
-  // 4. Test Hanging Vine Climbing at x: 2940
-  console.log('[CDP] Testing Vine Climbing at x: 2940...');
+  // 4. Beat 6: Hanging Vine Climbing at x: 2945
+  console.log('[CDP] Testing Vine Climbing at x: 2945...');
+  await setPlayerPosition(cdp, 2945, 540, { cameraX: 2800 });
   await cdp.send('Runtime.evaluate', {
     expression: `(function() {
       const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 2945;
-        g.player.y = 540;
-        g.player.vx = 0;
-        g.player.vy = 0;
-        g.input.keys['KeyW'] = true; // climb up
+      if (g) {
+        g.input.keys['KeyW'] = true;
         g.input.keys['ArrowUp'] = true;
       }
     })()`,
@@ -227,18 +244,9 @@ async function run() {
     })()`,
   });
 
-  // 5. Test Monumental Landmark: The Great Hollow Redwood & Amber Cataract (x: 3850)
+  // 5. Beat 7: Monumental Landmark: The Great Hollow Redwood & Amber Cataract (x: 3850)
   console.log('[CDP] Testing Hollow Redwood Landmark at x: 3850...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 3850;
-        g.player.y = 440;
-        g.camera.x = 3600;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 3850, 440, { cameraX: 3600 });
   await sleep(1000);
   const landmarkInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -248,7 +256,6 @@ async function run() {
         shrineBannerText: g?.level?.shrineBannerText,
         shrineBannerTimer: g?.level?.shrineBannerTimer,
         cameraX: g?.camera?.x,
-        cameraY: g?.camera?.y,
       };
     })()`,
     returnByValue: true,
@@ -256,18 +263,9 @@ async function run() {
   console.log('[CDP] Hollow Redwood Landmark State:', landmarkInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat7_hollow_redwood_landmark.png');
 
-  // 6. Test Secret Structure: The Forgotten Royal Apiary (x: 4480, y: 320)
+  // 6. Beat 8: Secret Structure 2: The Forgotten Royal Apiary (x: 4480, y: 280)
   console.log('[CDP] Testing Secret Royal Apiary Sanctuary at x: 4480...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 4480;
-        g.player.y = 280;
-        g.camera.x = 4250;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 4480, 280, { cameraX: 4250 });
   await sleep(800);
   const secretInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -284,18 +282,9 @@ async function run() {
   console.log('[CDP] Secret Royal Apiary State:', secretInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat8_royal_apiary_secret.png');
 
-  // 7. Test Lower Sentry Gate Encounter (x: 4380, y: 600)
+  // 7. Beat 8: Lower Sentry Gate Encounter (x: 4380, y: 600)
   console.log('[CDP] Testing Redwood Sentry Gate Encounter at x: 4380...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 4380;
-        g.player.y = 600;
-        g.camera.x = 4200;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 4380, 600, { cameraX: 4200 });
   await sleep(800);
   const sentryInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -313,18 +302,9 @@ async function run() {
   console.log('[CDP] Sentry Gate Encounter State:', sentryInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat8_sentry_gate_encounter.png');
 
-  // 8. Test Section 2 Exit Outpost Gateway & Section 3 Transition at x: 5020
+  // 8. Beat 9: Section 2 Exit Outpost Gateway & Section 3 Transition at x: 5020
   console.log('[CDP] Testing Outpost Gateway and Section 3 Transition at x: 5020...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 5020;
-        g.player.y = 660;
-        g.camera.x = 4700;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 5020, 660, { cameraX: 4700 });
   await sleep(800);
   const outpostInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -341,18 +321,9 @@ async function run() {
   console.log('[CDP] Outpost Gateway State:', outpostInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat9_outpost_gateway.png');
 
-  // 9. Test Section 3 Colonnade Gateway & Checkpoint 3 at x: 5320
+  // 9. Beat 10: Section 3 Colonnade Gateway & Checkpoint 3 at x: 5320
   console.log('[CDP] Testing Section 3 Colonnade Gateway at x: 5320...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 5320;
-        g.player.y = 700;
-        g.camera.x = 5100;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 5320, 700, { cameraX: 5100 });
   await sleep(800);
   const colonnadeInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -368,19 +339,9 @@ async function run() {
   console.log('[CDP] Section 3 Colonnade Gateway State:', colonnadeInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat10_colonnade_gateway.png');
 
-  // 10. Test Section 3 Crumble Block & Moving Runestones at x: 5780
-  console.log('[CDP] Testing Crumble Block & Moving Runestones at x: 5780...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 5820;
-        g.player.y = 600; // falling onto crumble block
-        g.player.vy = 80;
-        g.camera.x = 5600;
-      }
-    })()`,
-  });
+  // 10. Beat 11: Section 3 Crumble Block & Moving Runestones at x: 5820
+  console.log('[CDP] Testing Crumble Block & Moving Runestones at x: 5820...');
+  await setPlayerPosition(cdp, 5820, 600, { vy: 80, cameraX: 5600, isGrounded: false });
   await sleep(400); // allow landing and shake start
   const crumbleShakeInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -400,21 +361,9 @@ async function run() {
   console.log('[CDP] Crumble Block Shake & Moving Runestone State:', crumbleShakeInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat11_crumble_viaduct.png');
 
-  // Wait for crumble block to shatter
-  await sleep(600);
-
-  // 11. Test Section 3 Secret Structure: The Sunstone Armory Vault at x: 6300, y: 320
+  // 11. Beat 12: Section 3 Secret Structure 3: The Sunstone Armory Vault at x: 6300, y: 310
   console.log('[CDP] Testing Secret Sunstone Armory Vault at x: 6300...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 6300;
-        g.player.y = 310;
-        g.camera.x = 6100;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 6300, 310, { cameraX: 6100 });
   await sleep(800);
   const armoryInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -431,18 +380,9 @@ async function run() {
   console.log('[CDP] Sunstone Armory Vault Secret State:', armoryInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat12_armory_vault_secret.png');
 
-  // 12. Test Section 3 Monumental Landmark: The Sunstone Fortress Watchtower at x: 6920
+  // 12. Beat 14: Section 3 Monumental Landmark: The Sunstone Fortress Watchtower at x: 6920
   console.log('[CDP] Testing Sunstone Fortress Watchtower Landmark at x: 6920...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 6920;
-        g.player.y = 660;
-        g.camera.x = 6700;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 6920, 660, { cameraX: 6700 });
   await sleep(1000);
   const watchtowerInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -460,18 +400,9 @@ async function run() {
   console.log('[CDP] Fortress Watchtower Landmark State:', watchtowerInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat14_watchtower_landmark.png');
 
-  // 13. Test Watchtower Rampart Siege Encounter at x: 7200
+  // 13. Beat 14: Watchtower Rampart Siege Encounter at x: 7200
   console.log('[CDP] Testing Watchtower Rampart Siege Encounter at x: 7200...');
-  await cdp.send('Runtime.evaluate', {
-    expression: `(function() {
-      const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 7200;
-        g.player.y = 540;
-        g.camera.x = 7000;
-      }
-    })()`,
-  });
+  await setPlayerPosition(cdp, 7200, 540, { cameraX: 7000 });
   await sleep(800);
   const siegeInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -489,18 +420,166 @@ async function run() {
   console.log('[CDP] Watchtower Siege Encounter State:', siegeInfo?.result?.value);
   await captureCanvas(cdp, 'expansion_beat14_watchtower_siege_encounter.png');
 
-  // 14. Test Grand Citadel Gateway & Batboy Rescue at x: 7840
-  console.log('[CDP] Testing Citadel Gateway & Batboy Victory at x: 7840...');
-  await cdp.send('Runtime.evaluate', {
+  // 14. Beat 15: Grand Citadel Gateway & Spire Threshold Approach at x: 7840
+  console.log('[CDP] Testing Grand Citadel Gateway & Spire Approach at x: 7840...');
+  await setPlayerPosition(cdp, 7840, 680, { cameraX: 7500 });
+  await sleep(800);
+  const citadelInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
       const g = window.__game || window.game;
-      if (g && g.player) {
-        g.player.x = 7840;
-        g.player.y = 680;
-        g.camera.x = 7500;
-      }
+      return {
+        gameState: g?.state,
+        cameraX: g?.camera?.x,
+        playerX: g?.player?.x,
+        biome: g?.audio?.currentBiome,
+      };
     })()`,
+    returnByValue: true,
   });
+  console.log('[CDP] Grand Citadel Gateway State:', citadelInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat15_citadel_gateway.png');
+
+  // 15. Beat 16: Spire Threshold Gateway Landmark & Checkpoint 5 at x: 8180
+  console.log('[CDP] Testing Spire Threshold Gateway & Checkpoint 5 at x: 8180...');
+  await setPlayerPosition(cdp, 8180, 680, { cameraX: 8000 });
+  await sleep(1000);
+  const spireGatewayInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      return {
+        spireGatewayTriggered: g?.level?.spireGatewayTriggered,
+        shrineBannerText: g?.level?.shrineBannerText,
+        shrineBannerTimer: g?.level?.shrineBannerTimer,
+        checkpoint5: g?.level?.checkpoints?.find(c => c.id === 5),
+        biome: g?.audio?.currentBiome,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Spire Threshold Gateway State:', spireGatewayInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat16_spire_threshold.png');
+
+  // 16. Beat 17: Hex Gauntlet & Moving Hex Lift at x: 8520
+  console.log('[CDP] Testing Hex Gauntlet & Moving Hex Lift at x: 8520...');
+  await setPlayerPosition(cdp, 8520, 620, { cameraX: 8350 });
+  await sleep(600);
+  const hexGauntletInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      const beetle = g?.level?.enemies?.find(e => e.species === 'beetle' && e.x > 8400);
+      const movingHex = g?.level?.movingPlatforms?.find(m => m.type === 'moving_hex');
+      return {
+        isGrounded: g?.player?.isGrounded,
+        beetleState: beetle?.fsm?.currentState,
+        movingHexX: movingHex?.x,
+        movingHexY: movingHex?.y,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Hex Gauntlet State:', hexGauntletInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat17_hex_gauntlet.png');
+
+  // 17. Beat 17: Honey Geyser 1 Updraft Catapult Launch at x: 8960
+  console.log('[CDP] Testing Honey Geyser 1 Updraft Catapult Launch at x: 8960...');
+  await setPlayerPosition(cdp, 8960, 710, { vy: 100, cameraX: 8800, isGrounded: false });
+  await sleep(150); // allow geyser launch trigger
+  const geyserInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      return {
+        playerVy: g?.player?.vy,
+        playerY: g?.player?.y,
+        isGrounded: g?.player?.isGrounded,
+        cameraShakeTimer: g?.camera?.shakeTimer,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Honey Geyser Updraft Launch State:', geyserInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat17_geyser_updraft.png');
+
+  // 18. Beat 18: The Queen's Forbidden Secret Vault at x: 9340, y: 280
+  console.log('[CDP] Testing The Queen\'s Forbidden Secret Vault at x: 9340...');
+  await setPlayerPosition(cdp, 9340, 276, { cameraX: 9150 });
+  await sleep(800);
+  const secretVaultInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      return {
+        spireSecretDiscovered: g?.level?.spireSecretDiscovered,
+        secretBannerText: g?.level?.secretBannerText,
+        secretBannerTimer: g?.level?.secretBannerTimer,
+        score: g?.gameState?.score,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Queen\'s Secret Vault State:', secretVaultInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat18_secret_vault.png');
+
+  // 19. Beat 18: Sticky Amber Nectar Run at x: 9340, y: 720
+  console.log('[CDP] Testing Sticky Amber Nectar Run Slowdown at x: 9340...');
+  await setPlayerPosition(cdp, 9340, 718, { vx: 220, cameraX: 9150 });
+  await sleep(400);
+  const stickyAmberInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      return {
+        playerVx: g?.player?.vx,
+        isGrounded: g?.player?.isGrounded,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Sticky Amber Run State:', stickyAmberInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat18_sticky_amber_run.png');
+
+  // 20. Beat 19: Royal Ante-Chamber Siege Encounter at x: 9920
+  console.log('[CDP] Testing Royal Ante-Chamber Siege Encounter at x: 9920...');
+  await setPlayerPosition(cdp, 9920, 650, { cameraX: 9700 });
+  await sleep(800);
+  const anteChamberInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      const beetle = g?.level?.enemies?.find(e => e.species === 'beetle' && e.x > 9800);
+      const firefly = g?.level?.enemies?.find(e => e.species === 'firefly' && e.x > 9800);
+      const wisp = g?.level?.enemies?.find(e => e.species === 'wisp' && e.x > 9800);
+      return {
+        beetleState: beetle?.fsm?.currentState,
+        fireflyState: firefly?.fsm?.currentState,
+        hasWisp: !!wisp,
+        checkpoint6: g?.level?.checkpoints?.find(c => c.id === 6),
+        synergy: g?.level?.encounterCoordinator?.activeSynergy,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Royal Ante-Chamber Siege State:', anteChamberInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat19_antechamber_siege.png');
+
+  // 21. Beat 20: The Sovereign Royal Chrysalis Throne Climax at x: 10360
+  console.log('[CDP] Testing Sovereign Throne Climax at x: 10360...');
+  await setPlayerPosition(cdp, 10360, 656, { cameraX: 10100 });
+  await sleep(1000);
+  const throneClimaxInfo = await cdp.send('Runtime.evaluate', {
+    expression: `(function() {
+      const g = window.__game || window.game;
+      return {
+        sovereignThroneTriggered: g?.level?.sovereignThroneTriggered,
+        shrineBannerText: g?.level?.shrineBannerText,
+        shrineBannerTimer: g?.level?.shrineBannerTimer,
+        cameraFocusX: g?.camera?.focusTargetX,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  console.log('[CDP] Sovereign Throne Climax State:', throneClimaxInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat20_sovereign_throne_climax.png');
+
+  // 22. Beat 20: Batboy Rescue & Complete World 1 Victory at x: 10480
+  console.log('[CDP] Testing Batboy Rescue & Complete World 1 Victory at x: 10480...');
+  await setPlayerPosition(cdp, 10480, 520, { cameraX: 10200 });
   await sleep(800);
   const victoryInfo = await cdp.send('Runtime.evaluate', {
     expression: `(function() {
@@ -514,10 +593,10 @@ async function run() {
     })()`,
     returnByValue: true,
   });
-  console.log('[CDP] Grand Citadel Victory State:', victoryInfo?.result?.value);
-  await captureCanvas(cdp, 'expansion_beat15_citadel_victory.png');
+  console.log('[CDP] World 1 Complete Climax Victory State:', victoryInfo?.result?.value);
+  await captureCanvas(cdp, 'expansion_beat20_world1_complete_victory.png');
 
-  console.log('[CDP] All Section 1, 2, and 3 Expansion playtests completed successfully!');
+  console.log('[CDP] All 4 Sections (10,800px) Complete World 1 Expansion playtests completed successfully!');
   cdp.close();
   chrome.kill();
   try {

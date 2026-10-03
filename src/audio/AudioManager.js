@@ -60,11 +60,27 @@ export class AudioManager {
     this.masterVolume = loadStoredVolume();
     this.isMuted = loadStoredMuted();
 
-    // Music & Ambience loop state
+    // Music & Ambience dynamic procedural state
     this.bgmPlaying = false;
     this.bgmTimer = null;
     this.bgmStep = 0;
+    this.stepIndex = 0;
+    this.nextStepTime = 0;
     this.currentBiome = 'glade';
+    this.currentScene = 'glade';
+    this.targetScene = 'glade';
+    this.currentIntensity = 0.2;
+    this.targetIntensity = 0.2;
+    this.specialMode = 'normal'; // 'normal' | 'secret' | 'cinematic' | 'climax'
+    this.currentTempo = 112;
+    this.targetTempo = 112;
+
+    this.musicPadGain = null;
+    this.musicBassGain = null;
+    this.musicLeadGain = null;
+    this.musicArpGain = null;
+    this.musicDrumsGain = null;
+    this.noiseBuffer = null;
 
     this.unlocked = false;
     this.audioBlocked = false;
@@ -122,6 +138,41 @@ export class AudioManager {
       this.musicGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
       this.musicGain.gain.value = 0.35;
       this.musicGain.connect(this.masterGain);
+
+      // Dedicated Music Sub-Busses for Scene-Wise Dynamic Mix Elevation
+      this.musicPadGain = this.ctx.createGain();
+      this.musicPadGain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+      this.musicPadGain.gain.value = 0.28;
+      this.musicPadGain.connect(this.musicGain);
+
+      this.musicBassGain = this.ctx.createGain();
+      this.musicBassGain.gain.setValueAtTime(0.30, this.ctx.currentTime);
+      this.musicBassGain.gain.value = 0.30;
+      this.musicBassGain.connect(this.musicGain);
+
+      this.musicLeadGain = this.ctx.createGain();
+      this.musicLeadGain.gain.setValueAtTime(0.24, this.ctx.currentTime);
+      this.musicLeadGain.gain.value = 0.24;
+      this.musicLeadGain.connect(this.musicGain);
+
+      this.musicArpGain = this.ctx.createGain();
+      this.musicArpGain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+      this.musicArpGain.gain.value = 0.18;
+      this.musicArpGain.connect(this.musicGain);
+
+      this.musicDrumsGain = this.ctx.createGain();
+      this.musicDrumsGain.gain.setValueAtTime(0.0, this.ctx.currentTime); // Starts silent, elevates in combat / climax
+      this.musicDrumsGain.gain.value = 0.0;
+      this.musicDrumsGain.connect(this.musicGain);
+
+      if (!this.noiseBuffer) {
+        const bufferSize = this.ctx.sampleRate;
+        this.noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = this.noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+      }
 
       if (this.ctx.state === 'suspended') {
         this.ctx.resume().catch(() => {});
@@ -260,6 +311,61 @@ export class AudioManager {
       gainHarm.connect(this.sfxGain);
       oscHarm.start(now);
       oscHarm.stop(now + 0.12);
+    } catch (e) {}
+  }
+
+  // ========================================================
+  // 1B. PLAYER DOUBLE JUMP SFX (Celestial starlight flutter)
+  // ========================================================
+  playDoubleJump() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      // 1. Ascending celestial flutter arpeggio (sweeping 380Hz -> 960Hz)
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(380, now);
+      osc.frequency.exponentialRampToValueAtTime(960, now + 0.14);
+
+      gain.gain.setValueAtTime(0.32, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(now);
+      osc.stop(now + 0.16);
+
+      // 2. Twin fairy wing flutter overtone (760Hz -> 1920Hz)
+      const oscWing = this.ctx.createOscillator();
+      const gainWing = this.ctx.createGain();
+      oscWing.type = 'sine';
+      oscWing.frequency.setValueAtTime(760, now + 0.02);
+      oscWing.frequency.exponentialRampToValueAtTime(1920, now + 0.15);
+
+      gainWing.gain.setValueAtTime(0.22, now + 0.02);
+      gainWing.gain.exponentialRampToValueAtTime(0.005, now + 0.16);
+
+      oscWing.connect(gainWing);
+      gainWing.connect(this.sfxGain);
+      oscWing.start(now + 0.02);
+      oscWing.stop(now + 0.16);
+
+      // 3. Stardust chime sparkle (2640Hz high glint)
+      const chime = this.ctx.createOscillator();
+      const chimeGain = this.ctx.createGain();
+      chime.type = 'sine';
+      chime.frequency.setValueAtTime(2640, now + 0.04);
+      chime.frequency.exponentialRampToValueAtTime(3520, now + 0.18);
+
+      chimeGain.gain.setValueAtTime(0.18, now + 0.04);
+      chimeGain.gain.exponentialRampToValueAtTime(0.002, now + 0.18);
+
+      chime.connect(chimeGain);
+      chimeGain.connect(this.sfxGain);
+      chime.start(now + 0.04);
+      chime.stop(now + 0.18);
     } catch (e) {}
   }
 
@@ -416,6 +522,141 @@ export class AudioManager {
   // Backward compatibility alias
   playEnemyAttack() {
     this.playAttack();
+  }
+
+  // ========================================================
+  // 4B. ROYAL STARBEAM SFX (Radiant celestial beam & starlight shot)
+  // ========================================================
+  playStarshot() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      // 1. Initial launch pulse (punchy low-mid transient)
+      const pulseOsc = this.ctx.createOscillator();
+      const pulseGain = this.ctx.createGain();
+      pulseOsc.type = 'triangle';
+      pulseOsc.frequency.setValueAtTime(440, now);
+      pulseOsc.frequency.exponentialRampToValueAtTime(160, now + 0.06);
+
+      pulseGain.gain.setValueAtTime(0.28, now);
+      pulseGain.gain.exponentialRampToValueAtTime(0.005, now + 0.07);
+
+      pulseOsc.connect(pulseGain);
+      pulseGain.connect(this.sfxGain);
+      pulseOsc.start(now);
+      pulseOsc.stop(now + 0.07);
+
+      // 2. Rising celestial starlight beam sweep (D6 -> D7)
+      const beamOsc = this.ctx.createOscillator();
+      const beamGain = this.ctx.createGain();
+      beamOsc.type = 'triangle';
+      beamOsc.frequency.setValueAtTime(1174.66, now);
+      beamOsc.frequency.exponentialRampToValueAtTime(2349.32, now + 0.12);
+
+      beamGain.gain.setValueAtTime(0.32, now);
+      beamGain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+
+      beamOsc.connect(beamGain);
+      beamGain.connect(this.sfxGain);
+      beamOsc.start(now);
+      beamOsc.stop(now + 0.14);
+
+      // 3. High crystal chime flourish (A7 sparkle)
+      const chimeOsc = this.ctx.createOscillator();
+      const chimeGain = this.ctx.createGain();
+      chimeOsc.type = 'sine';
+      chimeOsc.frequency.setValueAtTime(3520, now);
+      chimeOsc.frequency.exponentialRampToValueAtTime(1760, now + 0.16);
+
+      chimeGain.gain.setValueAtTime(0.18, now);
+      chimeGain.gain.exponentialRampToValueAtTime(0.002, now + 0.16);
+
+      chimeOsc.connect(chimeGain);
+      chimeGain.connect(this.sfxGain);
+      chimeOsc.start(now);
+      chimeOsc.stop(now + 0.16);
+    } catch (e) {}
+  }
+
+  // ========================================================
+  // 4C. STARBEAM IMPACT SFX (Starlight burst & crystal shatter)
+  // ========================================================
+  playStarHit() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      // Impact thud
+      const thudOsc = this.ctx.createOscillator();
+      const thudGain = this.ctx.createGain();
+      thudOsc.type = 'sine';
+      thudOsc.frequency.setValueAtTime(240, now);
+      thudOsc.frequency.exponentialRampToValueAtTime(65, now + 0.09);
+
+      thudGain.gain.setValueAtTime(0.35, now);
+      thudGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+      thudOsc.connect(thudGain);
+      thudGain.connect(this.sfxGain);
+      thudOsc.start(now);
+      thudOsc.stop(now + 0.1);
+
+      // Bright celestial dispersion chime
+      const shatterOsc = this.ctx.createOscillator();
+      const shatterGain = this.ctx.createGain();
+      shatterOsc.type = 'triangle';
+      shatterOsc.frequency.setValueAtTime(1760, now);
+      shatterOsc.frequency.exponentialRampToValueAtTime(587.33, now + 0.15);
+
+      shatterGain.gain.setValueAtTime(0.24, now);
+      shatterGain.gain.exponentialRampToValueAtTime(0.005, now + 0.16);
+
+      shatterOsc.connect(shatterGain);
+      shatterGain.connect(this.sfxGain);
+      shatterOsc.start(now);
+      shatterOsc.stop(now + 0.16);
+    } catch (e) {}
+  }
+
+  // ========================================================
+  // 4D. SHIELD / ARMOR DEFLECTION SFX (Metallic ricochet clink)
+  // ========================================================
+  playDeflect() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      // High metallic chime clink (C7)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(2093, now);
+      osc1.frequency.exponentialRampToValueAtTime(1046.5, now + 0.08);
+
+      gain1.gain.setValueAtTime(0.22, now);
+      gain1.gain.exponentialRampToValueAtTime(0.005, now + 0.09);
+
+      osc1.connect(gain1);
+      gain1.connect(this.sfxGain);
+      osc1.start(now);
+      osc1.stop(now + 0.09);
+
+      // Secondary overtone (G7 harmonic ricochet)
+      const osc2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(3135.96, now);
+      osc2.frequency.exponentialRampToValueAtTime(1567.98, now + 0.1);
+
+      gain2.gain.setValueAtTime(0.28, now);
+      gain2.gain.exponentialRampToValueAtTime(0.002, now + 0.11);
+
+      osc2.connect(gain2);
+      gain2.connect(this.sfxGain);
+      osc2.start(now);
+      osc2.stop(now + 0.11);
+    } catch (e) {}
   }
 
   // ========================================================
@@ -867,125 +1108,477 @@ export class AudioManager {
   }
 
   // ========================================================
-  // 15. DYNAMIC PROCEDURAL ROYAL FANTASY BACKGROUND MUSIC (BGM)
-  // Generates a lush, pastoral, ambient chord loop
+  // HONEY GEYSER UPDRAFT SFX (Rushing wind & golden chimes)
+  // ========================================================
+  playGeyser() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    try {
+      // Powerful rushing vertical wind whoosh
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(840, now + 0.35);
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.4);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(now);
+      osc.stop(now + 0.4);
+
+      // Golden sparkle chime burst
+      for (let i = 0; i < 3; i++) {
+        const t = now + 0.05 + i * 0.08;
+        const chime = this.ctx.createOscillator();
+        const chimeGain = this.ctx.createGain();
+        chime.type = 'triangle';
+        chime.frequency.setValueAtTime(880 + i * 220, t);
+        chime.frequency.exponentialRampToValueAtTime(1400 + i * 200, t + 0.12);
+
+        chimeGain.gain.setValueAtTime(0.2, t);
+        chimeGain.gain.exponentialRampToValueAtTime(0.005, t + 0.12);
+
+        chime.connect(chimeGain);
+        chimeGain.connect(this.sfxGain);
+        chime.start(t);
+        chime.stop(t + 0.12);
+      }
+    } catch (e) {}
+  }
+
+  // ========================================================
+  // 15. DYNAMIC SCENE-ELEVATING PROCEDURAL MUSIC ENGINE
+  // Multi-track Web Audio synthesis engine with scene-wise
+  // chord progressions, dynamic tempo scaling, bassline drive,
+  // lead motifs, sparkling arpeggios, and adaptive battle drums.
   // ========================================================
 
+  setBiome(biome) {
+    this.updateDynamicBGM(biome);
+  }
+
+  updateTempoForScene(scene) {
+    if (typeof SCENE_THEMES !== 'undefined' && SCENE_THEMES[scene] && SCENE_THEMES[scene].tempo) {
+      this.targetTempo = SCENE_THEMES[scene].tempo;
+      return;
+    }
+    switch (scene) {
+      case 'title':
+        this.targetTempo = 104;
+        break;
+      case 'glade':
+        this.targetTempo = 112;
+        break;
+      case 'canopy':
+        this.targetTempo = 120;
+        break;
+      case 'fortress':
+        this.targetTempo = 128;
+        break;
+      case 'spire':
+        this.targetTempo = 136;
+        break;
+      case 'climax':
+        this.targetTempo = 144;
+        break;
+      case 'forest':
+        this.targetTempo = 114;
+        break;
+      case 'fungal':
+        this.targetTempo = 122;
+        break;
+      case 'briar':
+        this.targetTempo = 130;
+        break;
+      case 'forest_king':
+        this.targetTempo = 142;
+        break;
+      default:
+        this.targetTempo = 112;
+    }
+  }
+
+  updateDynamicBGM(scene, intensity = 0.2, specialMode = 'normal') {
+    if (scene) {
+      this.targetScene = scene;
+      this.currentScene = scene;
+      this.currentBiome = scene;
+      this.updateTempoForScene(scene);
+    }
+    this.targetIntensity = Math.max(0, Math.min(1, intensity));
+    this.specialMode = specialMode;
+  }
+
   startTitleMusic() {
-    this.setBiome('title');
+    this.updateDynamicBGM('title', 0.1, 'normal');
     this.startProceduralMusic('title');
   }
 
-  startProceduralMusic(initialBiome) {
+  startProceduralMusic(initialBiome = 'glade') {
     if (initialBiome) {
       this.currentBiome = initialBiome;
+      this.currentScene = initialBiome;
+      this.targetScene = initialBiome;
     }
     if (!this.ensureReady()) return;
     if (this.bgmPlaying) return;
 
     this.bgmPlaying = true;
-    this.bgmStep = 0;
+    this.stepIndex = 0;
+    this.nextStepTime = this.ctx.currentTime + 0.05;
 
-    // Title Screen Theme (Gentle pastoral awakening in G major / C major)
-    const titleChords = [
-      [196.00, 246.94, 293.66, 392.00], // G3, B3, D4, G4 (Pastoral G)
-      [164.81, 196.00, 246.94, 329.63], // E3, G3, B3, E4 (Em7)
-      [130.81, 164.81, 196.00, 261.63], // C3, E3, G3, C4 (C major)
-      [146.83, 220.00, 293.66, 370.00], // D3, A3, D4, F#4 (Dsus / D)
-    ];
+    this.updateTempoForScene(this.currentScene);
+    this.currentTempo = this.targetTempo;
 
-    // Section 1: The Sunstone Glade (Pastoral Royal Dawn: Em9 -> Cmaj7 -> G -> Dsus4)
-    const gladeChords = [
-      [164.81, 196.00, 246.94, 293.66], // E3, G3, B3, D4
-      [130.81, 164.81, 196.00, 246.94], // C3, E3, G3, B3
-      [196.00, 246.94, 293.66, 392.00], // G3, B3, D4, G4
-      [146.83, 220.00, 293.66, 440.00], // D3, A3, D4, A4
-    ];
+    if (this.bgmTimer) {
+      clearInterval(this.bgmTimer);
+    }
 
-    // Section 2: Whispering Canopy (Mystical Lydian/Dorian Canopy: F#m9 -> Dmaj7#11 -> Bm9 -> C#m7)
-    const canopyChords = [
-      [185.00, 220.00, 277.18, 329.63], // F#3, A3, C#4, E4
-      [146.83, 220.00, 277.18, 370.00], // D3, A3, C#4, F#4
-      [123.47, 185.00, 220.00, 293.66], // B2, F#3, A3, D4
-      [138.59, 207.65, 246.94, 329.63], // C#3, G#3, B3, E4
-    ];
+    // High-precision lookahead scheduler (25ms tick, 120ms lookahead buffer)
+    this.bgmTimer = setInterval(() => {
+      this.tickScheduler();
+    }, 25);
+  }
 
-    // Section 3: The Sunstone Aqueduct & Crumbling Fortress (Royal Elegiac: Fmaj7#11 -> Dm9 -> Am9 -> Em7)
-    const fortressChords = [
-      [174.61, 220.00, 261.63, 329.63], // F3, A3, C4, E4
-      [146.83, 174.61, 220.00, 261.63], // D3, F3, A3, C4
-      [110.00, 164.81, 196.00, 246.94], // A2, E3, G3, B3
-      [164.81, 196.00, 246.94, 293.66], // E3, G3, B3, D4
-    ];
+  tickScheduler() {
+    if (!this.bgmPlaying || !this.ctx) {
+      return;
+    }
 
-    const playBgmStep = () => {
-      if (!this.bgmPlaying || !this.ctx) {
-        return;
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+
+    // Smooth parameter interpolation (runs every tick so state stays responsive)
+    this.currentIntensity += (this.targetIntensity - this.currentIntensity) * 0.25;
+    this.currentTempo += (this.targetTempo - this.currentTempo) * 0.15;
+
+    // Dynamically elevate sub-bus gains
+    this.updateLayerGains();
+
+    if (this.ctx.state !== 'running') {
+      return;
+    }
+
+    const lookahead = 0.12; // 120ms lookahead
+    while (this.nextStepTime < this.ctx.currentTime + lookahead) {
+      if (!this.isMuted) {
+        this.scheduleStep(this.stepIndex, this.nextStepTime);
+      }
+      const stepDuration = (60 / this.currentTempo) / 4; // 16th-note subdivision
+      this.nextStepTime += stepDuration;
+
+      // Bar downbeat or half-bar (steps 0 or 8): smooth harmonic scene modulation
+      const subStep = this.stepIndex % 16;
+      if ((subStep === 0 || subStep === 8) && this.targetScene !== this.currentScene) {
+        this.currentScene = this.targetScene;
+        this.currentBiome = this.currentScene;
+        this.updateTempoForScene(this.currentScene);
       }
 
-      if (this.isMuted || this.ctx.state !== 'running') {
-        // Keep timer alive silently while muted or suspended without synthesizing oscillators
-        this.bgmTimer = setTimeout(playBgmStep, 1800);
-        return;
+      this.stepIndex = (this.stepIndex + 1) % 64; // 4-bar loop (16 steps * 4 bars)
+    }
+  }
+
+  updateLayerGains() {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const rampTime = 0.06;
+
+    let targetDrums = this.currentIntensity * 0.35;
+    let targetPad = 0.28;
+    let targetBass = 0.30;
+    let targetLead = 0.24;
+    let targetArp = 0.18 + this.currentIntensity * 0.12;
+
+    if (this.specialMode === 'secret') {
+      targetDrums = 0.0; // Drums silent in sacred sanctuary
+      targetBass = 0.08;
+      targetPad = 0.18;
+      targetLead = 0.34; // Celestial music box takes center stage
+      targetArp = 0.30;
+    } else if (this.specialMode === 'cinematic') {
+      targetDrums = Math.min(targetDrums, 0.14);
+      targetPad = 0.40;  // Majestic brass/string swell
+      targetArp = 0.35;  // Shimmering fanfare cascades
+      targetLead = 0.28;
+    } else if (this.specialMode === 'climax' || this.currentScene === 'climax') {
+      targetDrums = 0.36; // Full driving battle pulse
+      targetBass = 0.35;
+      targetPad = 0.30;
+      targetLead = 0.30;
+      targetArp = 0.28;
+    } else {
+      if (this.currentIntensity < 0.28) {
+        targetDrums = 0.0; // Peaceful exploration
+      }
+    }
+
+    if (this.musicPadGain) {
+      this.musicPadGain.gain.setTargetAtTime(targetPad, now, rampTime);
+      this.musicPadGain.gain.value = targetPad;
+    }
+    if (this.musicBassGain) {
+      this.musicBassGain.gain.setTargetAtTime(targetBass, now, rampTime);
+      this.musicBassGain.gain.value = targetBass;
+    }
+    if (this.musicLeadGain) {
+      this.musicLeadGain.gain.setTargetAtTime(targetLead, now, rampTime);
+      this.musicLeadGain.gain.value = targetLead;
+    }
+    if (this.musicArpGain) {
+      this.musicArpGain.gain.setTargetAtTime(targetArp, now, rampTime);
+      this.musicArpGain.gain.value = targetArp;
+    }
+    if (this.musicDrumsGain) {
+      this.musicDrumsGain.gain.setTargetAtTime(targetDrums, now, rampTime);
+      this.musicDrumsGain.gain.value = targetDrums;
+    }
+  }
+
+  scheduleStep(step, time) {
+    const bar = Math.floor(step / 16);
+    const subStep = step % 16;
+    const stepDuration = (60 / this.currentTempo) / 4;
+
+    const theme = SCENE_THEMES[this.currentScene] || SCENE_THEMES.glade;
+    const chord = theme.chords[bar % theme.chords.length];
+
+    // 1. HARMONY PADS (Sustained lush chord on bar downbeat)
+    if (subStep === 0) {
+      this.playSynthPadChord(chord, time, stepDuration * 15.6);
+    }
+
+    // 2. BASSLINE LAYER (Rhythmic driving pulse)
+    const barBass = theme.bass[bar % theme.bass.length];
+    const bassFreq = barBass ? barBass[subStep] : null;
+    if (bassFreq) {
+      this.playSynthBass(bassFreq, time, stepDuration * 1.8);
+    }
+
+    // 3. LEAD MELODY LAYER (Scene-specific thematic motif)
+    let leadFreq = null;
+    if (this.specialMode === 'secret') {
+      leadFreq = SECRET_MELODY[subStep];
+    } else {
+      const barMelody = theme.melody[bar % theme.melody.length];
+      leadFreq = barMelody ? barMelody[subStep] : null;
+    }
+    if (leadFreq) {
+      this.playSynthLead(leadFreq, time, stepDuration * 2.2, this.specialMode === 'secret');
+    }
+
+    // 4. ARPEGGIO / SHIMMER LAYER (High register sparkle)
+    const shouldArp = (this.specialMode === 'cinematic' || this.currentScene === 'spire' || this.currentScene === 'climax')
+      ? (subStep % 2 === 0)
+      : (subStep % 4 === 2);
+
+    if (shouldArp && chord && chord.length > 0) {
+      const noteIdx = Math.floor(subStep / 2) % chord.length;
+      const arpFreq = chord[noteIdx] * 2; // Up one octave
+      this.playSynthArp(arpFreq, time, stepDuration * 1.4);
+    }
+
+    // 5. PERCUSSION LAYER (Dynamic battle drums, scales with encounter threat)
+    if ((this.currentIntensity >= 0.28 || this.currentScene === 'climax') && this.specialMode !== 'secret') {
+      // Kick: Beats 1 & 3; or four-on-the-floor in high battle/climax
+      const isFourOnFloor = this.currentIntensity > 0.72 || this.currentScene === 'climax';
+      if (subStep === 0 || subStep === 8 || (isFourOnFloor && (subStep === 4 || subStep === 12))) {
+        this.playSynthKick(time);
       }
 
-      const now = this.ctx.currentTime;
-      let chords = gladeChords;
-      if (this.currentBiome === 'title') {
-        chords = titleChords;
-      } else if (this.currentBiome === 'fortress') {
-        chords = fortressChords;
-      } else if (this.currentBiome === 'canopy') {
-        chords = canopyChords;
+      // Snare: Beats 2 & 4
+      if (subStep === 4 || subStep === 12) {
+        this.playSynthSnare(time);
+      } else if (this.currentIntensity > 0.82 && subStep === 14) {
+        // Ghost snare fill
+        this.playSynthSnare(time);
       }
 
-      const chord = chords[this.bgmStep % chords.length];
-      this.bgmStep++;
+      // Hi-Hat: Off-beats or 16th grid
+      if (this.currentIntensity > 0.65) {
+        if (subStep % 2 === 0) this.playSynthHiHat(time, subStep % 4 === 2);
+      } else {
+        if (subStep % 4 === 2) this.playSynthHiHat(time, true);
+      }
+    }
+  }
 
-      // Warm pad synth voices
-      chord.forEach((freq) => {
-        try {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now);
+  // --- SYNTHESIZER VOICE ENGINES ---
 
-          gain.gain.setValueAtTime(0.01, now);
-          gain.gain.linearRampToValueAtTime(0.07, now + 0.3);
-          gain.gain.exponentialRampToValueAtTime(0.005, now + 1.7);
+  playSynthKick(time) {
+    if (!this.ctx || !this.musicDrumsGain) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(145, time);
+      osc.frequency.exponentialRampToValueAtTime(38, time + 0.08);
 
-          osc.connect(gain);
-          gain.connect(this.musicGain);
-          osc.start(now);
-          osc.stop(now + 1.75);
-        } catch (e) {}
-      });
+      gain.gain.setValueAtTime(0.75, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.09);
 
-      // Warm sub-bass foundation
+      osc.connect(gain);
+      gain.connect(this.musicDrumsGain);
+      osc.start(time);
+      osc.stop(time + 0.10);
+    } catch (e) {}
+  }
+
+  playSynthSnare(time) {
+    if (!this.ctx || !this.musicDrumsGain || !this.noiseBuffer) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const oscGain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(190, time);
+      osc.frequency.exponentialRampToValueAtTime(75, time + 0.06);
+      oscGain.gain.setValueAtTime(0.35, time);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
+      osc.connect(oscGain);
+      oscGain.connect(this.musicDrumsGain);
+      osc.start(time);
+      osc.stop(time + 0.07);
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = this.noiseBuffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1350, time);
+      filter.Q.value = 1.2;
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.48, time);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.11);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.musicDrumsGain);
+      noise.start(time);
+      noise.stop(time + 0.12);
+    } catch (e) {}
+  }
+
+  playSynthHiHat(time, isOpen = false) {
+    if (!this.ctx || !this.musicDrumsGain || !this.noiseBuffer) return;
+    try {
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = this.noiseBuffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(6800, time);
+      const gain = this.ctx.createGain();
+      const dur = isOpen ? 0.09 : 0.035;
+      gain.gain.setValueAtTime(isOpen ? 0.28 : 0.18, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicDrumsGain);
+      noise.start(time);
+      noise.stop(time + dur + 0.01);
+    } catch (e) {}
+  }
+
+  playSynthPadChord(frequencies, time, duration) {
+    if (!this.ctx || !this.musicPadGain || !frequencies) return;
+    const voiceCount = frequencies.length;
+    frequencies.forEach((freq) => {
       try {
-        const bassOsc = this.ctx.createOscillator();
-        const bassGain = this.ctx.createGain();
-        bassOsc.type = 'sine';
-        bassOsc.frequency.setValueAtTime(chord[0] / 2, now);
-        bassGain.gain.setValueAtTime(0.12, now);
-        bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, time);
 
-        bassOsc.connect(bassGain);
-        bassGain.connect(this.musicGain);
-        bassOsc.start(now);
-        bassOsc.stop(now + 0.85);
+        gain.gain.setValueAtTime(0.001, time);
+        gain.gain.linearRampToValueAtTime(0.09 / Math.sqrt(voiceCount), time + 0.28);
+        gain.gain.setValueAtTime(0.07 / Math.sqrt(voiceCount), time + duration - 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+        osc.connect(gain);
+        gain.connect(this.musicPadGain);
+        osc.start(time);
+        osc.stop(time + duration);
       } catch (e) {}
+    });
+  }
 
-      this.bgmTimer = setTimeout(playBgmStep, 1750);
-    };
+  playSynthBass(freq, time, duration) {
+    if (!this.ctx || !this.musicBassGain || !freq) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const filter = this.ctx.createBiquadFilter();
+      const gain = this.ctx.createGain();
 
-    playBgmStep();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, time);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(420, time);
+      filter.frequency.exponentialRampToValueAtTime(140, time + duration);
+
+      gain.gain.setValueAtTime(0.36, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicBassGain);
+      osc.start(time);
+      osc.stop(time + duration + 0.01);
+    } catch (e) {}
+  }
+
+  playSynthLead(freq, time, duration, isSecret = false) {
+    if (!this.ctx || !this.musicLeadGain || !freq) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      if (isSecret) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.36, time);
+        gain.gain.exponentialRampToValueAtTime(0.005, time + Math.min(duration, 0.42));
+      } else {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.01, time);
+        gain.gain.linearRampToValueAtTime(0.24, time + 0.03);
+        gain.gain.setValueAtTime(0.19, time + duration * 0.7);
+        gain.gain.exponentialRampToValueAtTime(0.005, time + duration);
+      }
+
+      osc.connect(gain);
+      gain.connect(this.musicLeadGain);
+      osc.start(time);
+      osc.stop(time + duration + 0.02);
+    } catch (e) {}
+  }
+
+  playSynthArp(freq, time, duration) {
+    if (!this.ctx || !this.musicArpGain || !freq) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+
+      gain.gain.setValueAtTime(0.25, time);
+      gain.gain.exponentialRampToValueAtTime(0.005, time + Math.min(duration, 0.16));
+
+      osc.connect(gain);
+      gain.connect(this.musicArpGain);
+      osc.start(time);
+      osc.stop(time + duration + 0.01);
+    } catch (e) {}
   }
 
   stopProceduralMusic() {
     this.bgmPlaying = false;
     if (this.bgmTimer) {
-      clearTimeout(this.bgmTimer);
+      clearInterval(this.bgmTimer);
       this.bgmTimer = null;
     }
   }
@@ -998,3 +1591,266 @@ export class AudioManager {
     this.stopProceduralMusic();
   }
 }
+
+// ========================================================
+// SCENE MUSIC DEFINITIONS & THEMATIC ARRANGEMENTS
+// ========================================================
+
+const NOTES = {
+  F2: 87.31, G2: 98.00, Ab2: 103.83, A2: 110.00, Bb2: 116.54, B2: 123.47,
+  C3: 130.81, Db3: 138.59, D3: 146.83, Eb3: 155.56, E3: 164.81, F3: 174.61, Fs3: 185.00, G3: 196.00, Ab3: 207.65, A3: 220.00, Bb3: 233.08, B3: 246.94,
+  C4: 261.63, Db4: 277.18, D4: 293.66, Eb4: 311.13, E4: 329.63, F4: 349.23, Fs4: 369.99, G4: 392.00, Ab4: 415.30, A4: 440.00, Bb4: 466.16, B4: 493.88,
+  C5: 523.25, Db5: 554.37, D5: 587.33, Eb5: 622.25, E5: 659.25, F5: 698.46, Fs5: 739.99, G5: 783.99, Ab5: 830.61, A5: 880.00, Bb5: 932.33, B5: 987.77,
+  C6: 1046.50, D6: 1174.66, E6: 1318.51, F6: 1396.91, G6: 1567.98, Ab6: 1661.22, Bb6: 1864.66, B6: 1975.53, C7: 2093.00,
+};
+
+// Celestial Music Box line for Secret Sanctums (16-step grid)
+const SECRET_MELODY = [
+  NOTES.C6, null, NOTES.E6, null, NOTES.G6, null, NOTES.B6, null,
+  NOTES.C7, null, NOTES.G6, null, NOTES.E6, null, NOTES.C6, null,
+];
+
+// Helper to construct a 16-step bar from step/note mapping
+function makeBar(entries) {
+  const bar = new Array(16).fill(null);
+  entries.forEach(([step, note]) => {
+    bar[step] = note;
+  });
+  return bar;
+}
+
+const SCENE_THEMES = {
+  // Title Screen: Pastoral, ethereal, fairytale anticipation (104 BPM)
+  title: {
+    tempo: 104,
+    chords: [
+      [NOTES.G3, NOTES.B3, NOTES.D4, NOTES.G4],
+      [NOTES.E3, NOTES.G3, NOTES.B3, NOTES.E4],
+      [NOTES.C3, NOTES.E3, NOTES.G3, NOTES.C4],
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.Fs4],
+    ],
+    bass: [
+      makeBar([[0, NOTES.G2], [6, NOTES.D3], [8, NOTES.G3], [12, NOTES.Fs3]]),
+      makeBar([[0, NOTES.E2], [6, NOTES.B2], [8, NOTES.E3], [12, NOTES.D3]]),
+      makeBar([[0, NOTES.C3], [6, NOTES.G2], [8, NOTES.C3], [12, NOTES.E3]]),
+      makeBar([[0, NOTES.D3], [6, NOTES.A2], [8, NOTES.D3], [12, NOTES.C3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.G4], [4, NOTES.B4], [8, NOTES.D5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.E5], [4, NOTES.D5], [8, NOTES.B4], [12, NOTES.G4]]),
+      makeBar([[0, NOTES.C5], [4, NOTES.E5], [8, NOTES.G5], [12, NOTES.E5]]),
+      makeBar([[0, NOTES.D5], [4, NOTES.Fs5], [8, NOTES.A5], [12, NOTES.G5]]),
+    ],
+  },
+
+  // Section 1: The Sunstone Glade (0-2400px): Adventure Morning Dawn (112 BPM)
+  glade: {
+    tempo: 112,
+    chords: [
+      [NOTES.E3, NOTES.G3, NOTES.B3, NOTES.D4, NOTES.Fs4], // Em9
+      [NOTES.C3, NOTES.E3, NOTES.G3, NOTES.B3, NOTES.D4], // Cmaj9
+      [NOTES.G2, NOTES.B3, NOTES.D4, NOTES.G4, NOTES.B4], // G
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.G4, NOTES.A4], // Dsus4
+    ],
+    bass: [
+      makeBar([[0, NOTES.E2], [6, NOTES.B2], [8, NOTES.E3], [12, NOTES.D3]]),
+      makeBar([[0, NOTES.C3], [6, NOTES.G2], [8, NOTES.C3], [12, NOTES.E3]]),
+      makeBar([[0, NOTES.G2], [6, NOTES.D3], [8, NOTES.G3], [12, NOTES.Fs3]]),
+      makeBar([[0, NOTES.D3], [6, NOTES.A2], [8, NOTES.D3], [12, NOTES.C3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.E4], [4, NOTES.G4], [8, NOTES.B4], [12, NOTES.D5]]),
+      makeBar([[0, NOTES.C5], [4, NOTES.B4], [8, NOTES.G4], [12, NOTES.E4]]),
+      makeBar([[0, NOTES.D4], [4, NOTES.G4], [8, NOTES.B4], [12, NOTES.D5]]),
+      makeBar([[0, NOTES.A4], [4, NOTES.D5], [8, NOTES.Fs5], [12, NOTES.E5]]),
+    ],
+  },
+
+  // Section 2: The Whispering Canopy & Amber Chasm (2400-5200px): Mystical Lydian Amber (120 BPM)
+  canopy: {
+    tempo: 120,
+    chords: [
+      [NOTES.Fs3, NOTES.A3, NOTES.Cs4, NOTES.E4], // F#m9
+      [NOTES.D3, NOTES.A3, NOTES.Cs4, NOTES.Gs4], // Dmaj7#11
+      [NOTES.B2, NOTES.Fs3, NOTES.A3, NOTES.D4],  // Bm9
+      [NOTES.Cs3, NOTES.Gs3, NOTES.B3, NOTES.E4], // C#m7
+    ],
+    bass: [
+      makeBar([[0, NOTES.Fs2], [4, NOTES.Cs3], [8, NOTES.Fs3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.D3], [4, NOTES.A2], [8, NOTES.D3], [14, NOTES.Fs3]]),
+      makeBar([[0, NOTES.B2], [4, NOTES.Fs2], [8, NOTES.B2], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.Cs3], [4, NOTES.Gs2], [8, NOTES.Cs3], [14, NOTES.B2]]),
+    ],
+    melody: [
+      makeBar([[2, NOTES.Fs4], [6, NOTES.A4], [10, NOTES.Cs5], [14, NOTES.E5]]),
+      makeBar([[2, NOTES.D5], [6, NOTES.Cs5], [10, NOTES.Gs4], [14, NOTES.A4]]),
+      makeBar([[2, NOTES.B4], [6, NOTES.D5], [10, NOTES.Fs5], [14, NOTES.D5]]),
+      makeBar([[2, NOTES.Cs5], [6, NOTES.E5], [10, NOTES.B4], [14, NOTES.Gs4]]),
+    ],
+  },
+
+  // Section 3: The Sunstone Aqueduct & Fortress (5200-8000px): Martial Grandeur & Ruin (128 BPM)
+  fortress: {
+    tempo: 128,
+    chords: [
+      [NOTES.F3, NOTES.A3, NOTES.C4, NOTES.B4], // Fmaj7#11
+      [NOTES.D3, NOTES.F3, NOTES.A3, NOTES.C4], // Dm9
+      [NOTES.A2, NOTES.E3, NOTES.G3, NOTES.C4], // Am9
+      [NOTES.E3, NOTES.G3, NOTES.B3, NOTES.D4], // Em7
+    ],
+    bass: [
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.C3], [6, NOTES.F3], [8, NOTES.F2], [10, NOTES.F2], [12, NOTES.E3], [14, NOTES.G3]]),
+      makeBar([[0, NOTES.D3], [2, NOTES.D3], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.D3], [10, NOTES.D3], [12, NOTES.C3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A3], [8, NOTES.A2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.B2]]),
+      makeBar([[0, NOTES.E3], [2, NOTES.E3], [4, NOTES.B2], [6, NOTES.E3], [8, NOTES.E3], [10, NOTES.E3], [12, NOTES.D3], [14, NOTES.Fs3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.A4], [4, NOTES.C5], [8, NOTES.E5], [12, NOTES.D5]]),
+      makeBar([[0, NOTES.F5], [4, NOTES.D5], [8, NOTES.A4], [12, NOTES.C5]]),
+      makeBar([[0, NOTES.E5], [4, NOTES.C5], [8, NOTES.A4], [12, NOTES.B4]]),
+      makeBar([[0, NOTES.G4], [4, NOTES.B4], [8, NOTES.E5], [12, NOTES.Fs5]]),
+    ],
+  },
+
+  // Section 4: The Sovereign Hive Spire (8000-10250px): High Spire Void & Heroic Drive (136 BPM)
+  spire: {
+    tempo: 136,
+    chords: [
+      [NOTES.C3, NOTES.G3, NOTES.Bb3, NOTES.Eb4], // Cm9
+      [NOTES.Ab2, NOTES.Eb3, NOTES.G3, NOTES.C4],  // Abmaj7#11
+      [NOTES.F2, NOTES.C3, NOTES.Eb3, NOTES.Ab3],  // Fm9
+      [NOTES.G2, NOTES.D3, NOTES.F3, NOTES.B3],    // G7
+    ],
+    bass: [
+      makeBar([[0, NOTES.C3], [3, NOTES.G2], [6, NOTES.C3], [10, NOTES.Eb3], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.Ab2], [3, NOTES.Eb3], [6, NOTES.Ab3], [10, NOTES.G3], [14, NOTES.F3]]),
+      makeBar([[0, NOTES.F2], [3, NOTES.C3], [6, NOTES.F3], [10, NOTES.Ab3], [14, NOTES.G3]]),
+      makeBar([[0, NOTES.G2], [3, NOTES.D3], [6, NOTES.G3], [10, NOTES.B3], [14, NOTES.D4]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [3, NOTES.D5], [6, NOTES.Eb5], [10, NOTES.G5], [13, NOTES.F5]]),
+      makeBar([[0, NOTES.Eb5], [4, NOTES.C5], [8, NOTES.Ab4], [12, NOTES.C5]]),
+      makeBar([[0, NOTES.F5], [3, NOTES.G5], [6, NOTES.Ab5], [10, NOTES.C6], [13, NOTES.Bb5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.F5], [8, NOTES.D5], [12, NOTES.B4]]),
+    ],
+  },
+
+  // Section 4 Climax: The Sovereign Throne & Batboy Sanctuary (10250-10800px): Ultimate Heroic Crescendo (144 BPM)
+  climax: {
+    tempo: 144,
+    chords: [
+      [NOTES.C3, NOTES.Eb3, NOTES.G3, NOTES.C4],   // Cm
+      [NOTES.Ab2, NOTES.C3, NOTES.Eb3, NOTES.Ab3], // Ab
+      [NOTES.Bb2, NOTES.D3, NOTES.F3, NOTES.Bb3], // Bb
+      [NOTES.C3, NOTES.E3, NOTES.G3, NOTES.C4],   // C Major Triumphant!
+    ],
+    bass: [
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.C3], [6, NOTES.G3], [8, NOTES.C3], [10, NOTES.C3], [12, NOTES.Eb3], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.Ab2], [2, NOTES.Ab2], [4, NOTES.Ab2], [6, NOTES.Eb3], [8, NOTES.Ab3], [10, NOTES.Ab3], [12, NOTES.G3], [14, NOTES.F3]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.Bb2], [6, NOTES.F3], [8, NOTES.Bb3], [10, NOTES.Bb3], [12, NOTES.A3], [14, NOTES.Ab3]]),
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.E3], [6, NOTES.G3], [8, NOTES.C4], [10, NOTES.C4], [12, NOTES.G3], [14, NOTES.C4]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [2, NOTES.Eb5], [4, NOTES.G5], [8, NOTES.C6], [12, NOTES.Bb5]]),
+      makeBar([[0, NOTES.Ab5], [4, NOTES.C6], [8, NOTES.Eb6], [12, NOTES.D6]]),
+      makeBar([[0, NOTES.Bb5], [4, NOTES.D6], [8, NOTES.F6], [12, NOTES.Eb6]]),
+      makeBar([[0, NOTES.G5], [2, NOTES.C6], [4, NOTES.E6], [8, NOTES.G6], [12, NOTES.C7]]),
+    ],
+  },
+
+  // ========================================================
+  // WORLD 2: THE WHISPERING FOREST THEMES
+  // ========================================================
+
+  // Section 1: The Whispering Perimeter & Spore Glades (114 BPM)
+  forest: {
+    tempo: 114,
+    chords: [
+      [NOTES.A2, NOTES.E3, NOTES.G3, NOTES.C4, NOTES.E4], // Am9
+      [NOTES.F2, NOTES.C3, NOTES.A3, NOTES.C4, NOTES.E4], // Fmaj7
+      [NOTES.C3, NOTES.G3, NOTES.B3, NOTES.D4, NOTES.G4], // Cmaj9
+      [NOTES.G2, NOTES.D3, NOTES.B3, NOTES.D4, NOTES.A4], // Gsus2
+    ],
+    bass: [
+      makeBar([[0, NOTES.A2], [4, NOTES.E3], [8, NOTES.A3], [14, NOTES.G3]]),
+      makeBar([[0, NOTES.F2], [4, NOTES.C3], [8, NOTES.F3], [14, NOTES.A3]]),
+      makeBar([[0, NOTES.C3], [4, NOTES.G2], [8, NOTES.C3], [14, NOTES.B2]]),
+      makeBar([[0, NOTES.G2], [4, NOTES.D3], [8, NOTES.G3], [14, NOTES.Fs3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.E5], [4, NOTES.C5], [8, NOTES.B4], [12, NOTES.A4]]),
+      makeBar([[0, NOTES.A4], [4, NOTES.C5], [8, NOTES.E5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.D5], [4, NOTES.B4], [8, NOTES.G4], [12, NOTES.E4]]),
+      makeBar([[0, NOTES.G4], [4, NOTES.A4], [8, NOTES.B4], [12, NOTES.D5]]),
+    ],
+  },
+
+  // Section 2: The Bioluminescent Fungal Hollows (122 BPM)
+  fungal: {
+    tempo: 122,
+    chords: [
+      [NOTES.D3, NOTES.A3, NOTES.C4, NOTES.F4], // Dm7
+      [NOTES.Bb2, NOTES.F3, NOTES.A3, NOTES.D4], // Bbmaj7
+      [NOTES.G2, NOTES.D3, NOTES.Bb3, NOTES.D4], // Gm
+      [NOTES.A2, NOTES.E3, NOTES.G3, NOTES.Cs4], // A7
+    ],
+    bass: [
+      makeBar([[0, NOTES.D3], [3, NOTES.A2], [6, NOTES.D3], [10, NOTES.F3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.Bb2], [3, NOTES.F2], [6, NOTES.Bb2], [10, NOTES.D3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.G2], [3, NOTES.D3], [6, NOTES.G3], [10, NOTES.Bb2], [14, NOTES.A2]]),
+      makeBar([[0, NOTES.A2], [3, NOTES.E3], [6, NOTES.A3], [10, NOTES.Cs3], [14, NOTES.E3]]),
+    ],
+    melody: [
+      makeBar([[2, NOTES.F5], [6, NOTES.D5], [10, NOTES.A4], [14, NOTES.C5]]),
+      makeBar([[2, NOTES.D5], [6, NOTES.Bb4], [10, NOTES.F4], [14, NOTES.A4]]),
+      makeBar([[2, NOTES.Bb4], [6, NOTES.G4], [10, NOTES.D5], [14, NOTES.F5]]),
+      makeBar([[2, NOTES.Cs5], [6, NOTES.E5], [10, NOTES.G5], [14, NOTES.A5]]),
+    ],
+  },
+
+  // Section 3: The Briar Thicket & Shadow Canopy (130 BPM)
+  briar: {
+    tempo: 130,
+    chords: [
+      [NOTES.E3, NOTES.B3, NOTES.D4, NOTES.G4], // Em7
+      [NOTES.C3, NOTES.G3, NOTES.B3, NOTES.E4], // Cmaj7
+      [NOTES.A2, NOTES.E3, NOTES.G3, NOTES.C4], // Am7
+      [NOTES.B2, NOTES.Fs3, NOTES.A3, NOTES.Ds4], // B7
+    ],
+    bass: [
+      makeBar([[0, NOTES.E2], [2, NOTES.E2], [4, NOTES.B2], [6, NOTES.E3], [8, NOTES.E2], [10, NOTES.E2], [12, NOTES.D3], [14, NOTES.G3]]),
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.G2], [6, NOTES.C3], [8, NOTES.C3], [10, NOTES.C3], [12, NOTES.B2], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A3], [8, NOTES.A2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.B2]]),
+      makeBar([[0, NOTES.B2], [2, NOTES.B2], [4, NOTES.Fs2], [6, NOTES.B2], [8, NOTES.B2], [10, NOTES.B2], [12, NOTES.A2], [14, NOTES.Ds3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.B4], [4, NOTES.E5], [8, NOTES.G5], [12, NOTES.Fs5]]),
+      makeBar([[0, NOTES.E5], [4, NOTES.G5], [8, NOTES.B5], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.C5], [4, NOTES.E5], [8, NOTES.A5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.Fs5], [4, NOTES.Ds5], [8, NOTES.B4], [12, NOTES.A4]]),
+    ],
+  },
+
+  // Section 4 Climax: The Forest King Titan Encounter (142 BPM)
+  forest_king: {
+    tempo: 142,
+    chords: [
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.F4],   // Dm
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.E4],   // C
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.Fs4],  // D Major (Triumphant Awakening!)
+    ],
+    bass: [
+      makeBar([[0, NOTES.D3], [2, NOTES.D3], [4, NOTES.D3], [6, NOTES.A3], [8, NOTES.D3], [10, NOTES.D3], [12, NOTES.F3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.Bb2], [6, NOTES.F3], [8, NOTES.Bb3], [10, NOTES.Bb3], [12, NOTES.A3], [14, NOTES.G3]]),
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.C3], [6, NOTES.G3], [8, NOTES.C4], [10, NOTES.C4], [12, NOTES.B3], [14, NOTES.Bb3]]),
+      makeBar([[0, NOTES.D3], [2, NOTES.D3], [4, NOTES.Fs3], [6, NOTES.A3], [8, NOTES.D4], [10, NOTES.D4], [12, NOTES.A3], [14, NOTES.D4]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.D5], [2, NOTES.F5], [4, NOTES.A5], [8, NOTES.D6], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.Bb5], [4, NOTES.D6], [8, NOTES.F6], [12, NOTES.E6]]),
+      makeBar([[0, NOTES.C6], [4, NOTES.E6], [8, NOTES.G6], [12, NOTES.F6]]),
+      makeBar([[0, NOTES.A5], [2, NOTES.D6], [4, NOTES.Fs6], [8, NOTES.A6], [12, NOTES.D7]]),
+    ],
+  },
+};

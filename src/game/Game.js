@@ -4,7 +4,7 @@ import { Input } from '../systems/Input.js';
 import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { Level } from '../level/Level.js';
-import { LEVEL_1_1 } from '../level/LevelData.js';
+import { LEVEL_1_1, LEVEL_2_1 } from '../level/LevelData.js';
 import { Player } from '../entities/Player.js';
 import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
@@ -41,8 +41,16 @@ export class Game {
     }, this.audio);
     this.gameOverScreen = new GameOverScreen();
 
+    // Check initial level/world parameter (?world=2 or ?w=2 or ?level=2-1)
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const requestedWorld = urlParams ? (urlParams.get('world') || urlParams.get('w') || urlParams.get('level')) : null;
+    const isW2 = requestedWorld === '2' || requestedWorld === '2-1';
+    this.currentLevelData = isW2 ? LEVEL_2_1 : LEVEL_1_1;
+    this.gameState.world = this.currentLevelData.world || 1;
+    this.gameState.level = this.currentLevelData.stage || 1;
+
     this.state = GAME_STATES.TITLE;
-    this.level = new Level(LEVEL_1_1);
+    this.level = new Level(this.currentLevelData);
     this.player = new Player(this.level.spawnPoint.x, this.level.spawnPoint.y);
     this.director = this.level.director;
 
@@ -80,7 +88,11 @@ export class Game {
       // Check level clear continue button click
       if (this.state === GAME_STATES.LEVEL_CLEAR || this.state === GAME_STATES.GAME_OVER) {
         this.gameOverScreen.handleClick(canvasX, canvasY, () => {
-          this.restartGame();
+          if (this.state === GAME_STATES.LEVEL_CLEAR) {
+            this.advanceToNextWorld();
+          } else {
+            this.restartGame();
+          }
         });
       }
     });
@@ -103,11 +115,16 @@ export class Game {
 
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
+    const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
+    if (requestedWorld === '2' || requestedWorld === '2-1') {
+      this.currentLevelData = LEVEL_2_1;
+      this.gameState.world = 2;
+    }
     if (urlParams.get('play') === 'true' || urlParams.get('start') === 'true') {
       if (this.titleScreen) {
         this.titleScreen.hide();
       }
-      this.restartGame();
+      this.restartGame(this.currentLevelData);
     } else {
       this.state = GAME_STATES.TITLE;
       if (this.titleScreen) {
@@ -126,20 +143,69 @@ export class Game {
     ]).catch(e => console.warn('[Game] Background preload:', e));
   }
 
-  restartGame() {
+  restartGame(targetLevelData = null) {
     if (this.titleScreen) {
       this.titleScreen.hide();
     }
+    if (targetLevelData) {
+      this.currentLevelData = targetLevelData;
+    } else if (!this.currentLevelData) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
+      this.currentLevelData = (requestedWorld === '2' || requestedWorld === '2-1') ? LEVEL_2_1 : LEVEL_1_1;
+    }
+
+    const isWorld2 = this.currentLevelData && this.currentLevelData.world === 2;
+    const initialBiome = isWorld2 ? 'forest' : 'glade';
+
     if (this.audio) {
       this.audio.unlock();
       this.audio.playStart();
-      this.audio.setBiome('glade');
-      this.audio.startProceduralMusic('glade');
+      this.audio.setBiome(initialBiome);
+      this.audio.startProceduralMusic(initialBiome);
     }
-    this.gameState.resetForNewGame();
-    this.level.reset();
+    this.gameState.resetForNewGame(this.currentLevelData.world || 1, this.currentLevelData.stage || 1);
+    this.level = new Level(this.currentLevelData);
+    this.director = this.level.director;
     this.player.respawn(this.level.spawnPoint.x, this.level.spawnPoint.y);
+    if (this.camera) {
+      this.camera.x = this.player.x - CANVAS_WIDTH / 2;
+      this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
+    }
     this.state = GAME_STATES.PLAYING;
+  }
+
+  loadLevel(levelData) {
+    console.log(`[Game] Loading World ${levelData.world}-${levelData.stage}: ${levelData.name}`);
+    this.currentLevelData = levelData;
+    this.gameState.world = levelData.world || 1;
+    this.gameState.level = levelData.stage || 1;
+    this.level = new Level(levelData);
+    this.director = this.level.director;
+    this.player.respawn(this.level.spawnPoint.x, this.level.spawnPoint.y);
+    if (this.camera) {
+      this.camera.x = this.player.x - CANVAS_WIDTH / 2;
+      this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
+    }
+    const isWorld2 = levelData.world === 2;
+    const initialBiome = isWorld2 ? 'forest' : 'glade';
+    if (this.audio) {
+      this.audio.setBiome(initialBiome);
+      this.audio.startProceduralMusic(initialBiome);
+    }
+    this.state = GAME_STATES.PLAYING;
+  }
+
+  advanceToNextWorld() {
+    if (this.gameState.world === 1) {
+      console.log('[Game] Advancing from World 1 to World 2: The Whispering Forest!');
+      this.loadLevel(LEVEL_2_1);
+    } else if (this.gameState.world === 2) {
+      console.log('[Game] World 2 Complete! The Forest King has spoken. Replaying World 1 or returning...');
+      this.loadLevel(LEVEL_1_1);
+    } else {
+      this.loadLevel(LEVEL_1_1);
+    }
   }
 
   loop(currentTime) {
@@ -156,6 +222,8 @@ export class Game {
       this.framesCount = 0;
       this.fpsTimer = 0;
     }
+
+    this.input.update();
 
     this.accumulator += dt;
     while (this.accumulator >= this.fixedStep) {
@@ -190,6 +258,14 @@ export class Game {
       }
     }
 
+    // Hotkey '1' and '2' to switch between World 1 and World 2
+    if (this.input.justPressed('WORLD_1')) {
+      this.loadLevel(LEVEL_1_1);
+    }
+    if (this.input.justPressed('WORLD_2')) {
+      this.loadLevel(LEVEL_2_1);
+    }
+
     if (this.dialogue.active) {
       this.dialogue.update(dt, this.input);
     }
@@ -204,8 +280,12 @@ export class Game {
       if (this.player) {
         this.player.anim.update(dt);
       }
-      if (this.input.justPressed('RESTART') || this.input.justPressed('START')) {
-        this.restartGame();
+      if (this.input.justPressed('RESTART') || this.input.justPressed('START') || this.input.justPressed('JUMP') || this.input.justPressed('ATTACK')) {
+        if (this.state === GAME_STATES.LEVEL_CLEAR) {
+          this.advanceToNextWorld();
+        } else {
+          this.restartGame();
+        }
       }
       return;
     }
@@ -231,16 +311,8 @@ export class Game {
     const wasGroundedBefore = this.player.isGrounded;
     this.player.update(this.input, this.audio, dt, this.level);
 
-    // Dynamic Biome Music Modulation (Glade vs Canopy vs Fortress)
-    if (this.audio && this.audio.setBiome) {
-      if (this.player.x >= 5200) {
-        this.audio.setBiome('fortress');
-      } else if (this.player.x >= 2400) {
-        this.audio.setBiome('canopy');
-      } else {
-        this.audio.setBiome('glade');
-      }
-    }
+    // Dynamic Scene-Wise Music Elevation & Modulation
+    this.updateMusicDirector(dt);
 
     // Toggle character render pipeline on F2 (Dev Fallback -> Silhouette -> Rig -> Frame Sequence)
     if (this.input.justPressed('F2')) {
@@ -254,7 +326,28 @@ export class Game {
     const allPlatforms = this.level.getAllSolidPlatforms();
     allPlatforms.forEach(plat => {
       const res = Collision.resolveSolidPlatform(this.player, plat);
-      if (res.bounced) {
+      if (res.hazard) {
+        const wasHurt = this.player.hurt();
+        if (wasHurt) {
+          if (this.camera) this.camera.shake(11, 0.2);
+          if (this.audio && this.audio.playDamage) this.audio.playDamage();
+          this.gameState.loseLife();
+        }
+      } else if (res.shroomBounce) {
+        if (this.audio && this.audio.playBounce) {
+          this.audio.playBounce();
+        }
+        this.level.spawnBurst(this.player.x + this.player.width / 2, this.player.y + this.player.height, 16, '#38bdf8');
+        this.level.spawnSparkles(this.player.x + this.player.width / 2, this.player.y + this.player.height, 12);
+        if (this.camera) this.camera.shake(5, 0.12);
+      } else if (res.geyserLaunch) {
+        if (this.audio && this.audio.playGeyser) {
+          this.audio.playGeyser();
+        }
+        this.level.spawnBurst(this.player.x + this.player.width / 2, this.player.y + this.player.height, 18, '#fef08a');
+        this.level.spawnSparkles(this.player.x + this.player.width / 2, this.player.y + this.player.height, 12);
+        if (this.camera) this.camera.shake(6, 0.18);
+      } else if (res.bounced) {
         if (this.audio && this.audio.playBounce) {
           this.audio.playBounce();
         }
@@ -305,9 +398,11 @@ export class Game {
     // 5. Update Level
     this.level.update(this.player, this.gameState, this.audio, this.camera, dt);
 
-    // 6. Check Batboy Rescue Victory Condition
+    // 6. Check Goal / Batboy Rescue / Forest King Portal Victory Condition
     if (Collision.intersects(this.player.getBounds(), this.level.goal)) {
-      this.level.batboy.isRescued = true;
+      if (this.level.batboy) {
+        this.level.batboy.isRescued = true;
+      }
       if (this.audio) this.audio.playLevelComplete();
       this.gameState.addScore(1000);
       this.player.setVictory();
@@ -322,6 +417,85 @@ export class Game {
 
     // 7. Smooth 2D Camera Tracking with Vertical Dead-Zone
     this.camera.update(this.player, this.level.width, dt, this.level.height);
+  }
+
+  /**
+   * Scene-wise music director: evaluates player position across the 10,800px continuum,
+   * combat encounters, secret discoveries, and monumental landmarks to dynamically
+   * modulate procedural Web Audio harmony, tempo, and mix layers.
+   */
+  updateMusicDirector(dt) {
+    if (!this.audio) return;
+
+    const isWorld2 = this.gameState && this.gameState.world === 2;
+
+    // 1. Determine Scene Progression Across 10,800px Continuum
+    let scene = isWorld2 ? 'forest' : 'glade';
+    if (isWorld2) {
+      if (this.player.x >= 8200) {
+        scene = 'forest_king'; // Section 4: The Ancient Heart & The Forest King (142 BPM)
+      } else if (this.player.x >= 5400) {
+        scene = 'briar';       // Section 3: The Briar Thicket & Shadow Canopy (130 BPM)
+      } else if (this.player.x >= 2500) {
+        scene = 'fungal';      // Section 2: The Bioluminescent Fungal Hollows (122 BPM)
+      } else {
+        scene = 'forest';      // Section 1: The Whispering Perimeter & Spore Glades (114 BPM)
+      }
+    } else {
+      if (this.player.x >= 10250) {
+        scene = 'climax';   // Sovereign Throne Dais & Batboy Rescue Climax (144 BPM)
+      } else if (this.player.x >= 8000) {
+        scene = 'spire';     // Section 4: The Sovereign Hive Spire (136 BPM)
+      } else if (this.player.x >= 5200) {
+        scene = 'fortress';  // Section 3: The Sunstone Fortress & Aqueduct (128 BPM)
+      } else if (this.player.x >= 2400) {
+        scene = 'canopy';    // Section 2: Whispering Canopy & Amber Chasm (120 BPM)
+      } else {
+        scene = 'glade';     // Section 1: The Sunstone Glade (112 BPM)
+      }
+    }
+
+    // 2. Determine Special Mode: Secret Sanctum vs Cinematic Landmark vs Climax
+    let specialMode = 'normal';
+    if (this.level && this.level.secretBannerTimer > 0) {
+      specialMode = 'secret'; // Delicate celestial music box, drums muted
+    } else if (this.level && this.level.shrineBannerTimer > 0) {
+      specialMode = 'cinematic'; // Majestic brass/string swell & sparkling arpeggios
+    } else if (scene === 'climax' || scene === 'forest_king') {
+      specialMode = 'climax'; // Maximum heroic rescue urgency
+    }
+
+    // 3. Determine Dynamic Intensity (0.0 to 1.0)
+    let intensity = 0.2; // Baseline peaceful exploration
+    if (scene === 'climax' || scene === 'forest_king') {
+      intensity = 1.0;
+    } else if (this.level && this.level.encounterCoordinator && this.level.encounterCoordinator.activeSynergy) {
+      intensity = 0.85; // High coordinated encounter synergy
+    } else if (this.level && this.level.enemies) {
+      let maxThreat = 0;
+      const px = this.player.x;
+      for (let i = 0; i < this.level.enemies.length; i++) {
+        const e = this.level.enemies[i];
+        if (e.isDead) continue;
+        const dist = Math.abs(e.x - px);
+        if (dist < 460) {
+          let threat = 0.45;
+          if (e.fsm) {
+            const st = e.fsm.currentState;
+            if (st === 'ATTACK') threat = 0.80;
+            else if (st === 'AWARE' || st === 'INVESTIGATE') threat = 0.65;
+          }
+          if (threat > maxThreat) maxThreat = threat;
+        }
+      }
+      intensity = Math.max(0.2, maxThreat);
+    }
+
+    if (this.audio.updateDynamicBGM) {
+      this.audio.updateDynamicBGM(scene, intensity, specialMode);
+    } else if (this.audio.setBiome) {
+      this.audio.setBiome(scene);
+    }
   }
 
   render() {

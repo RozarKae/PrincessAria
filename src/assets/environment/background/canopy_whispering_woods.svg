@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 600" width="2048" height="600">
+  <defs>
+    <!-- Deep Forest Silhouette Gradient -->
+    <linearGradient id="woodsSil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a1f18"/>
+      <stop offset="60%" stop-color="#061410"/>
+      <stop offset="100%" stop-color="#030a08"/>
+    </linearGradient>
+    <linearGradient id="midSil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#13362a"/>
+      <stop offset="50%" stop-color="#0c231b"/>
+      <stop offset="100%" stop-color="#05120e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Far Layer Silhouettes -->
+  <g fill="url(#woodsSil)">
+    <path d="M 0 600 L 0 320 Q 90 220 180 340 Q 280 200 400 330 Q 510 180 640 310 Q 750 160 880 320 Q 1020 190 1160 330 Q 1280 150 1420 310 Q 1550 180 1680 340 Q 1820 190 1940 300 Q 2000 240 2048 310 L 2048 600 Z"/>
+  </g>
+
+  <!-- Mid Layer Whispering Elder Oak & Giant Fungi Silhouettes -->
+  <g fill="url(#midSil)">
+    <!-- Tree 1 -->
+    <path d="M 120 600 L 140 360 Q 90 280 50 240 L 80 210 Q 150 260 170 340 Q 220 250 280 190 L 310 220 Q 230 300 200 370 L 220 600 Z"/>
+    <ellipse cx="60" cy="220" rx="70" ry="40"/>
+    <ellipse cx="290" cy="200" rx="80" ry="45"/>
+    <ellipse cx="170" cy="160" rx="100" ry="60"/>
+
+    <!-- Tree 2 -->
+    <path d="M 640 600 L 660 380 Q 590 300 540 260 L 570 230 Q 640 280 680 360 Q 740 260 820 180 L 850 210 Q 760 310 710 390 L 730 600 Z"/>
+    <ellipse cx="550" cy="240" rx="75" ry="42"/>
+    <ellipse cx="830" cy="190" rx="85" ry="50"/>
+    <ellipse cx="680" cy="150" rx="110" ry="65"/>
+
+    <!-- Tree 3 -->
+    <path d="M 1180 600 L 1200 360 Q 1120 270 1060 220 L 1090 190 Q 1170 250 1220 340 Q 1280 230 1370 160 L 1400 190 Q 1300 290 1250 370 L 1270 600 Z"/>
+    <ellipse cx="1070" cy="200" rx="80" ry="45"/>
+    <ellipse cx="1380" cy="170" rx="90" ry="50"/>
+    <ellipse cx="1220" cy="130" rx="120" ry="70"/>
+
+    <!-- Tree 4 -->
+    <path d="M 1720 600 L 1740 380 Q 1660 290 1600 240 L 1630 210 Q 1720 270 1760 360 Q 1830 250 1910 180 L 1940 210 Q 1840 300 1790 390 L 1810 600 Z"/>
+    <ellipse cx="1610" cy="220" rx="75" ry="40"/>
+    <ellipse cx="1920" cy="190" rx="85" ry="48"/>
+    <ellipse cx="1760" cy="140" rx="115" ry="65"/>
+  </g>
+
+  <!-- Bioluminescent Spore Spots Glowing in Canopy -->
+  <g fill="#38bdf8" opacity="0.75">
+    <circle cx="170" cy="150" r="4"/>
+    <circle cx="280" cy="190" r="3"/>
+    <circle cx="680" cy="140" r="4.5"/>
+    <circle cx="560" cy="230" r="3"/>
+    <circle cx="1220" cy="120" r="5"/>
+    <circle cx="1370" cy="160" r="3.5"/>
+    <circle cx="1760" cy="130" r="4.5"/>
+    <circle cx="1620" cy="210" r="3"/>
+  </g>
+  <g fill="#f43f5e" opacity="0.65">
+    <circle cx="220" cy="240" r="3.5"/>
+    <circle cx="740" cy="250" r="3"/>
+    <circle cx="1150" cy="210" r="4"/>
+    <circle cx="1840" cy="230" r="3.5"/>
+  </g>
+</svg>
