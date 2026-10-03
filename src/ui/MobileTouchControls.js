@@ -42,12 +42,21 @@ export class MobileTouchControls {
     this.container.innerHTML = `
       <!-- Top Utility Bar for Mobile -->
       <div class="mobile-top-bar">
+        <button id="touch-btn-rotate" class="touch-btn-util" type="button" aria-label="Rotate Orientation">
+          <span class="util-badge">🔄 ROTATE</span>
+        </button>
         <button id="touch-btn-switch-world" class="touch-btn-util" type="button" aria-label="Switch World">
           <span class="util-badge">W1/W2</span>
         </button>
         <button id="touch-btn-start" class="touch-btn-util" type="button" aria-label="Start or Resume">
           <span class="util-badge">START</span>
         </button>
+      </div>
+
+      <!-- Quick Orientation Banner / Mobile Prompt -->
+      <div id="mobile-rotate-banner" class="mobile-rotate-banner">
+        <span>📱 Tip: Rotate your phone to Landscape for 16:9 full-screen gaming!</span>
+        <button id="close-rotate-banner" type="button" aria-label="Dismiss">✕</button>
       </div>
 
       <!-- D-Pad Cluster (Left Hand) -->
@@ -145,6 +154,42 @@ export class MobileTouchControls {
       };
       startBtn.addEventListener('touchstart', triggerStart, { passive: false });
       startBtn.addEventListener('click', triggerStart);
+    }
+
+    // Rotate / Fullscreen Orientation Toggle
+    const rotateBtn = document.getElementById('touch-btn-rotate');
+    if (rotateBtn) {
+      const handleRotate = async (e) => {
+        e.preventDefault();
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen?.();
+            if (screen.orientation && screen.orientation.lock) {
+              await screen.orientation.lock('landscape').catch(() => {});
+            }
+          } else {
+            await document.exitFullscreen?.();
+          }
+        } catch (err) {
+          console.log('[MobileControls] Orientation toggle hint:', err);
+        }
+      };
+      rotateBtn.addEventListener('touchstart', handleRotate, { passive: false });
+      rotateBtn.addEventListener('click', handleRotate);
+    }
+
+    // Dismiss banner
+    const closeBannerBtn = document.getElementById('close-rotate-banner');
+    const rotateBanner = document.getElementById('mobile-rotate-banner');
+    if (closeBannerBtn && rotateBanner) {
+      closeBannerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        rotateBanner.style.display = 'none';
+      });
+      closeBannerBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        rotateBanner.style.display = 'none';
+      }, { passive: false });
     }
 
     // World toggle button

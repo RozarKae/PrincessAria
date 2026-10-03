@@ -33,12 +33,12 @@ html, body {
   overflow: hidden;
 }
 
-/* Default Desktop & Landscape Mobile Presentation (Centered 4:3 or 16:9 view) */
+/* Default Desktop PC & Landscape Presentation (Crisp 16:9 Widescreen View) */
 #game-container {
   position: relative;
-  width: min(100vw, calc(100vh * 4 / 3));
-  height: min(100vh, calc(100vw * 3 / 4));
-  aspect-ratio: 4 / 3;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  aspect-ratio: 16 / 9;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95);
   border: 3px solid #1e293b;
   border-radius: 8px;
@@ -180,6 +180,46 @@ html, body {
 .touch-btn-util:active {
   background: rgba(245, 158, 11, 0.4);
   transform: scale(0.95);
+}
+
+/* Orientation notification prompt */
+.mobile-rotate-banner {
+  position: absolute;
+  top: max(48px, calc(env(safe-area-inset-top) + 40px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 380px);
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.85);
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #bae6fd;
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: auto;
+  z-index: 115;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: bannerFadeIn 0.4s ease;
+}
+
+.mobile-rotate-banner button {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+@keyframes bannerFadeIn {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 /* D-Pad on Lower Left */
