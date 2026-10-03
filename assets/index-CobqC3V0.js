@@ -274,28 +274,24 @@
         </button>
       </div>
 
-      <!-- Pro D-Pad Cluster (Left Hand) - Seamless Cross Housing -->
+      <!-- Pro D-Pad Cluster (Left Hand) - Seamless Console Cross -->
       <div class="touch-dpad-cluster" id="touch-dpad-cluster">
-        <div class="pro-dpad-base">
-          <div class="pro-dpad-housing">
-            <button id="touch-btn-up" class="pro-dpad-dir dir-up" type="button" data-action="UP" aria-label="Up">
-              <span class="dpad-arrow">▲</span>
-            </button>
-            <div class="pro-dpad-middle">
-              <button id="touch-btn-left" class="pro-dpad-dir dir-left" type="button" data-action="LEFT" aria-label="Left">
-                <span class="dpad-arrow">◀</span>
-              </button>
-              <div class="pro-dpad-pivot">
-                <div class="pro-pivot-indent"></div>
-              </div>
-              <button id="touch-btn-right" class="pro-dpad-dir dir-right" type="button" data-action="RIGHT" aria-label="Right">
-                <span class="dpad-arrow">▶</span>
-              </button>
-            </div>
-            <button id="touch-btn-down" class="pro-dpad-dir dir-down" type="button" data-action="CROUCH" aria-label="Down">
-              <span class="dpad-arrow">▼</span>
-            </button>
+        <div class="pro-dpad-housing">
+          <button id="touch-btn-up" class="pro-dpad-dir dir-up" type="button" data-action="UP" aria-label="Up">
+            <span class="dpad-arrow">▲</span>
+          </button>
+          <button id="touch-btn-left" class="pro-dpad-dir dir-left" type="button" data-action="LEFT" aria-label="Left">
+            <span class="dpad-arrow">◀</span>
+          </button>
+          <div class="pro-dpad-pivot">
+            <div class="pro-pivot-indent"></div>
           </div>
+          <button id="touch-btn-right" class="pro-dpad-dir dir-right" type="button" data-action="RIGHT" aria-label="Right">
+            <span class="dpad-arrow">▶</span>
+          </button>
+          <button id="touch-btn-down" class="pro-dpad-dir dir-down" type="button" data-action="CROUCH" aria-label="Down">
+            <span class="dpad-arrow">▼</span>
+          </button>
         </div>
       </div>
 
