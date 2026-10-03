@@ -58,6 +58,28 @@ html, body {
 }
 
 /* ======================================================== */
+/* VIRTUAL MOBILE TOUCH CONTROLS                            */
+/* ======================================================== */
+#mobile-touch-controls {
+  display: none; /* revealed automatically on mobile portrait/touch devices */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/* Show touch controls on touch devices or small screens */
+@media (pointer: coarse), (max-width: 900px) {
+  #mobile-touch-controls {
+    display: flex;
+  }
+}
+
+/* ======================================================== */
 /* PORTRAIT MODE ARCHITECTURE FOR MOBILE PHONES             */
 /* ======================================================== */
 @media (orientation: portrait), (max-aspect-ratio: 1/1) {
@@ -130,27 +152,6 @@ html, body {
   }
 }
 
-/* ======================================================== */
-/* VIRTUAL MOBILE TOUCH CONTROLS                            */
-/* ======================================================== */
-#mobile-touch-controls {
-  display: none; /* revealed automatically on mobile portrait/touch devices */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 100;
-  box-sizing: border-box;
-}
-
-/* Show touch controls on touch devices or small screens */
-@media (pointer: coarse), (max-width: 900px) {
-  #mobile-touch-controls {
-    display: flex;
-  }
-}
 
 /* Top utility bar */
 .mobile-top-bar {
