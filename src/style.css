@@ -232,48 +232,13 @@ html, body {
 
 /* Orientation notification prompt */
 .mobile-rotate-banner {
-  position: absolute;
-  top: max(46px, calc(env(safe-area-inset-top) + 38px));
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(92vw, 380px);
-  background: rgba(15, 23, 42, 0.94);
-  border: 1px solid rgba(56, 189, 248, 0.5);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.85);
-  border-radius: 8px;
-  padding: 6px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  color: #bae6fd;
-  font-size: 10.5px;
-  font-weight: 600;
-  pointer-events: auto;
-  z-index: 115;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  animation: bannerFadeIn 0.3s ease;
-}
-
-.mobile-rotate-banner button {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 2px 6px;
-}
-
-@keyframes bannerFadeIn {
-  from { opacity: 0; transform: translate(-50%, -8px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  display: none;
 }
 
 /* Upper Shoulder Bumpers for Pro Claw Grip */
 .pro-bumpers-bar {
   position: absolute;
-  top: max(56px, calc(env(safe-area-inset-top) + 48px));
+  top: 48px;
   left: 0;
   width: 100%;
   display: flex;
@@ -329,12 +294,6 @@ html, body {
   z-index: 105;
 }
 
-.pro-dpad-base {
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
 .pro-dpad-housing {
   position: relative;
   width: 132px;
@@ -342,16 +301,6 @@ html, body {
   background: radial-gradient(circle, rgba(15, 23, 42, 0.45) 0%, rgba(2, 6, 23, 0.8) 100%);
   border-radius: 50%;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.pro-dpad-middle {
-  position: absolute;
-  top: 44px;
-  left: 0;
-  width: 132px;
-  height: 44px;
-  display: flex;
-  align-items: center;
 }
 
 .pro-dpad-pivot {
