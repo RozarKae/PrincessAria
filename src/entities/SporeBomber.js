@@ -98,8 +98,8 @@ export class SporeBomber extends Enemy {
     // 3. ATTACK: Release falling spore cluster
     this.fsm.register(ENEMY_STATES.ATTACK, {
       onEnter: (e) => {
-        if (level && level.spawnBurst) {
-          level.spawnBurst(e.x + e.width / 2, e.y + e.height - 4, 8, '#38bdf8');
+        if (e.levelRef && e.levelRef.spawnBurst) {
+          e.levelRef.spawnBurst(e.x + e.width / 2, e.y + e.height - 4, 8, '#38bdf8');
         }
       },
       update: (e, dt, level, player) => {

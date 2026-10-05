@@ -96,8 +96,8 @@ export class VineCrawler extends Enemy {
       onEnter: (e) => {
         e.vx = 0;
         // Spawn spore burst particles
-        if (level && level.spawnBurst) {
-          level.spawnBurst(e.x + e.width / 2, e.y + 10, 10, '#c084fc');
+        if (e.levelRef && e.levelRef.spawnBurst) {
+          e.levelRef.spawnBurst(e.x + e.width / 2, e.y + 10, 10, '#c084fc');
         }
       },
       update: (e, dt, level, player) => {

@@ -847,8 +847,12 @@ export class CinematicTitleScreen {
   onResize() {
     if (!this.container || !this.particleCanvas) return;
     const rect = this.container.getBoundingClientRect();
-    this.particleCanvas.width = rect.width;
-    this.particleCanvas.height = rect.height;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.0);
+    this.particleCanvas.width = Math.round(rect.width * dpr);
+    this.particleCanvas.height = Math.round(rect.height * dpr);
+    if (this.particleCtx) {
+      this.particleCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
   }
 
   destroy() {

@@ -65,12 +65,16 @@ export class HUD {
     ctx.letterSpacing = '1px';
     ctx.fillText('KINGDOM', 60, 26);
 
+    const isWorld2 = gameState && gameState.world === 2;
+    const kingdomName = isWorld2 ? 'FOREST' : 'HONEYWOOD';
+    const stageStr = `${gameState?.world || 1}-${gameState?.level || 1}`;
+
     ctx.font = '900 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = '#f8fafc';
-    ctx.fillText('HONEYWOOD', 60, 52);
+    ctx.fillText(kingdomName, 60, 52);
 
     ctx.fillStyle = '#fbbf24';
-    ctx.fillText('1-1', 236, 52);
+    ctx.fillText(stageStr, isWorld2 ? 180 : 236, 52);
 
     // Divider ornament
     ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';

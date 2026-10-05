@@ -65,8 +65,8 @@ export class Game {
     // Attach click handler for on-screen debug pill and level completion buttons
     this.canvas.addEventListener('pointerdown', (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const scaleX = 256 / rect.width;
-      const scaleY = 240 / rect.height;
+      const scaleX = CANVAS_WIDTH / rect.width;
+      const scaleY = CANVAS_HEIGHT / rect.height;
       const canvasX = (e.clientX - rect.left) * scaleX;
       const canvasY = (e.clientY - rect.top) * scaleY;
 

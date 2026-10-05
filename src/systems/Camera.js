@@ -14,10 +14,9 @@ export class Camera {
   constructor() {
     this.x = 0;
     this.y = 0;
-    // World viewport corresponding to 256x240 internal canvas:
-    // 256 * 4.5 = 1152, 240 * 4.5 = 1080.
-    this.width = 1152;
-    this.height = 1080;
+    // Logical viewport corresponding to 1920x1080 Full HD / 4K logical space
+    this.width = CANVAS_WIDTH;
+    this.height = CANVAS_HEIGHT;
 
     // Smoothing & Tracking
     this.lerpSpeedX = 0.09;
