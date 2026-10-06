@@ -59,6 +59,13 @@ export class Player {
     this.canDoubleJump = true;
     this.doubleJumpParticles = [];
 
+    // Surface Physics, Momentum & World Modifiers
+    this.currentSurfaceFriction = 1.0;
+    this.surfaceVx = 0;
+    this.standingPlatform = null;
+    this.isDrowsy = false;
+    this.drowsyTimer = 0;
+
     // Extensible Primary Attack Foundation
     this.isAttacking = false;
     this.attackTimer = 0;
@@ -343,11 +350,21 @@ export class Player {
     this.shootCooldownTimer = 0;
     this.shootTimer = 0;
     this.invincibilityTimer = PHYSICS.INVINCIBILITY_TIME;
+    this.currentSurfaceFriction = 1.0;
+    this.surfaceVx = 0;
+    this.standingPlatform = null;
+    this.isDrowsy = false;
+    this.drowsyTimer = 0;
     this.scaleX = 1;
     this.scaleY = 1;
     this.anim.setFacing(1);
     this.rig.setFacing(1);
     this.anim.play(ANIM_STATES.IDLE, true);
+  }
+
+  applyDrowsy(duration = 2.5) {
+    this.isDrowsy = true;
+    this.drowsyTimer = Math.max(this.drowsyTimer, duration);
   }
 
   getBounds() {
@@ -478,6 +495,25 @@ export class Player {
       this.rig.setFacing(moveDir);
     }
 
+    // World-specific physics and surface modifiers
+    const worldPhys = level?.physics || {};
+    const gravity = worldPhys.gravity ?? PHYSICS.GRAVITY;
+    const terminalVelocity = worldPhys.terminalVelocity ?? PHYSICS.TERMINAL_VELOCITY;
+    let jumpVel = worldPhys.jumpVelocity ?? PHYSICS.JUMP_VELOCITY;
+    let doubleJumpVel = worldPhys.doubleJumpVelocity ?? PHYSICS.DOUBLE_JUMP_VELOCITY;
+    const worldFriction = worldPhys.friction ?? 1.0;
+    const airControl = worldPhys.airControl ?? 1.0;
+
+    // Sleeping Spores Drowsiness effect
+    if (this.isDrowsy) {
+      this.drowsyTimer -= dt;
+      if (this.drowsyTimer <= 0) {
+        this.isDrowsy = false;
+      }
+      jumpVel *= 0.78;
+      doubleJumpVel *= 0.80;
+    }
+
     // --- 3. DASH MECHANIC ---
     if (
       input.justPressed('DASH') &&
@@ -486,6 +522,8 @@ export class Player {
       !this.isDashing
     ) {
       this.isDashing = true;
+      this.isDrowsy = false; // Dashing immediately bursts out of spore drowsiness!
+      this.drowsyTimer = 0;
       this.dashTimer = PHYSICS.DASH_DURATION;
       this.dashCooldownTimer = PHYSICS.DASH_COOLDOWN;
       this.vx = this.facing * PHYSICS.DASH_SPEED;
@@ -520,8 +558,18 @@ export class Player {
         this.isDashing = false;
       }
     } else {
-      const maxSpeed = this.isCrouching ? PHYSICS.CROUCH_SPEED : PHYSICS.MAX_RUN_SPEED;
-      this.vx = Physics.applyHorizontalMovement(this.vx, moveDir, this.isGrounded, maxSpeed, dt);
+      let maxSpeed = this.isCrouching ? PHYSICS.CROUCH_SPEED : PHYSICS.MAX_RUN_SPEED;
+      if (this.isDrowsy) {
+        maxSpeed *= 0.72; // Spore pollen sluggishness
+      }
+      const effectiveFriction = this.isGrounded ? (this.currentSurfaceFriction || 1.0) * worldFriction : 1.0;
+      const accelMod = this.isGrounded ? (effectiveFriction < 0.8 ? 0.85 : 1.0) : airControl;
+      this.vx = Physics.applyHorizontalMovement(this.vx, moveDir, this.isGrounded, maxSpeed, dt, effectiveFriction, accelMod);
+    }
+
+    // Conveyor / drifting platform momentum while grounded
+    if (this.isGrounded && this.surfaceVx) {
+      this.x += this.surfaceVx * dt;
     }
 
     // --- 4. JUMPING MECHANICS (Buffer, Coyote Time & Double Jump) ---
@@ -540,7 +588,11 @@ export class Player {
 
     if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0 && !this.isCrouching) {
       // Ground / Coyote Jump
-      this.vy = PHYSICS.JUMP_VELOCITY;
+      this.vy = jumpVel;
+      // Inherit platform momentum when leaping off drifting magma/honey rafts!
+      if (this.surfaceVx) {
+        this.vx += this.surfaceVx;
+      }
       this.isGrounded = false;
       this.coyoteTimer = 0;
       this.jumpBufferTimer = 0;
@@ -564,7 +616,7 @@ export class Player {
       !this.isCrouching
     ) {
       // Mid-Air Double Jump (Celestial Starlight Flutter)
-      this.vy = PHYSICS.DOUBLE_JUMP_VELOCITY;
+      this.vy = doubleJumpVel;
       this.canDoubleJump = false;
       this.jumpBufferTimer = 0;
       this.isDashing = false;
@@ -627,7 +679,7 @@ export class Player {
 
       if (input.justPressed('JUMP')) {
         this.isClimbing = false;
-        this.vy = PHYSICS.JUMP_VELOCITY * 0.95;
+        this.vy = jumpVel * 0.95;
         this.vx = this.facing * 300;
         this.scaleX = 0.85;
         this.scaleY = 1.25;
@@ -639,7 +691,7 @@ export class Player {
 
     // Apply gravity unless actively mid-dash or climbing a vine
     if (!this.isDashing && !this.isClimbing) {
-      this.vy = Physics.applyGravity(this.vy, dt);
+      this.vy = Physics.applyGravity(this.vy, dt, gravity, terminalVelocity);
     }
 
     // Integrate position

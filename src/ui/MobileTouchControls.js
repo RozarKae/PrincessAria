@@ -87,7 +87,7 @@ export class MobileTouchControls {
         </button>
 
         <button id="touch-btn-switch-world" class="touch-btn-util pro-util-btn" type="button" aria-label="Switch World">
-          <span class="util-badge">W1/W2</span>
+          <span class="util-badge">W1-W4</span>
         </button>
 
         <button id="touch-btn-start" class="touch-btn-util pro-util-btn" type="button" aria-label="Start / Pause">
@@ -316,7 +316,8 @@ export class MobileTouchControls {
       const toggleWorld = (e) => {
         e.preventDefault();
         if (window.game) {
-          const nextWorld = (window.game.gameState.world === 1) ? 2 : 1;
+          const currentW = window.game.gameState.world || 1;
+          const nextWorld = currentW === 1 ? 2 : (currentW === 2 ? 3 : (currentW === 3 ? 4 : 1));
           const url = new URL(window.location.href);
           url.searchParams.set('world', nextWorld);
           url.searchParams.set('play', 'true');

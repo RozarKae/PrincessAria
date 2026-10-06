@@ -3,7 +3,8 @@
  */
 export class GameState {
   constructor() {
-    this.defaultLives = 3;
+    this.defaultLives = 5;
+    this.maxLives = 5;
     this.lives = this.defaultLives;
     this.coins = 0;
     this.score = 0;

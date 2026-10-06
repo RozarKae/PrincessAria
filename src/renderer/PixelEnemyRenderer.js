@@ -701,6 +701,728 @@ export class PixelEnemyRenderer {
 
     ctx.restore();
   }
+
+  /**
+   * Draw Door Goblin (Mimic Door) in 256x240 pixel space.
+   */
+  drawDoorGoblin(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 16;
+    const h = 22;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    const facing = enemy.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    // Door frame & timber planks
+    ctx.fillStyle = '#1c1007';
+    ctx.fillRect(1, 1, 14, 20);
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(2, 2, 12, 18);
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(4, 3, 3, 16);
+    ctx.fillRect(9, 3, 3, 16);
+
+    // Iron reinforcement bands
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(2, 5, 12, 2);
+    ctx.fillRect(2, 15, 12, 2);
+
+    if (enemy.isChomping || !enemy.isDisguised) {
+      // Mouth agape with sharp wooden teeth
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(3, 8, 10, 6);
+      ctx.fillStyle = '#ffffff';
+      // Top teeth
+      ctx.fillRect(4, 8, 2, 2);
+      ctx.fillRect(7, 8, 2, 2);
+      ctx.fillRect(10, 8, 2, 2);
+      // Bottom teeth
+      ctx.fillRect(5, 12, 2, 2);
+      ctx.fillRect(8, 12, 2, 2);
+      // Tongue
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(6, 11, 4, 3);
+
+      // Spindly running legs
+      ctx.fillStyle = '#1c1007';
+      const legStep = Math.floor(this.tick * 10) % 2;
+      ctx.fillRect(3, 20, 3, 3 + (legStep ? 1 : -1));
+      ctx.fillRect(10, 20, 3, 3 + (legStep ? -1 : 1));
+    } else {
+      // Golden keyhole and brass knob
+      const rattle = enemy.isTelegraphing ? (Math.random() < 0.5 ? -1 : 1) : 0;
+      ctx.fillStyle = enemy.isTelegraphing ? '#ef4444' : '#fbbf24';
+      ctx.fillRect(11 + rattle, 10, 2, 3);
+      ctx.fillRect(11 + rattle, 13, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(12 + rattle, 10, 1, 1);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Flying Key in 256x240 pixel space.
+   */
+  drawFlyingKey(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 14;
+    const h = 14;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    ctx.translate(px, py);
+
+    // Animated Fluttering Feathery Wings
+    const wingUp = Math.floor(this.tick * 14) % 2 === 0;
+    ctx.fillStyle = '#ffffff';
+    if (wingUp) {
+      ctx.fillRect(1, 0, 4, 3);
+      ctx.fillRect(9, 0, 4, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(2, 1, 2, 1);
+      ctx.fillRect(10, 1, 2, 1);
+    } else {
+      ctx.fillRect(1, 4, 4, 3);
+      ctx.fillRect(9, 4, 4, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(2, 5, 2, 1);
+      ctx.fillRect(10, 5, 2, 1);
+    }
+
+    // Golden Skeleton Key Head (Ring)
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(4, 2, 6, 6);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(5, 3, 4, 4);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(6, 4, 2, 2);
+
+    // Key Stem
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(6, 8, 2, 5);
+
+    // Key Teeth / Bit
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(8, 10, 3, 1);
+    ctx.fillRect(8, 12, 2, 1);
+
+    // Specular Glint
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(5, 3, 1, 1);
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Enchanted Broom in 256x240 pixel space.
+   */
+  drawEnchantedBroom(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 14;
+    const h = 20;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    const facing = enemy.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    // Handle tilt
+    const sweepLean = Math.sin(this.tick * 8) * 0.15;
+    ctx.rotate(sweepLean);
+
+    // Polished Wooden Handle
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(9, 1, 2, 12);
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(10, 1, 1, 12);
+
+    // Mystical Purple Spark at Handle Tip
+    ctx.fillStyle = '#c084fc';
+    ctx.fillRect(9, 0, 2, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(9, 0, 1, 1);
+
+    // Straw Bristles Bundle
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(6, 12, 6, 6);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(5, 14, 7, 5);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(4, 17, 8, 2);
+
+    // Binding twine band
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(6, 13, 6, 1);
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Castle Knight in 256x240 pixel space.
+   */
+  drawCastleKnight(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 18;
+    const h = 24;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    const facing = enemy.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const step = Math.floor(this.tick * 4) % 2;
+
+    // Red Royal Cape behind armor
+    ctx.fillStyle = '#831843';
+    ctx.fillRect(2, 8, 4, 12);
+
+    // Armored Legs
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(5, 17, 3, 5 + (step ? 1 : 0));
+    ctx.fillRect(10, 17, 3, 5 + (step ? 0 : 1));
+
+    // Steel Cuirass (Torso)
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(4, 8, 10, 9);
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(5, 9, 8, 7);
+
+    // Helmet & Visor
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(5, 2, 8, 6);
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(6, 3, 6, 4);
+
+    // Glowing Visor Eye Slit
+    ctx.fillStyle = enemy.isTelegraphing ? '#ef4444' : '#38bdf8';
+    ctx.fillRect(8, 4, 4, 1);
+
+    // Helmet Plume / Crest
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(6, 0, 4, 2);
+
+    // Heater Shield (Frontal defense)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(12, 7, 5, 9);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(13, 8, 3, 7);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(14, 9, 1, 5); // Golden shield crest line
+
+    // Halberd Pole & Blade
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(1, 3, 2, 18);
+    // Halberd Axe Blade
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(0, 2, 4, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 1, 2, 2);
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Sir Slam-A-Lot (Boss) in 256x240 pixel space.
+   */
+  drawSirSlamALot(ctx, screenX, screenY, width, height, boss) {
+    if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 48;
+    const h = 54;
+
+    if (boss.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - boss.defeatTimer / boss.defeatDuration);
+    }
+
+    const facing = boss.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    // Heavy Plated Armored Legs
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(10, 38, 10, 14);
+    ctx.fillRect(26, 38, 10, 14);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(12, 40, 6, 10);
+    ctx.fillRect(28, 40, 6, 10);
+
+    // Colossal Torso Cuirass
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(8, 16, 30, 24);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(10, 18, 26, 20);
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(13, 20, 20, 16);
+
+    // Gold Trim & Royal Lion Insignia
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(18, 22, 10, 2);
+    ctx.fillRect(22, 24, 2, 8);
+
+    // Glowing Power Core on Back (Vulnerable when hammer stuck)
+    const coreVulnerable = boss.isHammerStuck;
+    ctx.fillStyle = coreVulnerable ? '#38bdf8' : '#1e293b';
+    ctx.fillRect(6, 22, 4, 8);
+    if (coreVulnerable) {
+      const corePulse = Math.floor(this.tick * 8) % 2 === 0;
+      ctx.fillStyle = corePulse ? '#ffffff' : '#7dd3fc';
+      ctx.fillRect(7, 24, 2, 4);
+    }
+
+    // Horned Greathelm
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(14, 4, 18, 14);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(16, 6, 14, 10);
+
+    // Golden Horns
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(10, 2, 4, 6);
+    ctx.fillRect(32, 2, 4, 6);
+    ctx.fillRect(8, 0, 3, 3);
+    ctx.fillRect(35, 0, 3, 3);
+
+    // Glowing Visor
+    ctx.fillStyle = boss.isTelegraphing ? '#f97316' : '#38bdf8';
+    ctx.fillRect(22, 9, 8, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(24, 9, 2, 1);
+
+    // Colossal Meteorite Warhammer
+    ctx.save();
+    if (boss.isSlamming || boss.isTelegraphing) {
+      // Hammer overhead
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(22, -18, 4, 28);
+      // Massive Spiked Hammerhead
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(14, -28, 20, 14);
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(18, -24, 12, 6);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(20, -22, 8, 2);
+    } else if (boss.isHammerStuck) {
+      // Hammer lodged into ground in front
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(36, 20, 4, 28);
+      // Embedded hammerhead
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(30, 40, 16, 12);
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(34, 42, 8, 6);
+    } else {
+      // Resting on shoulder
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(32, 6, 4, 28);
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(28, 2, 14, 10);
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(30, 4, 10, 6);
+    }
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Fire Bee in 256x240 pixel space with incandescent stinger glow and fluttering flame wings.
+   */
+  drawFireBee(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 14;
+    const h = 14;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    const facing = enemy.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const wingFrame = Math.floor(this.tick * 16) % 2;
+    const pulse = Math.floor(this.tick * 8) % 2;
+
+    // Fluttering flame wings
+    ctx.fillStyle = wingFrame === 0 ? '#fef08a' : '#f97316';
+    ctx.fillRect(3, 0, 4, 3);
+    ctx.fillRect(8, 0, 4, 3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(4, 1, 2, 1);
+    ctx.fillRect(9, 1, 2, 1);
+
+    // Torso & head (Dark obsidian abdomen with amber stripes)
+    ctx.fillStyle = '#1c1514';
+    ctx.fillRect(2, 3, 10, 7);
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(4, 4, 6, 2);
+    ctx.fillRect(4, 7, 6, 2);
+
+    // Glowing ruby eyes
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(10, 4, 2, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(11, 4, 1, 1);
+
+    // Incandescent molten stinger
+    ctx.fillStyle = pulse ? '#ffffff' : '#fef08a';
+    ctx.fillRect(0, 5, 2, 3);
+    ctx.fillStyle = '#f97316';
+    ctx.fillRect(1, 4, 1, 5);
+
+    // Dive-bomb trailing sparks
+    if (enemy.isSwooping) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-2, 6, 2, 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-4, 7, 2, 1);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Lava Beetle in 256x240 pixel space with armored basalt shell and glowing magma seams.
+   */
+  drawLavaBeetle(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 18;
+    const h = 13;
+
+    if (enemy.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
+    }
+
+    const facing = enemy.facing || 1;
+
+    // Flipped state: overturned on back with exposed magma belly and kicking legs
+    if (enemy.isFlipped) {
+      ctx.translate(px, py + h);
+      ctx.scale(facing < 0 ? -1 : 1, -1);
+
+      // Exposed soft glowing magma belly
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(3, 3, 12, 6);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(5, 4, 8, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(7, 5, 4, 2);
+
+      // Kicking little legs
+      const kick = Math.floor(this.tick * 10) % 2;
+      ctx.fillStyle = '#1c1514';
+      ctx.fillRect(4, 9 + (kick ? 1 : -1), 2, 3);
+      ctx.fillRect(8, 9 + (kick ? -1 : 1), 2, 3);
+      ctx.fillRect(12, 9 + (kick ? 1 : -1), 2, 3);
+
+      ctx.restore();
+      return;
+    }
+
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const walkFrame = Math.floor(this.tick * 6) % 2;
+
+    // 1. Armored Basalt Carapace Shell
+    ctx.fillStyle = '#0a0808';
+    ctx.fillRect(2, 2, 12, 8);
+    ctx.fillRect(4, 1, 8, 1);
+
+    // Shell midtone
+    ctx.fillStyle = '#1c1514';
+    ctx.fillRect(3, 3, 10, 3);
+    ctx.fillRect(3, 7, 10, 2);
+
+    // Glowing orange magma fissure veins
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(5, 4, 6, 1);
+    ctx.fillRect(4, 6, 8, 1);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(6, 4, 4, 1);
+
+    // 2. Basalt Horn
+    ctx.fillStyle = '#342624';
+    ctx.fillRect(13, 4, 3, 3);
+    ctx.fillRect(15, 2, 2, 3);
+    ctx.fillStyle = '#f97316';
+    ctx.fillRect(16, 2, 1, 1); // Horn tip ember
+
+    // 3. Eye
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(12, 4, 2, 2);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(13, 4, 1, 1);
+
+    // 4. Walking Legs
+    ctx.fillStyle = '#0a0808';
+    if (walkFrame === 0) {
+      ctx.fillRect(4, 10, 2, 2);
+      ctx.fillRect(10, 10, 2, 2);
+    } else {
+      ctx.fillRect(6, 10, 2, 2);
+      ctx.fillRect(12, 10, 2, 2);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Magma Grub in 256x240 pixel space with glowing segmented accordion crawling.
+   */
+  drawMagmaGrub(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = enemy.facing || 1;
+
+    // Squashed on stomp
+    if (enemy.isDead) {
+      ctx.fillStyle = '#7c1d0d';
+      ctx.fillRect(px, py + 5, 12, 2);
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(px + 2, py + 4, 8, 2);
+      ctx.restore();
+      return;
+    }
+
+    if (facing < 0) {
+      ctx.translate(px + 12, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const crawlPhase = Math.floor(this.tick * 6) % 2;
+
+    if (crawlPhase === 0) {
+      // Extended crawling frame
+      ctx.fillStyle = '#7c1d0d';
+      ctx.fillRect(0, 3, 3, 4);
+      ctx.fillRect(3, 2, 3, 5);
+      ctx.fillRect(6, 2, 3, 5);
+      ctx.fillRect(9, 3, 3, 4);
+
+      // Glowing magma ridge highlights
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(0, 2, 3, 2);
+      ctx.fillRect(3, 1, 3, 2);
+      ctx.fillRect(6, 1, 3, 2);
+      ctx.fillRect(9, 2, 3, 2);
+
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(4, 1, 1, 1);
+      ctx.fillRect(7, 1, 1, 1);
+
+      // Eye
+      ctx.fillStyle = '#1c1514';
+      ctx.fillRect(10, 3, 1, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(10, 3, 1, 1);
+    } else {
+      // Compressed hunching frame
+      ctx.fillStyle = '#7c1d0d';
+      ctx.fillRect(1, 3, 3, 4);
+      ctx.fillRect(4, 1, 3, 6);
+      ctx.fillRect(7, 3, 3, 4);
+
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(1, 2, 3, 2);
+      ctx.fillRect(4, 0, 3, 2);
+      ctx.fillRect(7, 2, 3, 2);
+
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(5, 0, 1, 1);
+
+      // Eye
+      ctx.fillStyle = '#1c1514';
+      ctx.fillRect(8, 3, 1, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(8, 3, 1, 1);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw The Honey Dragon (Ignis the Honey Wyrm) in 256x240 pixel space.
+   */
+  drawHoneyDragon(ctx, screenX, screenY, width, height, boss) {
+    if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 48;
+    const h = 36;
+
+    if (boss.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - boss.defeatTimer / boss.defeatDuration);
+    }
+
+    const facing = boss.facing || 1;
+    if (facing < 0) {
+      ctx.translate(px + w, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const wingFlap = Math.floor(this.tick * 8) % 2;
+
+    // 1. Great Membranous Dragon Wings (Hardened amber & molten gold)
+    ctx.fillStyle = '#7c2d12';
+    if (wingFlap === 0) {
+      ctx.fillRect(14, -8, 22, 14);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(16, -6, 18, 10);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(18, -4, 14, 2);
+    } else {
+      ctx.fillRect(14, 2, 22, 12);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(16, 4, 18, 8);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(18, 6, 14, 2);
+    }
+
+    // 2. Serpentine Muscular Dragon Body (Hardened amber crystal scales)
+    ctx.fillStyle = '#7c2d12';
+    ctx.fillRect(10, 12, 26, 16);
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(12, 14, 22, 12);
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(14, 16, 18, 8);
+
+    // 3. Glowing Amber Heart Core (Vulnerable when stunned!)
+    const isVuln = boss.isStunned;
+    ctx.fillStyle = isVuln ? '#ffffff' : '#f59e0b';
+    ctx.fillRect(20, 18, 6, 6);
+    if (isVuln) {
+      const pulse = Math.floor(this.tick * 10) % 2 === 0;
+      ctx.fillStyle = pulse ? '#fef08a' : '#ea580c';
+      ctx.fillRect(21, 19, 4, 4);
+    }
+
+    // 4. Heavy Spiked Dragon Tail
+    ctx.fillStyle = '#7c2d12';
+    ctx.fillRect(2, 18, 10, 8);
+    ctx.fillRect(0, 20, 4, 4);
+    // Basalt tail spikes
+    ctx.fillStyle = '#1c1514';
+    ctx.fillRect(4, 16, 2, 3);
+    ctx.fillRect(8, 16, 2, 3);
+
+    // 5. Dragon Neck & Head
+    ctx.fillStyle = '#7c2d12';
+    ctx.fillRect(32, 8, 10, 16);
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(34, 10, 8, 12);
+
+    // Dragon Maw / Snout
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(38, 12, 9, 8);
+
+    // If breathing fire, glowing molten mouth
+    if (boss.isBreathingFire) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(42, 14, 6, 4);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(44, 13, 8, 6);
+    }
+
+    // Basalt Horns sweeping backward
+    ctx.fillStyle = '#1c1514';
+    ctx.fillRect(34, 4, 4, 6);
+    ctx.fillRect(30, 2, 6, 3);
+    ctx.fillStyle = '#543f3b';
+    ctx.fillRect(31, 3, 2, 1);
+
+    // Glowing Ruby Eyes
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(40, 10, 2, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(41, 10, 1, 1);
+
+    // Dazed stars when stunned
+    if (boss.isStunned) {
+      const starBlink = Math.floor(this.tick * 8) % 2 === 0;
+      if (starBlink) {
+        ctx.fillStyle = '#fef08a';
+        ctx.fillRect(34, 0, 3, 2);
+        ctx.fillRect(42, 0, 3, 2);
+      }
+    }
+
+    ctx.restore();
+  }
 }
 
 export const pixelEnemyRenderer = new PixelEnemyRenderer();

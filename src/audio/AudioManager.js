@@ -1196,6 +1196,31 @@ export class AudioManager {
       case 'forest_king':
         this.targetTempo = 142;
         break;
+      case 'castle':
+        this.targetTempo = 116;
+        break;
+      case 'portrait_hall':
+        this.targetTempo = 124;
+        break;
+      case 'library':
+        this.targetTempo = 132;
+        break;
+      case 'slam_a_lot':
+        this.targetTempo = 146;
+        break;
+      case 'volcano':
+      case 'volcano_caldera':
+        this.targetTempo = 118;
+        break;
+      case 'lava_rapids':
+        this.targetTempo = 128;
+        break;
+      case 'boiling_crater':
+        this.targetTempo = 136;
+        break;
+      case 'honey_dragon':
+        this.targetTempo = 148;
+        break;
       default:
         this.targetTempo = 112;
     }
@@ -1850,6 +1875,198 @@ const SCENE_THEMES = {
       makeBar([[0, NOTES.D5], [2, NOTES.F5], [4, NOTES.A5], [8, NOTES.D6], [12, NOTES.C6]]),
       makeBar([[0, NOTES.Bb5], [4, NOTES.D6], [8, NOTES.F6], [12, NOTES.E6]]),
       makeBar([[0, NOTES.C6], [4, NOTES.E6], [8, NOTES.G6], [12, NOTES.F6]]),
+      makeBar([[0, NOTES.A5], [2, NOTES.D6], [4, NOTES.Fs6], [8, NOTES.A6], [12, NOTES.D7]]),
+    ],
+  },
+
+  // ========================================================
+  // WORLD 3: THE CASTLE OF A THOUSAND DOORS THEMES
+  // ========================================================
+
+  // Section 1: The Grand Colonnade & Clocktower (116 BPM)
+  castle: {
+    tempo: 116,
+    chords: [
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.Eb4], // Cm
+      [NOTES.Ab2, NOTES.Eb3, NOTES.Ab3, NOTES.C4], // Ab
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.Ab3], // Fm
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.B3], // G major (Gothic cadence)
+    ],
+    bass: [
+      makeBar([[0, NOTES.C3], [4, NOTES.G2], [8, NOTES.C3], [14, NOTES.Eb3]]),
+      makeBar([[0, NOTES.Ab2], [4, NOTES.Eb3], [8, NOTES.Ab3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.F2], [4, NOTES.C3], [8, NOTES.F3], [14, NOTES.Ab2]]),
+      makeBar([[0, NOTES.G2], [4, NOTES.D3], [8, NOTES.G3], [14, NOTES.B2]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [4, NOTES.Eb5], [8, NOTES.G5], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.Ab5], [4, NOTES.C6], [8, NOTES.Eb6], [12, NOTES.D6]]),
+      makeBar([[0, NOTES.F5], [4, NOTES.Ab5], [8, NOTES.C6], [12, NOTES.B5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.B5], [8, NOTES.D6], [12, NOTES.G6]]),
+    ],
+  },
+
+  // Section 2: Hall of Whispering Portraits & Secret Vaults (124 BPM)
+  portrait_hall: {
+    tempo: 124,
+    chords: [
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.C4], // Am
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.A3], // F
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.F4], // Dm
+      [NOTES.E2, NOTES.B2, NOTES.E3, NOTES.Gs3], // E major (Mystery)
+    ],
+    bass: [
+      makeBar([[0, NOTES.A2], [3, NOTES.E3], [6, NOTES.A3], [10, NOTES.C3], [14, NOTES.B2]]),
+      makeBar([[0, NOTES.F2], [3, NOTES.C3], [6, NOTES.F3], [10, NOTES.A2], [14, NOTES.G2]]),
+      makeBar([[0, NOTES.D3], [3, NOTES.A2], [6, NOTES.D3], [10, NOTES.F2], [14, NOTES.E2]]),
+      makeBar([[0, NOTES.E2], [3, NOTES.B2], [6, NOTES.E3], [10, NOTES.Gs2], [14, NOTES.B2]]),
+    ],
+    melody: [
+      makeBar([[2, NOTES.C5], [6, NOTES.E5], [10, NOTES.A5], [14, NOTES.B5]]),
+      makeBar([[2, NOTES.A4], [6, NOTES.C5], [10, NOTES.F5], [14, NOTES.E5]]),
+      makeBar([[2, NOTES.F4], [6, NOTES.A4], [10, NOTES.D5], [14, NOTES.C5]]),
+      makeBar([[2, NOTES.Gs4], [6, NOTES.B4], [10, NOTES.E5], [14, NOTES.Gs5]]),
+    ],
+  },
+
+  // Section 3: The Arcane Archives & High Battlements (132 BPM)
+  library: {
+    tempo: 132,
+    chords: [
+      [NOTES.D3, NOTES.A3, NOTES.C4, NOTES.F4], // Dm7
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.Bb3], // Gm
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.Cs4], // A7
+    ],
+    bass: [
+      makeBar([[0, NOTES.D3], [2, NOTES.D3], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.D3], [10, NOTES.F3], [12, NOTES.E3], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.F2], [6, NOTES.Bb2], [8, NOTES.Bb2], [10, NOTES.D3], [12, NOTES.C3], [14, NOTES.Bb2]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.G2], [10, NOTES.Bb2], [12, NOTES.A2], [14, NOTES.G2]]),
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A2], [8, NOTES.A2], [10, NOTES.Cs3], [12, NOTES.E3], [14, NOTES.A3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.F5], [4, NOTES.D5], [8, NOTES.A5], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.D5], [4, NOTES.Bb4], [8, NOTES.F5], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.Bb4], [4, NOTES.G4], [8, NOTES.D5], [12, NOTES.F5]]),
+      makeBar([[0, NOTES.Cs5], [4, NOTES.E5], [8, NOTES.A5], [12, NOTES.Cs6]]),
+    ],
+  },
+
+  // Section 4 Boss Climax: Sir Slam-A-Lot Titan Duel (146 BPM)
+  slam_a_lot: {
+    tempo: 146,
+    chords: [
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.Eb4], // Cm (Thunderous heavy power)
+      [NOTES.Ab2, NOTES.Eb3, NOTES.Ab3, NOTES.C4], // Ab
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.B3], // G major (Tense standoff)
+    ],
+    bass: [
+      makeBar([[0, NOTES.C2], [2, NOTES.C2], [4, NOTES.C3], [6, NOTES.G2], [8, NOTES.C2], [10, NOTES.C2], [12, NOTES.Eb2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.Ab2], [2, NOTES.Ab2], [4, NOTES.Ab3], [6, NOTES.Eb2], [8, NOTES.Ab2], [10, NOTES.Ab2], [12, NOTES.C3], [14, NOTES.Bb2]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.Bb3], [6, NOTES.F2], [8, NOTES.Bb2], [10, NOTES.Bb2], [12, NOTES.D3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.G3], [6, NOTES.D2], [8, NOTES.G2], [10, NOTES.G2], [12, NOTES.B2], [14, NOTES.D3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [2, NOTES.Eb5], [4, NOTES.G5], [8, NOTES.C6], [12, NOTES.D6]]),
+      makeBar([[0, NOTES.Eb6], [4, NOTES.C6], [8, NOTES.Ab5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.F5], [4, NOTES.Bb5], [8, NOTES.D6], [12, NOTES.F6]]),
+      makeBar([[0, NOTES.G6], [2, NOTES.D6], [4, NOTES.B5], [8, NOTES.G5], [12, NOTES.B5]]),
+    ],
+  },
+
+  // ========================================================
+  // WORLD 4: THE VOLCANO OF HOT HONEY THEMES
+  // ========================================================
+
+  // Section 1: Ash Caldera & Molten Falls (118 BPM)
+  volcano: {
+    tempo: 118,
+    chords: [
+      [NOTES.E3, NOTES.B3, NOTES.E4, NOTES.G4], // Em
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.E4], // C
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.C4], // Am
+      [NOTES.B2, NOTES.Fs3, NOTES.A3, NOTES.Ds4], // B7 (Volcanic tension)
+    ],
+    bass: [
+      makeBar([[0, NOTES.E2], [4, NOTES.B2], [8, NOTES.E3], [14, NOTES.G2]]),
+      makeBar([[0, NOTES.C3], [4, NOTES.G2], [8, NOTES.C3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.A2], [4, NOTES.E3], [8, NOTES.A3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.B2], [4, NOTES.Fs3], [8, NOTES.B3], [14, NOTES.Ds3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.E5], [4, NOTES.G5], [8, NOTES.B5], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.E5], [8, NOTES.C5], [12, NOTES.D5]]),
+      makeBar([[0, NOTES.E5], [4, NOTES.A5], [8, NOTES.C6], [12, NOTES.B5]]),
+      makeBar([[0, NOTES.Ds5], [4, NOTES.Fs5], [8, NOTES.A5], [12, NOTES.B5]]),
+    ],
+  },
+
+  // Section 2: Obsidian Caverns & Lava Rapids (128 BPM)
+  lava_rapids: {
+    tempo: 128,
+    chords: [
+      [NOTES.D3, NOTES.A3, NOTES.C4, NOTES.F4], // Dm7
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.Bb3], // Gm
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.Cs4], // A7
+    ],
+    bass: [
+      makeBar([[0, NOTES.D3], [3, NOTES.A2], [6, NOTES.D3], [10, NOTES.F3], [14, NOTES.E3]]),
+      makeBar([[0, NOTES.Bb2], [3, NOTES.F2], [6, NOTES.Bb2], [10, NOTES.D3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.G2], [3, NOTES.D3], [6, NOTES.G3], [10, NOTES.Bb2], [14, NOTES.A2]]),
+      makeBar([[0, NOTES.A2], [3, NOTES.E3], [6, NOTES.A3], [10, NOTES.Cs3], [14, NOTES.E3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.F5], [4, NOTES.D5], [8, NOTES.A5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.D5], [4, NOTES.F5], [8, NOTES.Bb5], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.Bb5], [8, NOTES.D6], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.Cs6], [4, NOTES.E6], [8, NOTES.A6], [12, NOTES.G6]]),
+    ],
+  },
+
+  // Section 3: Geyser Fields & Boiling Crater (136 BPM)
+  boiling_crater: {
+    tempo: 136,
+    chords: [
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.Eb4], // Cm
+      [NOTES.Ab2, NOTES.Eb3, NOTES.Ab3, NOTES.C4], // Ab
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.Ab3], // Fm
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.B3], // G major
+    ],
+    bass: [
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.G2], [6, NOTES.C3], [8, NOTES.C3], [10, NOTES.Eb3], [12, NOTES.D3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.Ab2], [2, NOTES.Ab2], [4, NOTES.Eb3], [6, NOTES.Ab2], [8, NOTES.Ab2], [10, NOTES.C3], [12, NOTES.Bb2], [14, NOTES.Ab2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.C3], [6, NOTES.F2], [8, NOTES.F2], [10, NOTES.Ab2], [12, NOTES.G2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.G2], [10, NOTES.B2], [12, NOTES.D3], [14, NOTES.G3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [3, NOTES.Eb5], [6, NOTES.G5], [10, NOTES.C6], [14, NOTES.D6]]),
+      makeBar([[0, NOTES.Eb6], [4, NOTES.C6], [8, NOTES.Ab5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.F5], [3, NOTES.Ab5], [6, NOTES.C6], [10, NOTES.F6], [14, NOTES.Eb6]]),
+      makeBar([[0, NOTES.D6], [4, NOTES.B5], [8, NOTES.G5], [12, NOTES.B5]]),
+    ],
+  },
+
+  // Section 4 Boss Climax: The Honey Dragon (Ignis the Wyrm) (148 BPM)
+  honey_dragon: {
+    tempo: 148,
+    chords: [
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.F4],   // Dm (Dragon fury)
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.A3],   // F
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.E4],   // C
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.Fs4],  // D Major (Epic draconic triumph!)
+    ],
+    bass: [
+      makeBar([[0, NOTES.D2], [2, NOTES.D2], [4, NOTES.D3], [6, NOTES.A2], [8, NOTES.D2], [10, NOTES.D2], [12, NOTES.F2], [14, NOTES.E2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.F3], [6, NOTES.C3], [8, NOTES.F2], [10, NOTES.F2], [12, NOTES.A2], [14, NOTES.G2]]),
+      makeBar([[0, NOTES.C3], [2, NOTES.C3], [4, NOTES.C4], [6, NOTES.G2], [8, NOTES.C3], [10, NOTES.C3], [12, NOTES.E3], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.D3], [2, NOTES.D3], [4, NOTES.Fs3], [6, NOTES.A3], [8, NOTES.D4], [10, NOTES.D4], [12, NOTES.A3], [14, NOTES.D4]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.D5], [2, NOTES.F5], [4, NOTES.A5], [8, NOTES.D6], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.A5], [4, NOTES.C6], [8, NOTES.F6], [12, NOTES.E6]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.C6], [8, NOTES.E6], [12, NOTES.D6]]),
       makeBar([[0, NOTES.A5], [2, NOTES.D6], [4, NOTES.Fs6], [8, NOTES.A6], [12, NOTES.D7]]),
     ],
   },

@@ -140,9 +140,9 @@ export class HUD {
     ctx.fillStyle = '#fbbf24';
     ctx.fillText('ROYAL HEARTS', livesX, 26);
 
-    const heartStartX = livesX;
-    for (let i = 0; i < 3; i++) {
-      const hx = heartStartX + i * 42 + 14;
+    const maxHearts = gameState.maxLives || 5;
+    for (let i = 0; i < maxHearts; i++) {
+      const hx = heartStartX + i * 32 + 14;
       const hy = 50;
       const isAlive = i < gameState.lives;
       this.drawRoyalHeart(ctx, hx, hy, isAlive, i === gameState.lives - 1);

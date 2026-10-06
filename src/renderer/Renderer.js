@@ -98,7 +98,7 @@ export class Renderer {
     this.pixelRenderer.drawMidground(camera, level.midgroundProps);
 
     // 3. Draw World Platforms (Ground, elevated wood/stone/honey, bridges, vines, hazards, moving platforms)
-    this.pixelRenderer.drawPlatforms(camera, level.platforms, level.movingPlatforms);
+    this.pixelRenderer.drawPlatforms(camera, level.platforms, level.movingPlatforms, level);
 
     // 4. Draw Entities (Checkpoints, Goal & Batboy, Shards, Enemies, Queen Bee silhouette, Particles, Player)
     this.pixelRenderer.drawEntities(camera, level, player);

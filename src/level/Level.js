@@ -8,6 +8,16 @@ import { ThornGoblin } from '../entities/ThornGoblin.js';
 import { VineCrawler } from '../entities/VineCrawler.js';
 import { SporeBomber } from '../entities/SporeBomber.js';
 import { ForestKing } from '../entities/ForestKing.js';
+import { DoorGoblin } from '../entities/DoorGoblin.js';
+import { FlyingKey } from '../entities/FlyingKey.js';
+import { EnchantedBroom } from '../entities/EnchantedBroom.js';
+import { CastleKnight } from '../entities/CastleKnight.js';
+import { SirSlamALot } from '../entities/SirSlamALot.js';
+import { FireBee } from '../entities/FireBee.js';
+import { LavaBeetle } from '../entities/LavaBeetle.js';
+import { MagmaGrub } from '../entities/MagmaGrub.js';
+import { HoneyDragon } from '../entities/HoneyDragon.js';
+import { HoneyBumble } from '../entities/HoneyBumble.js';
 import { MovingPlatform } from '../entities/MovingPlatform.js';
 import { Particle } from '../entities/Particle.js';
 import { Batboy } from '../entities/Batboy.js';
@@ -39,6 +49,7 @@ export class Level {
     this.width = levelData.width;
     this.height = levelData.height;
     this.platforms = levelData.platforms;
+    this.physics = levelData.physics || {};
     this.theme = levelData.theme;
     this.spawnPoint = { ...levelData.spawn };
     this.checkpoints = levelData.checkpoints ? levelData.checkpoints.map(c => ({ ...c, activated: false })) : (levelData.checkpoint ? [{ ...levelData.checkpoint, activated: false }] : []);
@@ -46,6 +57,13 @@ export class Level {
     this.goal = { ...levelData.goal };
     this.midgroundProps = levelData.midgroundProps || [];
     this.detailProps = levelData.detailProps || [];
+
+    // World Differentiation & Puzzle State
+    this.hasBastionKey = false;
+    this.portcullisUnlocked = false;
+    this.khanCloakDiscovered = false;
+    this.sporePuffballs = levelData.sporePuffballs || [];
+    this.mimicTrees = levelData.mimicTrees || [];
 
     // Dynamic Entities
     this.shards = [];
@@ -158,6 +176,32 @@ export class Level {
           return new SporeBomber(e.x, e.y, { amplitude: e.amplitude, frequency: e.frequency });
         case 'forest_king':
           return new ForestKing(e.x, e.y);
+        case 'door_goblin':
+        case 'mimic_door':
+          return new DoorGoblin(e.x, e.y, pLeft, pRight);
+        case 'flying_key':
+        case 'key':
+          return new FlyingKey(e.x, e.y, { amplitudeX: e.amplitudeX, amplitudeY: e.amplitudeY, frequency: e.frequency });
+        case 'enchanted_broom':
+        case 'broom':
+          return new EnchantedBroom(e.x, e.y, pLeft, pRight);
+        case 'castle_knight':
+        case 'knight':
+          return new CastleKnight(e.x, e.y, pLeft, pRight);
+        case 'sir_slam_a_lot':
+        case 'slam_a_lot':
+          return new SirSlamALot(e.x, e.y);
+        case 'fire_bee':
+          return new FireBee(e.x, e.y);
+        case 'lava_beetle':
+          return new LavaBeetle(e.x, e.y);
+        case 'magma_grub':
+          return new MagmaGrub(e.x, e.y);
+        case 'honey_dragon':
+          return new HoneyDragon(e.x, e.y);
+        case 'honey_bumble':
+        case 'bumble':
+          return new HoneyBumble(e.x, e.y);
         case 'grub':
         case 'hive_grub':
         default:
@@ -165,7 +209,12 @@ export class Level {
       }
     });
 
+    this.honeyBumble = this.enemies.find(e => e instanceof HoneyBumble) || null;
     this.forestKing = this.enemies.find(e => e instanceof ForestKing) || null;
+    this.sirSlamALot = this.enemies.find(e => e instanceof SirSlamALot) || null;
+    this.honeyDragon = this.enemies.find(e => e instanceof HoneyDragon) || null;
+    this.portalDoors = this.data.portalDoors || [];
+    this.portalCooldown = 0;
 
     // Register enemies with Encounter Coordinator
     if (this.encounterCoordinator) {
@@ -205,6 +254,10 @@ export class Level {
       });
     }
 
+    this.hasBastionKey = false;
+    this.portcullisUnlocked = false;
+    this.khanCloakDiscovered = false;
+
     if (this.director) {
       this.director.reset();
     }
@@ -212,20 +265,20 @@ export class Level {
 
   /**
    * Return combined list of static and moving solid platforms for physics collision.
-   * Filters out climbable vines and broken crumble blocks.
+   * Filters out climbable vines, broken crumble blocks, and unlocked portcullises.
    */
   getAllSolidPlatforms() {
     return [
-      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && !((p.type === 'crumble_block' || p.type === 'crumble') && p.isBroken)),
+      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && p.type !== 'climbable_chain' && p.type !== 'chain' && p.type !== 'portal_door' && p.type !== 'crest_door' && p.type !== 'thermal_updraft' && p.type !== 'updraft' && !(p.type === 'bastion_portcullis' && this.portcullisUnlocked) && !((p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash') && p.isBroken)),
       ...this.movingPlatforms
     ];
   }
 
   /**
-   * Returns list of climbable hanging vines in the current world.
+   * Returns list of climbable hanging vines/chains in the current world.
    */
   getClimbableVines() {
-    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine');
+    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine' || p.type === 'climbable_chain' || p.type === 'chain');
   }
 
   addParticle(p) {
@@ -449,6 +502,168 @@ export class Level {
         if (camera && camera.focus) camera.focus(10200, 560, 2.8);
         if (camera && camera.shake) camera.shake(10, 0.4);
       }
+    } else if (this.world === 3) {
+      // WORLD 3 SECRETS
+      // Secret 1: The Royal Wine Vault (x: 1200-1460, y <= 480)
+      if (!this.secretAreaDiscovered && player.x >= 1200 && player.x <= 1460 && player.y <= 480) {
+        this.secretAreaDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE ROYAL WINE VAULT (+500 PTS)';
+        this.secretBannerTimer = 3.5;
+        gameState.addScore(500);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 24);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 2: The Stained Glass Gallery (x: 4380-4680, y <= 380)
+      if (!this.apiaryDiscovered && player.x >= 4380 && player.x <= 4680 && player.y <= 380) {
+        this.apiaryDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE STAINED GLASS SANCTUARY (+750 PTS)';
+        this.secretBannerTimer = 3.8;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 32);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 3: The Astrolabe Observatory (x: 6180-6440, y <= 420)
+      if (!this.armoryDiscovered && player.x >= 6180 && player.x <= 6440 && player.y <= 420) {
+        this.armoryDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE ASTROLABE OBSERVATORY (+750 PTS)';
+        this.secretBannerTimer = 4.0;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 36);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 4: The King\'s Secret Armoury (x: 9250-9500, y <= 380)
+      if (!this.spireSecretDiscovered && player.x >= 9250 && player.x <= 9500 && player.y <= 380) {
+        this.spireSecretDiscovered = true;
+        this.secretBannerText = "🗝️ SECRET DISCOVERED: THE KING'S SECRET ARMOURY (+1,000 PTS)";
+        this.secretBannerTimer = 4.2;
+        gameState.addScore(1000);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 40);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // WORLD 3 LANDMARKS
+      // Landmark 1: The Grand Vestibule Clocktower (x >= 1950 and x < 2400)
+      if (!this.shrineCinematicTriggered && player.x >= 1950 && player.x < 2400) {
+        this.shrineCinematicTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE GRAND VESTIBULE CLOCKTOWER';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(2100, 840, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(2100, 750, 2.2);
+      }
+
+      // Landmark 2: The Rose Stained-Glass Atrium (x >= 3800 and x < 4300)
+      if (!this.hollowRedwoodTriggered && player.x >= 3800 && player.x < 4300) {
+        this.hollowRedwoodTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE ROSE STAINED-GLASS ATRIUM';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(4000, 600, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(4000, 600, 2.5);
+      }
+
+      // Landmark 3: The High Catapult Spire (x >= 7000 and x < 7500)
+      if (!this.watchtowerTriggered && player.x >= 7000 && player.x < 7500) {
+        this.watchtowerTriggered = true;
+        this.shrineBannerText = '✨ LANDMARK: THE HIGH CATAPULT BATTLEMENT';
+        this.shrineBannerTimer = 4.0;
+        this.spawnSparkles(7200, 520, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(7200, 520, 2.5);
+      }
+
+      // Landmark 4: The Gateway Bastion of Sir Slam-A-Lot (x >= 9950)
+      if (!this.sovereignThroneTriggered && player.x >= 9950) {
+        this.sovereignThroneTriggered = true;
+        this.shrineBannerText = '⚔️ CLIMAX: SIR SLAM-A-LOT — THE GATEWAY BASTION!';
+        this.shrineBannerTimer = 4.5;
+        this.spawnSparkles(10200, 700, 48);
+        if (audio && audio.playQueenBeeAppearance) audio.playQueenBeeAppearance();
+        if (camera && camera.focus) camera.focus(10200, 680, 2.8);
+        if (camera && camera.shake) camera.shake(12, 0.5);
+      }
+    } else if (this.world === 4) {
+      // WORLD 4 SECRETS & LANDMARKS: THE VOLCANO OF HOT HONEY
+      // Secret 1: The Obsidian Forge (x: 3400-3660, y <= 460)
+      if (!this.secretAreaDiscovered && player.x >= 3400 && player.x <= 3660 && player.y <= 460) {
+        this.secretAreaDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE OBSIDIAN FORGE (+500 PTS)';
+        this.secretBannerTimer = 3.5;
+        gameState.addScore(500);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 24);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 2: Dragon's Hoard Cache (x: 6200-6460, y <= 400)
+      if (!this.apiaryDiscovered && player.x >= 6200 && player.x <= 6460 && player.y <= 400) {
+        this.apiaryDiscovered = true;
+        this.secretBannerText = "✨ SECRET DISCOVERY: THE DRAGON'S HOARD (+750 PTS)";
+        this.secretBannerTimer = 3.8;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 32);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 3: Ancient Wyrm Nest (x: 9140-9380, y <= 420)
+      if (!this.armoryDiscovered && player.x >= 9140 && player.x <= 9380 && player.y <= 420) {
+        this.armoryDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE ANCIENT WYRM NEST (+1,000 PTS)';
+        this.secretBannerTimer = 4.2;
+        gameState.addScore(1000);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 40);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Landmark 1: The Ash Caldera Peak (x >= 1700 and x < 2100)
+      if (!this.shrineCinematicTriggered && player.x >= 1700 && player.x < 2100) {
+        this.shrineCinematicTriggered = true;
+        this.shrineBannerText = '🌋 LANDMARK: THE ASH CALDERA PEAK';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(1900, 840, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(1900, 750, 2.2);
+      }
+
+      // Landmark 2: The Boiling Geyser Spire (x >= 4200 and x < 4600)
+      if (!this.hollowRedwoodTriggered && player.x >= 4200 && player.x < 4600) {
+        this.hollowRedwoodTriggered = true;
+        this.shrineBannerText = '🌋 LANDMARK: THE BOILING GEYSER SPIRE';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(4400, 600, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(4400, 600, 2.5);
+      }
+
+      // Landmark 3: The Dragon Tooth Spire (x >= 7000 and x < 7450)
+      if (!this.watchtowerTriggered && player.x >= 7000 && player.x < 7450) {
+        this.watchtowerTriggered = true;
+        this.shrineBannerText = '🌋 LANDMARK: THE DRAGON TOOTH SPIRE';
+        this.shrineBannerTimer = 4.0;
+        this.spawnSparkles(7200, 520, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(7200, 520, 2.5);
+      }
+
+      // Landmark 4: The Heart of the Volcano (x >= 9950)
+      if (!this.sovereignThroneTriggered && player.x >= 9950) {
+        this.sovereignThroneTriggered = true;
+        this.shrineBannerText = '🔥 CLIMAX: THE HONEY DRAGON — CALDERA ARENA!';
+        this.shrineBannerTimer = 4.5;
+        this.spawnSparkles(10200, 700, 48);
+        if (audio && audio.playQueenBeeAppearance) audio.playQueenBeeAppearance();
+        if (camera && camera.focus) camera.focus(10200, 680, 2.8);
+        if (camera && camera.shake) camera.shake(14, 0.5);
+      }
     } else {
       // WORLD 1 SECRETS & LANDMARKS
       // Secret 1: Sunstone Canopy Sanctum (x: 1240-1460, y <= 490)
@@ -563,10 +778,34 @@ export class Level {
       this.shrineBannerTimer -= dt;
     }
 
+    // 5B. Portal Doors Interaction (Castle of a Thousand Doors)
+    if (this.portalCooldown > 0) {
+      this.portalCooldown -= dt;
+    }
+    if (this.portalDoors && this.portalDoors.length > 0) {
+      this.portalDoors.forEach(door => {
+        if (this.portalCooldown <= 0 && Collision.intersects(player.getBounds(), door)) {
+          const dest = this.portalDoors.find(d => d.id === door.targetId);
+          if (dest) {
+            this.portalCooldown = 1.2;
+            this.spawnBurst(player.x + player.width / 2, player.y + player.height / 2, 20, '#38bdf8');
+            this.spawnSparkles(player.x + player.width / 2, player.y + player.height / 2, 16);
+            player.x = dest.x + (dest.width - player.width) / 2;
+            player.y = dest.y + dest.height - player.height;
+            player.vx = 0;
+            this.spawnBurst(player.x + player.width / 2, player.y + player.height / 2, 20, '#c084fc');
+            this.spawnSparkles(player.x + player.width / 2, player.y + player.height / 2, 16);
+            if (audio && audio.playCollect) audio.playCollect();
+            if (camera && camera.shake) camera.shake(6, 0.15);
+          }
+        }
+      });
+    }
+
     // 5C. Crumble Blocks Simulation (Shake -> Shatter -> Reform)
     if (this.platforms) {
       this.platforms.forEach(plat => {
-        if (plat.type === 'crumble_block' || plat.type === 'crumble') {
+        if (plat.type === 'crumble_block' || plat.type === 'crumble' || plat.type === 'crumble_stone' || plat.type === 'crumble_ash') {
           if (plat.isShaking) {
             plat.shakeTimer -= dt;
             if (plat.shakeTimer <= 0) {
@@ -574,7 +813,7 @@ export class Level {
               plat.isBroken = true;
               plat.respawnTimer = 3.4;
               if (audio && audio.playCrumble) audio.playCrumble();
-              this.spawnBurst(plat.x + plat.width / 2, plat.y + plat.height / 2, 16, '#94a3b8');
+              this.spawnBurst(plat.x + plat.width / 2, plat.y + plat.height / 2, 16, plat.type === 'crumble_ash' ? '#543f3b' : '#94a3b8');
               this.spawnDust(plat.x + plat.width / 2, plat.y + plat.height / 2, 10);
               if (camera && camera.shake) camera.shake(5, 0.15);
             }
@@ -589,16 +828,121 @@ export class Level {
       });
     }
 
-    // 5D. Honey Geyser Ambient Rising Particles
+    // 5D. Honey Geyser & Thermal Updraft Ambient Rising Particles
     if (this.platforms && Math.random() < 0.45) {
       this.platforms.forEach(plat => {
-        if (plat.type === 'honey_geyser' || plat.type === 'geyser') {
+        if (plat.type === 'honey_geyser' || plat.type === 'geyser' || plat.type === 'thermal_updraft' || plat.type === 'updraft') {
           const gx = plat.x + Math.random() * plat.width;
           const gy = plat.y + plat.height * 0.7;
           const vy = -180 - Math.random() * 120;
-          this.particles.push(new Particle(gx, gy, (Math.random() - 0.5) * 20, vy, 'sparkle', '#fef08a', 0.6, 5));
+          const color = (plat.type === 'thermal_updraft' || plat.type === 'updraft') ? '#f97316' : '#fef08a';
+          this.particles.push(new Particle(gx, gy, (Math.random() - 0.5) * 20, vy, 'sparkle', color, 0.6, 5));
         }
       });
+    }
+
+    // 5E. WORLD-SPECIFIC ENVIRONMENTAL MECHANICS
+    // World 1: Snapping Flowers & Wooden Spoon Tilt
+    if (this.platforms) {
+      this.platforms.forEach(plat => {
+        if (plat.type === 'snapping_flower') {
+          plat.timer = (plat.timer || 0) + dt;
+          const cycle = plat.timer % 2.8;
+          // Open 0..1.8s (sweet nectar, safe), snapping shut 1.8..2.8s (hazardous jaws)
+          plat.isSnapping = cycle >= 1.8;
+          plat.openFactor = cycle < 1.8 ? 1.0 : (Math.sin((cycle - 1.8) * Math.PI) * 0.15);
+        } else if (plat.type === 'spoon_bridge') {
+          // Re-center spoon tilt when player is not actively standing on it
+          if (player.standingPlatform !== plat) {
+            plat.tilt = (plat.tilt || 0) * (1 - 6 * dt);
+          }
+        }
+      });
+    }
+
+    // World 1 Story Landmark: Khan's Cloak Clue
+    if (this.world === 1 && !this.khanCloakDiscovered && player.x >= 4180 && player.x <= 4420) {
+      this.khanCloakDiscovered = true;
+      this.secretBannerText = "🧣 STORY CLUE: A torn scrap of Batboy Khan's cloak clings to the thorns! He was carried towards the Forest!";
+      this.secretBannerTimer = 5.0;
+      this.spawnSparkles(4260, 680, 24);
+      if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+    }
+
+    // World 2: Sleeping Spores (Spore Puffballs)
+    if (this.world === 2 && this.sporePuffballs) {
+      this.sporePuffballs.forEach(puff => {
+        puff.timer = (puff.timer || 0) + dt;
+        const cycle = puff.timer % 3.2;
+        puff.isEmitting = cycle >= 1.4;
+        if (puff.isEmitting) {
+          const dx = (player.x + player.width / 2) - puff.x;
+          const dy = (player.y + player.height / 2) - puff.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 80 * 80 && !player.isDashing) {
+            player.applyDrowsy(2.5);
+            if (Math.random() < 0.25) {
+              this.spawnDust(player.x + player.width / 2, player.y + 10, 2);
+            }
+          }
+          if (Math.random() < 0.35) {
+            const px = puff.x + (Math.random() - 0.5) * 60;
+            const py = puff.y - Math.random() * 45;
+            this.particles.push(new Particle(px, py, (Math.random() - 0.5) * 25, -25 - Math.random() * 20, 'sparkle', '#a7f3d0', 0.8, 4));
+          }
+        }
+      });
+    }
+
+    // World 2: Mimic Trees
+    if (this.world === 2 && this.mimicTrees) {
+      this.mimicTrees.forEach(mimic => {
+        const dx = (player.x + player.width / 2) - mimic.x;
+        const dy = (player.y + player.height / 2) - mimic.y;
+        const inProximity = Math.abs(dx) < 140 && Math.abs(dy) < 140;
+        if (inProximity) {
+          mimic.activeTimer = (mimic.activeTimer || 0) + dt;
+          mimic.isAwake = true;
+          if (mimic.activeTimer > 0.45 && Math.abs(dx) < 65 && !player.isDashing && player.y + player.height > mimic.y - 35) {
+            const wasHurt = player.hurt();
+            if (wasHurt) {
+              if (camera) camera.shake(10, 0.2);
+              if (audio && audio.playDamage) audio.playDamage();
+              gameState.loseLife();
+            }
+          }
+        } else {
+          mimic.isAwake = false;
+          mimic.activeTimer = 0;
+        }
+      });
+    }
+
+    // World 3: Flying Key Capture & Bastion Portcullis Unlock
+    if (this.world === 3) {
+      const keyObj = this.enemies.find(e => e instanceof FlyingKey);
+      if (keyObj && !keyObj.isDead && Collision.intersects(player.getBounds(), keyObj.getBounds())) {
+        keyObj.isDead = true;
+        this.hasBastionKey = true;
+        this.portcullisUnlocked = true;
+        this.secretBannerText = '🗝️ THE GOLDEN FLYING KEY HAS BEEN CAPTURED! THE BASTION PORTCULLIS IS UNLOCKED!';
+        this.secretBannerTimer = 4.5;
+        gameState.addScore(1000);
+        this.spawnBurst(keyObj.x, keyObj.y, 28, '#fde047');
+        this.spawnSparkles(keyObj.x, keyObj.y, 20);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        if (camera) camera.shake(8, 0.2);
+      }
+
+      // Check Bastion Portcullis approach without key
+      if (!this.hasBastionKey && player.x >= 6120 && player.x <= 6190) {
+        if (!this.portcullisPromptTimer || this.portcullisPromptTimer <= 0) {
+          this.secretBannerText = '🔒 BASTION PORTCULLIS LOCKED! ENTER THE LION CREST DOOR & RETRIEVE THE FLYING KEY!';
+          this.secretBannerTimer = 3.5;
+          this.portcullisPromptTimer = 4.0;
+        }
+      }
+      if (this.portcullisPromptTimer > 0) this.portcullisPromptTimer -= dt;
     }
 
     // 6. Queen Bee Presence Environmental Event Trigger

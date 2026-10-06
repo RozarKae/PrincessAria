@@ -4,7 +4,7 @@ import { Input } from '../systems/Input.js';
 import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { Level } from '../level/Level.js';
-import { LEVEL_1_1, LEVEL_2_1 } from '../level/LevelData.js';
+import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1 } from '../level/LevelData.js';
 import { Player } from '../entities/Player.js';
 import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
@@ -41,11 +41,13 @@ export class Game {
     }, this.audio);
     this.gameOverScreen = new GameOverScreen();
 
-    // Check initial level/world parameter (?world=2 or ?w=2 or ?level=2-1)
+    // Check initial level/world parameter (?world=2 or ?world=3 or ?world=4)
     const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const requestedWorld = urlParams ? (urlParams.get('world') || urlParams.get('w') || urlParams.get('level')) : null;
+    const isW4 = requestedWorld === '4' || requestedWorld === '4-1';
+    const isW3 = requestedWorld === '3' || requestedWorld === '3-1';
     const isW2 = requestedWorld === '2' || requestedWorld === '2-1';
-    this.currentLevelData = isW2 ? LEVEL_2_1 : LEVEL_1_1;
+    this.currentLevelData = isW4 ? LEVEL_4_1 : (isW3 ? LEVEL_3_1 : (isW2 ? LEVEL_2_1 : LEVEL_1_1));
     this.gameState.world = this.currentLevelData.world || 1;
     this.gameState.level = this.currentLevelData.stage || 1;
 
@@ -116,7 +118,13 @@ export class Game {
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
     const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-    if (requestedWorld === '2' || requestedWorld === '2-1') {
+    if (requestedWorld === '4' || requestedWorld === '4-1') {
+      this.currentLevelData = LEVEL_4_1;
+      this.gameState.world = 4;
+    } else if (requestedWorld === '3' || requestedWorld === '3-1') {
+      this.currentLevelData = LEVEL_3_1;
+      this.gameState.world = 3;
+    } else if (requestedWorld === '2' || requestedWorld === '2-1') {
       this.currentLevelData = LEVEL_2_1;
       this.gameState.world = 2;
     }
@@ -152,11 +160,21 @@ export class Game {
     } else if (!this.currentLevelData) {
       const urlParams = new URLSearchParams(window.location.search);
       const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-      this.currentLevelData = (requestedWorld === '2' || requestedWorld === '2-1') ? LEVEL_2_1 : LEVEL_1_1;
+      if (requestedWorld === '4' || requestedWorld === '4-1') {
+        this.currentLevelData = LEVEL_4_1;
+      } else if (requestedWorld === '3' || requestedWorld === '3-1') {
+        this.currentLevelData = LEVEL_3_1;
+      } else if (requestedWorld === '2' || requestedWorld === '2-1') {
+        this.currentLevelData = LEVEL_2_1;
+      } else {
+        this.currentLevelData = LEVEL_1_1;
+      }
     }
 
+    const isWorld4 = this.currentLevelData && this.currentLevelData.world === 4;
+    const isWorld3 = this.currentLevelData && this.currentLevelData.world === 3;
     const isWorld2 = this.currentLevelData && this.currentLevelData.world === 2;
-    const initialBiome = isWorld2 ? 'forest' : 'glade';
+    const initialBiome = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
 
     if (this.audio) {
       this.audio.unlock();
@@ -187,8 +205,10 @@ export class Game {
       this.camera.x = this.player.x - CANVAS_WIDTH / 2;
       this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
     }
+    const isWorld4 = levelData.world === 4;
+    const isWorld3 = levelData.world === 3;
     const isWorld2 = levelData.world === 2;
-    const initialBiome = isWorld2 ? 'forest' : 'glade';
+    const initialBiome = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
     if (this.audio) {
       this.audio.setBiome(initialBiome);
       this.audio.startProceduralMusic(initialBiome);
@@ -201,7 +221,13 @@ export class Game {
       console.log('[Game] Advancing from World 1 to World 2: The Whispering Forest!');
       this.loadLevel(LEVEL_2_1);
     } else if (this.gameState.world === 2) {
-      console.log('[Game] World 2 Complete! The Forest King has spoken. Replaying World 1 or returning...');
+      console.log('[Game] Advancing from World 2 to World 3: The Castle of a Thousand Doors!');
+      this.loadLevel(LEVEL_3_1);
+    } else if (this.gameState.world === 3) {
+      console.log('[Game] Advancing from World 3 to World 4: The Volcano of Hot Honey!');
+      this.loadLevel(LEVEL_4_1);
+    } else if (this.gameState.world === 4) {
+      console.log('[Game] World 4 Complete! Ignis the Honey Dragon liberated! Realm saved!');
       this.loadLevel(LEVEL_1_1);
     } else {
       this.loadLevel(LEVEL_1_1);
@@ -258,12 +284,18 @@ export class Game {
       }
     }
 
-    // Hotkey '1' and '2' to switch between World 1 and World 2
+    // Hotkey '1', '2', '3', and '4' to switch between Worlds
     if (this.input.justPressed('WORLD_1')) {
       this.loadLevel(LEVEL_1_1);
     }
     if (this.input.justPressed('WORLD_2')) {
       this.loadLevel(LEVEL_2_1);
+    }
+    if (this.input.justPressed('WORLD_3')) {
+      this.loadLevel(LEVEL_3_1);
+    }
+    if (this.input.justPressed('WORLD_4')) {
+      this.loadLevel(LEVEL_4_1);
     }
 
     if (this.dialogue.active) {
@@ -319,8 +351,11 @@ export class Game {
       characterRenderer.cycleRenderMode();
     }
 
-    // 2. Reset grounded state before collision detection pass
+    // 2. Reset grounded state & surface interactions before collision detection pass
     this.player.isGrounded = false;
+    this.player.standingPlatform = null;
+    this.player.surfaceVx = 0;
+    this.player.currentSurfaceFriction = 1.0;
 
     // 3. Resolve Solid Platform Collisions (Static + Moving Platforms)
     const allPlatforms = this.level.getAllSolidPlatforms();
@@ -427,11 +462,33 @@ export class Game {
   updateMusicDirector(dt) {
     if (!this.audio) return;
 
+    const isWorld4 = this.gameState && this.gameState.world === 4;
+    const isWorld3 = this.gameState && this.gameState.world === 3;
     const isWorld2 = this.gameState && this.gameState.world === 2;
 
     // 1. Determine Scene Progression Across 10,800px Continuum
-    let scene = isWorld2 ? 'forest' : 'glade';
-    if (isWorld2) {
+    let scene = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
+    if (isWorld4) {
+      if (this.player.x >= 8200) {
+        scene = 'honey_dragon';   // Section 4: The Heart of the Volcano & Ignis the Wyrm (148 BPM)
+      } else if (this.player.x >= 5400) {
+        scene = 'boiling_crater'; // Section 3: Geyser Fields & Boiling Crater (136 BPM)
+      } else if (this.player.x >= 2600) {
+        scene = 'lava_rapids';    // Section 2: Obsidian Caverns & Lava Rapids (128 BPM)
+      } else {
+        scene = 'volcano';        // Section 1: Ash Caldera & Molten Falls (118 BPM)
+      }
+    } else if (isWorld3) {
+      if (this.player.x >= 8200) {
+        scene = 'slam_a_lot';   // Section 4: Sir Slam-A-Lot Arena & Breach (146 BPM)
+      } else if (this.player.x >= 5400) {
+        scene = 'library';       // Section 3: Arcane Archives & Battlements (132 BPM)
+      } else if (this.player.x >= 2600) {
+        scene = 'portrait_hall'; // Section 2: Hall of Whispering Portraits & Secret Vaults (124 BPM)
+      } else {
+        scene = 'castle';        // Section 1: Grand Colonnade & Clocktower (116 BPM)
+      }
+    } else if (isWorld2) {
       if (this.player.x >= 8200) {
         scene = 'forest_king'; // Section 4: The Ancient Heart & The Forest King (142 BPM)
       } else if (this.player.x >= 5400) {
@@ -461,13 +518,13 @@ export class Game {
       specialMode = 'secret'; // Delicate celestial music box, drums muted
     } else if (this.level && this.level.shrineBannerTimer > 0) {
       specialMode = 'cinematic'; // Majestic brass/string swell & sparkling arpeggios
-    } else if (scene === 'climax' || scene === 'forest_king') {
+    } else if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon') {
       specialMode = 'climax'; // Maximum heroic rescue urgency
     }
 
     // 3. Determine Dynamic Intensity (0.0 to 1.0)
     let intensity = 0.2; // Baseline peaceful exploration
-    if (scene === 'climax' || scene === 'forest_king') {
+    if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon') {
       intensity = 1.0;
     } else if (this.level && this.level.encounterCoordinator && this.level.encounterCoordinator.activeSynergy) {
       intensity = 0.85; // High coordinated encounter synergy

@@ -44,6 +44,22 @@ export class Collision {
         // Landing on top of platform
         if (player.vy >= 0) {
           player.y = platform.y - player.height;
+          player.standingPlatform = platform;
+          player.surfaceVx = platform.currentVx || 0;
+
+          // Surface friction assignment
+          if (platform.friction !== undefined) {
+            player.currentSurfaceFriction = platform.friction;
+          } else if (platform.type === 'castle_ground' || platform.type === 'castle_stone' || platform.type === 'marble') {
+            player.currentSurfaceFriction = 0.72; // Slick polished marble slide
+          } else if (platform.type === 'mossy_bark') {
+            player.currentSurfaceFriction = 1.15; // Grippy organic moss
+          } else if (platform.type === 'sticky_amber') {
+            player.currentSurfaceFriction = 2.2; // High viscous drag
+          } else {
+            player.currentSurfaceFriction = 1.0;
+          }
+
           if (platform.type === 'honey' || platform.type === 'moving_honey') {
             player.vy = -780; // High elastic trampoline bounce!
             player.isGrounded = false;
@@ -51,30 +67,65 @@ export class Collision {
             player.scaleY = 1.38;
             result.bounced = true;
           } else if (platform.type === 'bouncy_mushroom' || platform.type === 'mushroom') {
-            player.vy = -860; // High elastic fungal trampoline bounce!
+            player.vy = -900; // Deep organic fungal spring leap!
+            player.isGrounded = false;
+            player.scaleX = 0.66;
+            player.scaleY = 1.44;
+            result.bounced = true;
+            result.shroomBounce = true;
+          } else if (platform.type === 'bouncy_crest') {
+            player.vy = -860; // Heraldic crest bounce
             player.isGrounded = false;
             player.scaleX = 0.68;
             player.scaleY = 1.42;
             result.bounced = true;
-            result.shroomBounce = true;
-          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes') {
+          } else if (platform.type === 'bouncy_amber_magma') {
+            player.vy = -880; // Volcanic bubbling magma bounce
+            player.isGrounded = false;
+            player.scaleX = 0.68;
+            player.scaleY = 1.42;
+            result.bounced = true;
+          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes' || platform.type === 'iron_spikes' || platform.type === 'castle_hazard' || platform.type === 'molten_honey' || platform.type === 'lava') {
             result.hazard = true;
-          } else if (platform.type === 'honey_geyser' || platform.type === 'geyser') {
-            player.vy = -920; // High vertical updraft catapult into high spire galleries!
+          } else if (platform.type === 'snapping_flower') {
+            // Snapping flower hazard: active if jaws open/chomping
+            if (platform.isSnapping !== false) {
+              result.hazard = true;
+            } else {
+              player.vy = 0;
+              player.isGrounded = true;
+              result.landed = true;
+            }
+          } else if (platform.type === 'honey_geyser' || platform.type === 'geyser' || platform.type === 'thermal_updraft' || platform.type === 'updraft') {
+            player.vy = -940; // Buoyant updraft thermal catapult!
             player.isGrounded = false;
             player.scaleX = 0.65;
-            player.scaleY = 1.45;
+            player.scaleY = 1.48;
             result.geyserLaunch = true;
           } else if (platform.type === 'sticky_amber') {
             player.vy = 0;
             player.isGrounded = true;
             player.vx *= 0.45; // Viscous nectar friction
             result.landed = true;
+          } else if (platform.type === 'spoon_bridge') {
+            // World 1 Wooden Spoon Crossing: balance plank over honey river
+            player.vy = 0;
+            player.isGrounded = true;
+            result.landed = true;
+            result.spoon = true;
+            const midX = platform.x + platform.width / 2;
+            const footX = player.x + player.width / 2;
+            platform.tilt = Math.max(-0.25, Math.min(0.25, (footX - midX) / (platform.width / 2) * 0.2));
           } else {
             player.vy = 0;
             player.isGrounded = true;
             result.landed = true;
-            if ((platform.type === 'crumble_block' || platform.type === 'crumble' || platform.type === 'crumble_bark') && !platform.isShaking && !platform.isBroken) {
+            if (platform.type === 'crumble_ash' && !platform.isShaking && !platform.isBroken) {
+              // Rapid 0.35s ash collapse in Volcano!
+              platform.isShaking = true;
+              platform.shakeTimer = 0.35;
+              result.crumbled = true;
+            } else if ((platform.type === 'crumble_block' || platform.type === 'crumble' || platform.type === 'crumble_bark' || platform.type === 'crumble_stone') && !platform.isShaking && !platform.isBroken) {
               platform.isShaking = true;
               platform.shakeTimer = 0.65;
               result.crumbled = true;

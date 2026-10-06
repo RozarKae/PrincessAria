@@ -203,9 +203,10 @@ export class PixelHUD {
     // 2. ARIA + HEARTS (Left)
     drawBitmapText(ctx, 'ARIA', 6, 3, P.UI_TEXT_GOLD);
 
-    const lives = Math.max(0, gameState.lives !== undefined ? gameState.lives : 3);
-    for (let i = 0; i < 3; i++) {
-      this.drawHeart(ctx, 30 + i * 8, 3, i < lives);
+    const lives = Math.max(0, gameState.lives !== undefined ? gameState.lives : 5);
+    const maxHearts = gameState.maxLives || 5;
+    for (let i = 0; i < maxHearts; i++) {
+      this.drawHeart(ctx, 30 + i * 7, 3, i < lives);
     }
 
     // 3. THREE POWERS INDICATOR: [Z] Melee  [X] Dash  [C] Starbeam

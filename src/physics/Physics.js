@@ -7,10 +7,13 @@ import { PHYSICS } from '../game/Constants.js';
 export class Physics {
   /**
    * Updates horizontal velocity based on input direction and surface state.
+   * Supports dynamic surface friction, air control, and world movement modifiers.
    */
-  static applyHorizontalMovement(vx, moveDir, isGrounded, maxSpeed, dt) {
-    const accel = isGrounded ? PHYSICS.MOVE_ACCEL : PHYSICS.AIR_ACCEL;
-    const decel = isGrounded ? PHYSICS.MOVE_DECEL : PHYSICS.AIR_DECEL;
+  static applyHorizontalMovement(vx, moveDir, isGrounded, maxSpeed, dt, frictionMultiplier = 1.0, accelMultiplier = 1.0) {
+    const baseAccel = isGrounded ? PHYSICS.MOVE_ACCEL : PHYSICS.AIR_ACCEL;
+    const baseDecel = isGrounded ? PHYSICS.MOVE_DECEL : PHYSICS.AIR_DECEL;
+    const accel = baseAccel * accelMultiplier;
+    const decel = baseDecel * frictionMultiplier;
 
     if (moveDir !== 0) {
       const targetVx = moveDir * maxSpeed;
@@ -36,12 +39,12 @@ export class Physics {
   }
 
   /**
-   * Applies gravity up to terminal velocity.
+   * Applies gravity up to terminal velocity with optional world overrides.
    */
-  static applyGravity(vy, dt) {
-    vy += PHYSICS.GRAVITY * dt;
-    if (vy > PHYSICS.TERMINAL_VELOCITY) {
-      vy = PHYSICS.TERMINAL_VELOCITY;
+  static applyGravity(vy, dt, gravity = PHYSICS.GRAVITY, terminalVelocity = PHYSICS.TERMINAL_VELOCITY) {
+    vy += gravity * dt;
+    if (vy > terminalVelocity) {
+      vy = terminalVelocity;
     }
     return vy;
   }

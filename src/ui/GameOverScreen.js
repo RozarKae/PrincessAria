@@ -52,6 +52,8 @@ export class GameOverScreen {
     ctx.textBaseline = 'middle';
 
     if (isVictory) {
+      const isWorld4 = gameState && gameState.world === 4;
+      const isWorld3 = gameState && gameState.world === 3;
       const isWorld2 = gameState && gameState.world === 2;
 
       // Radiant Emerald / Gold Victory Header
@@ -59,20 +61,36 @@ export class GameOverScreen {
       ctx.shadowColor = '#fbbf24';
       ctx.shadowBlur = 24;
       ctx.fillStyle = '#4ade80';
-      ctx.fillText(isWorld2 ? 'WORLD 2-1 CLEARED!' : 'WORLD 1-1 CLEARED!', centerX, centerY - 80);
+      ctx.fillText(
+        isWorld4 ? 'WORLD 4-1 CLEARED!' : (isWorld3 ? 'WORLD 3-1 CLEARED!' : (isWorld2 ? 'WORLD 2-1 CLEARED!' : 'WORLD 1-1 CLEARED!')),
+        centerX,
+        centerY - 80
+      );
       ctx.shadowBlur = 0;
 
       ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#fde047';
-      ctx.fillText(isWorld2 ? 'THE FOREST KING LIBERATED!' : 'BATBOY RESCUED FROM HONEYCOMB CAGE!', centerX, centerY - 15);
+      ctx.fillText(
+        isWorld4
+          ? 'THE HONEY DRAGON LIBERATED & REALM SAVED!'
+          : (isWorld3
+            ? 'SIR SLAM-A-LOT DEFEATED & GATES UNSEALED!'
+            : (isWorld2 ? 'THE FOREST KING LIBERATED!' : 'BATBOY RESCUED FROM HONEYCOMB CAGE!')),
+        centerX,
+        centerY - 15
+      );
 
       // Quest Lore Subtitle
       ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#94a3b8';
       ctx.fillText(
-        isWorld2
-          ? '"The Bee Queen has taken the Bat Boy beyond the mechanical lands..."'
-          : 'Queen Bee Fimabi fled into the mysterious Whispering Forest...',
+        isWorld4
+          ? 'Ignis the Honey Wyrm bows in gratitude, the hot honey volcano calms, and peace returns!'
+          : (isWorld3
+            ? 'The dimensional portal opens to the smoldering caldera of the Volcano of Hot Honey...'
+            : (isWorld2
+              ? 'The Whispering Forest is restored as the Queen flees into the dimensional castle...'
+              : 'Queen Bee Fimabi fled into the mysterious Whispering Forest...')),
         centerX,
         centerY + 30
       );
@@ -118,7 +136,15 @@ export class GameOverScreen {
 
       ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#0f172a';
-      ctx.fillText(isWorld2 ? 'CONTINUE TO WORLD 3 ➔' : 'CONTINUE TO WORLD 2 ➔', centerX, b.y + b.height / 2);
+      ctx.fillText(
+        isWorld4
+          ? 'GRAND VICTORY! PLAY FROM WORLD 1 ➔'
+          : (isWorld3
+            ? 'CONTINUE TO WORLD 4 ➔'
+            : (isWorld2 ? 'CONTINUE TO WORLD 3 ➔' : 'CONTINUE TO WORLD 2 ➔')),
+        centerX,
+        b.y + b.height / 2
+      );
 
       ctx.font = '500 15px monospace';
       ctx.fillStyle = '#94a3b8';
