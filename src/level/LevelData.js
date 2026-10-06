@@ -990,6 +990,7 @@ export const WORLDS = {
         biome: 'volcano',
         width: 10800,
         height: 1080,
+        spawn: { x: 160, y: 820 },
         spawnPoint: { x: 160, y: 820 },
 
         // World 4 Physics Profile: Convective heat thermal buoyancy, lighter gravity, soaring momentum leaps
@@ -1225,12 +1226,261 @@ export const WORLDS = {
       },
     },
   },
+
+  // ========================================================
+  // WORLD 5: THE DESERT OF ENDLESS SANDWICHES
+  // ========================================================
+  WORLD_5: {
+    id: 5,
+    name: 'The Desert of Endless Sandwiches',
+    description: 'Surreal desert of toasted bread dunes, spicy mustard rivers, slippery mayo slides, aged swiss cheese canyons, and the colossal Sandwich King',
+    paletteTheme: 'sandwich',
+    levels: {
+      '5-1': {
+        world: 5,
+        stage: 1,
+        name: 'The Desert of Endless Sandwiches: Bread Dunes to the Royal Deli Plateau',
+        worldName: 'The Desert of Endless Sandwiches',
+        biome: 'sandwich',
+        width: 10800,
+        height: 1080,
+        spawn: { x: 280, y: 780 },
+        spawnPoint: { x: 280, y: 780 },
+
+        // World 5 Physics Profile: Crisp traction on toasted crust, slick slides on mayo, high springs on dill pickles
+        physics: {
+          gravity: 2400,
+          jumpVelocity: -1000,
+          doubleJumpVelocity: -900,
+          friction: 1.0,
+          airControl: 1.05,
+        },
+
+        // Ground & Platforms
+        platforms: [
+          // --- SECTION 1: THE BREAD DUNES & MUSTARD SPRINGS (x: 0 - 2,600) ---
+          { x: 0, y: 880, width: 880, height: 200, type: 'bread_ground' },
+          // Flowing Spicy Mustard River beneath toasted bread arches
+          { x: 880, y: 980, width: 600, height: 100, type: 'mustard_river' },
+          // Drifting Baguette Crust Raft
+          { x: 920, y: 800, width: 140, height: 28, type: 'crust_platform' },
+          // Crinkle-Cut Bouncy Dill Pickle Spring
+          { x: 1120, y: 740, width: 120, height: 28, type: 'bouncy_pickle' },
+          // Slippery Mayonnaise Slide Platform
+          { x: 1300, y: 780, width: 160, height: 28, type: 'slippery_mayo' },
+          // Climbable Party Toothpick with Spanish Olive
+          { x: 1380, y: 560, width: 44, height: 220, type: 'climbable_toothpick' },
+
+          { x: 1480, y: 860, width: 640, height: 220, type: 'bread_ground' },
+          { x: 1680, y: 740, width: 160, height: 26, type: 'crust_platform' },
+          { x: 1900, y: 680, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 2100, y: 640, width: 160, height: 26, type: 'swiss_cheese_platform' },
+          { x: 2280, y: 540, width: 44, height: 180, type: 'olive_spear' },
+
+          { x: 2260, y: 860, width: 540, height: 220, type: 'bread_ground' },
+
+          // --- SECTION 2: THE SWISS CHEESE CANYONS & PICKLE GROVES (x: 2,600 - 5,400) ---
+          // Wide Mustard Rapids Chasm
+          { x: 2800, y: 980, width: 900, height: 100, type: 'mustard_river' },
+          { x: 2860, y: 800, width: 140, height: 28, type: 'crust_platform' },
+          { x: 3060, y: 740, width: 120, height: 26, type: 'crumble_cracker' },
+          { x: 3240, y: 680, width: 140, height: 28, type: 'swiss_cheese_platform' },
+          { x: 3440, y: 480, width: 44, height: 200, type: 'climbable_toothpick' },
+
+          // Secret 1: The Artisan Deli Vault (x: 3,400 - 3,680)
+          { x: 3400, y: 440, width: 280, height: 26, type: 'crust_platform' },
+          { x: 3480, y: 380, width: 120, height: 24, type: 'bouncy_pickle' },
+
+          { x: 3660, y: 860, width: 680, height: 220, type: 'bread_ground' },
+          { x: 3900, y: 740, width: 160, height: 28, type: 'swiss_cheese_platform' },
+          { x: 4120, y: 680, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 4320, y: 620, width: 160, height: 28, type: 'slippery_mayo' },
+
+          // Stepped Mustard Falls
+          { x: 4500, y: 980, width: 800, height: 100, type: 'mustard_river' },
+          { x: 4560, y: 760, width: 120, height: 28, type: 'bouncy_pickle' },
+          { x: 4740, y: 700, width: 140, height: 26, type: 'crust_platform' },
+          { x: 4940, y: 660, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 5120, y: 520, width: 44, height: 180, type: 'olive_spear' },
+          { x: 5200, y: 720, width: 160, height: 28, type: 'swiss_cheese_platform' },
+
+          // --- SECTION 3: THE CONDIMENT RAPIDS & CRACKER COLONNADE (x: 5,400 - 8,200) ---
+          { x: 5400, y: 860, width: 680, height: 220, type: 'bread_ground' },
+          { x: 5620, y: 740, width: 140, height: 28, type: 'crust_platform' },
+          { x: 5820, y: 680, width: 120, height: 26, type: 'bouncy_pickle' },
+
+          // Secret 2: The Aged Cheddar Grotto (x: 6,200 - 6,480)
+          { x: 6200, y: 380, width: 260, height: 26, type: 'swiss_cheese_platform' },
+          { x: 6300, y: 320, width: 80, height: 24, type: 'bouncy_pickle' },
+
+          // Wide Canyon Chasm
+          { x: 6080, y: 980, width: 920, height: 100, type: 'mustard_river' },
+          { x: 6140, y: 780, width: 120, height: 26, type: 'crumble_cracker' },
+          { x: 6320, y: 720, width: 140, height: 28, type: 'slippery_mayo' },
+          { x: 6520, y: 660, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 6720, y: 520, width: 44, height: 180, type: 'climbable_toothpick' },
+          { x: 6800, y: 700, width: 160, height: 28, type: 'crust_platform' },
+
+          { x: 7000, y: 860, width: 720, height: 220, type: 'bread_ground' },
+          { x: 7240, y: 740, width: 160, height: 28, type: 'swiss_cheese_platform' },
+          { x: 7460, y: 680, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 7680, y: 640, width: 160, height: 28, type: 'bouncy_pickle' },
+
+          // Gap to Section 4
+          { x: 7860, y: 980, width: 400, height: 100, type: 'mustard_river' },
+          { x: 7920, y: 760, width: 140, height: 28, type: 'crust_platform' },
+          { x: 8100, y: 520, width: 44, height: 180, type: 'olive_spear' },
+
+          // --- SECTION 4: THE ROYAL DELI PLATEAU & SANDWICH KING ARENA (x: 8,200 - 10,800) ---
+          { x: 8200, y: 860, width: 720, height: 220, type: 'bread_ground' },
+          { x: 8460, y: 740, width: 160, height: 28, type: 'crust_platform' },
+          { x: 8680, y: 680, width: 140, height: 26, type: 'crumble_cracker' },
+          { x: 8900, y: 620, width: 160, height: 28, type: 'swiss_cheese_platform' },
+
+          // Secret 3: Golden Condiment Vault (x: 9,140 - 9,400)
+          { x: 9140, y: 400, width: 240, height: 26, type: 'crust_platform' },
+          { x: 9220, y: 340, width: 100, height: 24, type: 'bouncy_pickle' },
+
+          // The Grand Sandwich King Banquet Arena (x: 9,600 - 10,750)
+          { x: 9600, y: 880, width: 1200, height: 200, type: 'bread_ground' },
+          // Flanking Bouncy Pickles for aerial evasion
+          { x: 9780, y: 840, width: 64, height: 32, type: 'bouncy_pickle' },
+          { x: 10580, y: 840, width: 64, height: 32, type: 'bouncy_pickle' },
+          // Overhead Banquet Platter Viewing Galleries
+          { x: 9860, y: 560, width: 180, height: 28, type: 'swiss_cheese_platform' },
+          { x: 10140, y: 500, width: 200, height: 28, type: 'crust_platform' },
+          { x: 10420, y: 560, width: 180, height: 28, type: 'swiss_cheese_platform' },
+        ],
+
+        // Moving Platforms across mustard rivers
+        movingPlatforms: [
+          { x: 960, y: 720, width: 90, height: 22, minX: 920, maxX: 1220, speed: 70, type: 'moving_crust' },
+          { x: 2940, y: 740, width: 90, height: 22, minX: 2880, maxX: 3200, speed: 80, type: 'moving_cheese' },
+          { x: 4620, y: 680, width: 90, height: 22, minX: 4560, maxX: 4880, speed: 85, type: 'moving_crust' },
+          { x: 6200, y: 740, width: 90, height: 22, minX: 6140, maxX: 6480, speed: 90, type: 'moving_cheese' },
+          { x: 7920, y: 720, width: 90, height: 22, minX: 7860, maxX: 8160, speed: 75, type: 'moving_crust' },
+        ],
+
+        // 40 Royal Shards
+        shards: [
+          // Section 1 Shards (1-10)
+          { x: 280, y: 820 },
+          { x: 440, y: 820 },
+          { x: 660, y: 760 },
+          { x: 960, y: 740 },
+          { x: 1140, y: 680 },
+          { x: 1380, y: 720 },
+          { x: 1720, y: 680 },
+          { x: 1940, y: 620 },
+          { x: 2140, y: 580 },
+          { x: 2420, y: 800 },
+
+          // Section 2 Shards (11-20)
+          { x: 2900, y: 740 },
+          { x: 3100, y: 680 },
+          { x: 3280, y: 620 },
+          // Secret 1: Artisan Deli Vault (3 shards)
+          { x: 3460, y: 380 },
+          { x: 3520, y: 320 },
+          { x: 3580, y: 380 },
+          { x: 3940, y: 680 },
+          { x: 4160, y: 620 },
+          { x: 4600, y: 700 },
+          { x: 4780, y: 640 },
+
+          // Section 3 Shards (21-30)
+          { x: 5460, y: 800 },
+          { x: 5660, y: 680 },
+          { x: 5860, y: 620 },
+          // Secret 2: Aged Cheddar Grotto (3 shards)
+          { x: 6260, y: 320 },
+          { x: 6320, y: 260 },
+          { x: 6380, y: 320 },
+          { x: 6600, y: 600 },
+          { x: 7080, y: 800 },
+          { x: 7280, y: 680 },
+          { x: 7720, y: 580 },
+
+          // Section 4 Shards (31-40)
+          { x: 8320, y: 800 },
+          { x: 8520, y: 680 },
+          { x: 8740, y: 620 },
+          // Secret 3: Golden Condiment Vault (3 shards)
+          { x: 9180, y: 340 },
+          { x: 9240, y: 280 },
+          { x: 9300, y: 340 },
+          { x: 9920, y: 500 },
+          { x: 10200, y: 440 },
+          { x: 10460, y: 500 },
+          { x: 10540, y: 820 },
+        ],
+
+        // Coordinated Desert Encounters
+        enemies: [
+          // --- SECTION 1 ENCOUNTERS ---
+          // Encounter 1: "The Bread Dune Scouts" (x: 880-1300)
+          { type: 'cheese_scorpion', x: 960, y: 768, patrolMinX: 920, patrolMaxX: 1060 },
+          { type: 'pickle_bomber', x: 1180, y: 560 },
+
+          // Encounter 2: "The Mustard Springs Vanguard" (x: 1600-2100)
+          { type: 'pickle_bomber', x: 1760, y: 520 },
+          { type: 'mustard_mummy', x: 1960, y: 820, patrolMinX: 1840, patrolMaxX: 2180 },
+
+          // --- SECTION 2 ENCOUNTERS ---
+          // Encounter 3: "The Swiss Canyon Phalanx" (x: 2900-3400)
+          { type: 'mustard_mummy', x: 3080, y: 708, patrolMinX: 3020, patrolMaxX: 3200 },
+          { type: 'cheese_scorpion', x: 3260, y: 648, patrolMinX: 3220, patrolMaxX: 3340 },
+
+          // Encounter 4: "The Cracker Ridge Patrol" (x: 3900-4450)
+          { type: 'cheese_scorpion', x: 3960, y: 708, patrolMinX: 3900, patrolMaxX: 4060 },
+          { type: 'mustard_mummy', x: 4180, y: 820, patrolMinX: 4080, patrolMaxX: 4340 },
+          { type: 'pickle_bomber', x: 4360, y: 440 },
+
+          // --- SECTION 3 ENCOUNTERS ---
+          // Encounter 5: "The Condiment Rapids Ambush" (x: 5600-6100)
+          { type: 'pickle_bomber', x: 5740, y: 500 },
+          { type: 'cheese_scorpion', x: 5900, y: 820, patrolMinX: 5780, patrolMaxX: 6060 },
+
+          // Encounter 6: "The Cracker Colonnade Guards" (x: 6900-7600)
+          { type: 'mustard_mummy', x: 7100, y: 828, patrolMinX: 7020, patrolMaxX: 7200 },
+          { type: 'cheese_scorpion', x: 7320, y: 700, patrolMinX: 7240, patrolMaxX: 7420 },
+          { type: 'pickle_bomber', x: 7520, y: 460 },
+
+          // --- SECTION 4 ENCOUNTERS ---
+          // Encounter 7: "The Royal Deli Sentinels" (x: 8400-9200)
+          { type: 'mustard_mummy', x: 8560, y: 700, patrolMinX: 8480, patrolMaxX: 8640 },
+          { type: 'pickle_bomber', x: 8820, y: 480 },
+          { type: 'cheese_scorpion', x: 9000, y: 588, patrolMinX: 8900, patrolMaxX: 9080 },
+
+          // Encounter 8: "THE SANDWICH KING CLIMAX" (x: 9800-10600)
+          { type: 'sandwich_king', x: 10240, y: 640 },
+          { type: 'pickle_bomber', x: 10020, y: 380 },
+          { type: 'pickle_bomber', x: 10380, y: 380 },
+        ],
+
+        // 6 Regional Checkpoints
+        checkpoint: { x: 600, y: 840, width: 40, height: 40 },
+        checkpoints: [
+          { id: 1, x: 600, y: 840, width: 40, height: 40 },
+          { id: 2, x: 2400, y: 820, width: 40, height: 40 },
+          { id: 3, x: 4200, y: 640, width: 40, height: 40 },
+          { id: 4, x: 5800, y: 820, width: 40, height: 40 },
+          { id: 5, x: 7600, y: 600, width: 40, height: 40 },
+          { id: 6, x: 8800, y: 820, width: 40, height: 40 },
+        ],
+
+        // Goal: Ancient Portal to World 6 (The Clockwork Kingdom)
+        goal: { x: 10560, y: 780, width: 64, height: 64, type: 'portal' },
+      },
+    },
+  },
 };
 
 export const LEVEL_1_1 = WORLDS.WORLD_1.levels['1-1'];
 export const LEVEL_2_1 = WORLDS.WORLD_2.levels['2-1'];
 export const LEVEL_3_1 = WORLDS.WORLD_3.levels['3-1'];
 export const LEVEL_4_1 = WORLDS.WORLD_4.levels['4-1'];
+export const LEVEL_5_1 = WORLDS.WORLD_5.levels['5-1'];
 
 
 

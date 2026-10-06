@@ -1221,6 +1221,19 @@ export class AudioManager {
       case 'honey_dragon':
         this.targetTempo = 148;
         break;
+      case 'desert_dunes':
+      case 'desert':
+        this.targetTempo = 116;
+        break;
+      case 'cheese_canyon':
+        this.targetTempo = 124;
+        break;
+      case 'mustard_rapids':
+        this.targetTempo = 134;
+        break;
+      case 'sandwich_king':
+        this.targetTempo = 146;
+        break;
       default:
         this.targetTempo = 112;
     }
@@ -2068,6 +2081,101 @@ const SCENE_THEMES = {
       makeBar([[0, NOTES.A5], [4, NOTES.C6], [8, NOTES.F6], [12, NOTES.E6]]),
       makeBar([[0, NOTES.G5], [4, NOTES.C6], [8, NOTES.E6], [12, NOTES.D6]]),
       makeBar([[0, NOTES.A5], [2, NOTES.D6], [4, NOTES.Fs6], [8, NOTES.A6], [12, NOTES.D7]]),
+    ],
+  },
+
+  // ========================================================
+  // WORLD 5: THE DESERT OF ENDLESS SANDWICHES MUSIC PROFILES
+  // ========================================================
+  // Section 1: The Bread Dunes & Mustard Springs (116 BPM)
+  desert_dunes: {
+    tempo: 116,
+    chords: [
+      [NOTES.G3, NOTES.B3, NOTES.D4, NOTES.G4],   // G Major (Warm sun & golden toast)
+      [NOTES.E3, NOTES.B3, NOTES.E4, NOTES.G4],   // Em
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.E4],   // C Major
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.Fs4],  // D Major
+    ],
+    bass: [
+      makeBar([[0, NOTES.G2], [3, NOTES.G2], [6, NOTES.D3], [8, NOTES.G2], [11, NOTES.B2], [14, NOTES.D3]]),
+      makeBar([[0, NOTES.E2], [3, NOTES.E2], [6, NOTES.B2], [8, NOTES.E2], [11, NOTES.G2], [14, NOTES.B2]]),
+      makeBar([[0, NOTES.C2], [3, NOTES.C2], [6, NOTES.G2], [8, NOTES.C3], [11, NOTES.E3], [14, NOTES.G2]]),
+      makeBar([[0, NOTES.D2], [3, NOTES.D2], [6, NOTES.A2], [8, NOTES.D3], [11, NOTES.Fs3], [14, NOTES.A2]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.G5], [3, NOTES.B5], [6, NOTES.D6], [10, NOTES.E6], [12, NOTES.D6], [14, NOTES.B5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.E5], [8, NOTES.B5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.C5], [3, NOTES.E5], [6, NOTES.G5], [10, NOTES.B5], [12, NOTES.C6]]),
+      makeBar([[0, NOTES.D6], [4, NOTES.A5], [8, NOTES.Fs5], [12, NOTES.A5]]),
+    ],
+  },
+
+  // Section 2: The Swiss Cheese Canyons & Pickle Groves (124 BPM)
+  cheese_canyon: {
+    tempo: 124,
+    chords: [
+      [NOTES.A3, NOTES.C4, NOTES.E4, NOTES.G4],   // Am7
+      [NOTES.F3, NOTES.C4, NOTES.F4, NOTES.A4],   // F
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.F4],   // Dm
+      [NOTES.E3, NOTES.B3, NOTES.E4, NOTES.Gs4],  // E7
+    ],
+    bass: [
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A2], [8, NOTES.C3], [10, NOTES.B2], [12, NOTES.A2], [14, NOTES.E2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.C3], [6, NOTES.F2], [8, NOTES.A2], [10, NOTES.G2], [12, NOTES.F2], [14, NOTES.C2]]),
+      makeBar([[0, NOTES.D2], [2, NOTES.D2], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.F2], [10, NOTES.E2], [12, NOTES.D2], [14, NOTES.A2]]),
+      makeBar([[0, NOTES.E2], [2, NOTES.E2], [4, NOTES.B2], [6, NOTES.E3], [8, NOTES.Gs2], [10, NOTES.B2], [12, NOTES.E3], [14, NOTES.D3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.A5], [2, NOTES.C6], [6, NOTES.E6], [10, NOTES.A6], [14, NOTES.G6]]),
+      makeBar([[0, NOTES.F6], [4, NOTES.E6], [8, NOTES.C6], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.D5], [3, NOTES.F5], [6, NOTES.A5], [10, NOTES.D6], [14, NOTES.C6]]),
+      makeBar([[0, NOTES.B5], [4, NOTES.Gs5], [8, NOTES.E5], [12, NOTES.Gs5]]),
+    ],
+  },
+
+  // Section 3: The Condiment Rapids & Cracker Colonnade (134 BPM)
+  mustard_rapids: {
+    tempo: 134,
+    chords: [
+      [NOTES.D3, NOTES.F3, NOTES.A3, NOTES.D4],   // Dm
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.Bb3], // Gm
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.Cs4],  // A7
+    ],
+    bass: [
+      makeBar([[0, NOTES.D2], [2, NOTES.D2], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.D2], [10, NOTES.F2], [12, NOTES.E2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.F3], [6, NOTES.Bb2], [8, NOTES.D3], [10, NOTES.C3], [12, NOTES.Bb2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.Bb2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A2], [8, NOTES.Cs3], [10, NOTES.E3], [12, NOTES.A3], [14, NOTES.G2]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.D5], [2, NOTES.F5], [6, NOTES.A5], [10, NOTES.D6], [14, NOTES.Cs6]]),
+      makeBar([[0, NOTES.Bb5], [4, NOTES.A5], [8, NOTES.F5], [12, NOTES.D5]]),
+      makeBar([[0, NOTES.G5], [3, NOTES.Bb5], [6, NOTES.D6], [10, NOTES.G6], [14, NOTES.F6]]),
+      makeBar([[0, NOTES.E6], [4, NOTES.Cs6], [8, NOTES.A5], [12, NOTES.Cs6]]),
+    ],
+  },
+
+  // Section 4: The Royal Deli Plateau & Sandwich King Climax (146 BPM)
+  sandwich_king: {
+    tempo: 146,
+    chords: [
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.Eb4],   // Cm (Royal Deli majesty)
+      [NOTES.Ab2, NOTES.Eb3, NOTES.Ab3, NOTES.C4], // Ab
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4],  // Bb
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.B3],    // G (Dramatic resolution)
+    ],
+    bass: [
+      makeBar([[0, NOTES.C2], [2, NOTES.C2], [4, NOTES.G2], [6, NOTES.C3], [8, NOTES.C2], [10, NOTES.Eb2], [12, NOTES.D2], [14, NOTES.C2]]),
+      makeBar([[0, NOTES.Ab2], [2, NOTES.Ab2], [4, NOTES.Eb3], [6, NOTES.Ab2], [8, NOTES.C3], [10, NOTES.Bb2], [12, NOTES.Ab2], [14, NOTES.Eb2]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.F3], [6, NOTES.Bb2], [8, NOTES.D3], [10, NOTES.C3], [12, NOTES.Bb2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.B2], [10, NOTES.D3], [12, NOTES.G3], [14, NOTES.F2]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [2, NOTES.Eb5], [6, NOTES.G5], [10, NOTES.C6], [14, NOTES.D6]]),
+      makeBar([[0, NOTES.Eb6], [4, NOTES.C6], [8, NOTES.Ab5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.F5], [3, NOTES.Bb5], [6, NOTES.D6], [10, NOTES.F6], [14, NOTES.Eb6]]),
+      makeBar([[0, NOTES.D6], [2, NOTES.B5], [4, NOTES.G5], [8, NOTES.B5], [12, NOTES.G6]]),
     ],
   },
 };

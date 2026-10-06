@@ -1423,6 +1423,401 @@ export class PixelEnemyRenderer {
 
     ctx.restore();
   }
+
+  /**
+   * Draw The Sandwich King in 256x240 pixel space.
+   * Multi-tiered colossal club sandwich monarch with golden crown, frilled olive scepter,
+   * collapsing staggered layers, sesame bursts, and condiment shockwaves.
+   */
+  drawSandwichKing(ctx, screenX, screenY, width, height, boss) {
+    if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 48; // Scaled pixel width
+    const h = 42; // Scaled pixel height
+
+    if (boss.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - boss.defeatTimer / boss.defeatDuration);
+    }
+
+    const facing = boss.facing || 1;
+    ctx.translate(px + w / 2, py + h);
+
+    // Wobble or topple tilt
+    if (boss.wobbleAngle) {
+      ctx.rotate(boss.wobbleAngle * (facing > 0 ? 1 : -1));
+    }
+
+    if (facing < 0) {
+      ctx.scale(-1, 1);
+    }
+
+    const originX = -w / 2;
+    const originY = -h;
+
+    // 1. Bottom Bread Bun & Crust
+    ctx.fillStyle = '#451a03'; // Deep brown crust
+    ctx.fillRect(originX + 4, originY + 36, 40, 6);
+    ctx.fillStyle = '#b45309'; // Golden crumb
+    ctx.fillRect(originX + 6, originY + 37, 36, 4);
+
+    // 2. Crispy Bacon & Crinkle Dill Pickle Layer
+    ctx.fillStyle = '#881337'; // Crisp bacon
+    ctx.fillRect(originX + 6, originY + 33, 36, 3);
+    ctx.fillStyle = '#15803d'; // Pickles
+    ctx.fillRect(originX + 8, originY + 33, 6, 3);
+    ctx.fillRect(originX + 22, originY + 33, 6, 3);
+    ctx.fillRect(originX + 34, originY + 33, 6, 3);
+
+    // 3. Middle Toasted Bread Slice
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(originX + 4, originY + 29, 40, 4);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(originX + 6, originY + 30, 36, 2);
+
+    // 4. Deli Turkey & Ruby Ham Layer
+    ctx.fillStyle = '#e11d48'; // Ruby cured ham
+    ctx.fillRect(originX + 4, originY + 25, 40, 4);
+    ctx.fillStyle = '#f43f5e';
+    ctx.fillRect(originX + 8, originY + 26, 32, 2);
+
+    // 5. Melted Golden Cheddar Cheese (Drips over sides!)
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(originX + 2, originY + 21, 44, 4);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(originX + 6, originY + 22, 36, 2);
+    // Cheese drips
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(originX + 4, originY + 25, 3, 4);
+    ctx.fillRect(originX + 20, originY + 25, 4, 3);
+    ctx.fillRect(originX + 38, originY + 25, 3, 5);
+
+    // Vulnerable Glow when staggered
+    if (boss.isStaggered) {
+      const pulse = Math.floor(this.tick * 10) % 2 === 0;
+      ctx.fillStyle = pulse ? '#ffffff' : '#fde047';
+      ctx.fillRect(originX + 16, originY + 21, 16, 4);
+    }
+
+    // 6. Ripe Crimson Tomato Slabs
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(originX + 4, originY + 17, 40, 4);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(originX + 8, originY + 18, 12, 2);
+    ctx.fillRect(originX + 26, originY + 18, 12, 2);
+
+    // 7. Crisp Frilly Emerald Lettuce
+    ctx.fillStyle = '#16a34a';
+    ctx.fillRect(originX + 2, originY + 13, 44, 4);
+    ctx.fillStyle = '#4ade80';
+    for (let i = 0; i < 7; i++) {
+      ctx.fillRect(originX + 4 + i * 6, originY + 14, 4, 2);
+    }
+
+    // 8. Colossal Top Artisan Brioche Bun
+    ctx.fillStyle = '#451a03'; // Crust outline
+    ctx.fillRect(originX + 6, originY + 4, 36, 9);
+    ctx.fillStyle = '#b45309'; // Warm golden toast
+    ctx.fillRect(originX + 8, originY + 5, 32, 8);
+    ctx.fillStyle = '#d97706'; // Highlight
+    ctx.fillRect(originX + 10, originY + 6, 28, 4);
+
+    // White / Golden Sesame Seeds sprinkled on top bun
+    ctx.fillStyle = '#fef3c7';
+    ctx.fillRect(originX + 10, originY + 7, 2, 1);
+    ctx.fillRect(originX + 16, originY + 6, 2, 1);
+    ctx.fillRect(originX + 22, originY + 8, 2, 1);
+    ctx.fillRect(originX + 28, originY + 6, 2, 1);
+    ctx.fillRect(originX + 34, originY + 7, 2, 1);
+
+    // Royal Monarch Eyes
+    ctx.fillStyle = '#110726';
+    ctx.fillRect(originX + 16, originY + 9, 3, 3);
+    ctx.fillRect(originX + 26, originY + 9, 3, 3);
+    ctx.fillStyle = '#ef4444'; // Fierce red glow
+    ctx.fillRect(originX + 17, originY + 10, 2, 2);
+    ctx.fillRect(originX + 27, originY + 10, 2, 2);
+
+    // 9. Majestic Golden Crown
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(originX + 14, originY - 2, 18, 6);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(originX + 16, originY - 3, 14, 5);
+    // Crown peaks
+    ctx.fillRect(originX + 14, originY - 5, 3, 3);
+    ctx.fillRect(originX + 21, originY - 6, 4, 4);
+    ctx.fillRect(originX + 29, originY - 5, 3, 3);
+    // Crown Jewels
+    ctx.fillStyle = '#dc2626'; // Ruby
+    ctx.fillRect(originX + 18, originY - 1, 2, 2);
+    ctx.fillStyle = '#38bdf8'; // Sapphire
+    ctx.fillRect(originX + 26, originY - 1, 2, 2);
+
+    // 10. Frilled Party Toothpick with Spanish Olive (Scepter)
+    // Wood skewer
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(originX + 36, originY - 12, 2, 20);
+    // Spanish Green Olive
+    ctx.fillStyle = '#365314';
+    ctx.fillRect(originX + 33, originY - 10, 8, 8);
+    ctx.fillStyle = '#65a30d';
+    ctx.fillRect(originX + 34, originY - 9, 6, 6);
+    // Red Pimento Core
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(originX + 36, originY - 7, 2, 2);
+    // Cellophane party frill (red & gold)
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(originX + 35, originY - 14, 4, 3);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(originX + 36, originY - 15, 2, 2);
+
+    // Dazed stars when staggered
+    if (boss.isStaggered) {
+      const starBlink = Math.floor(this.tick * 8) % 2 === 0;
+      if (starBlink) {
+        ctx.fillStyle = '#fef08a';
+        ctx.fillRect(originX + 10, originY - 8, 3, 2);
+        ctx.fillRect(originX + 22, originY - 10, 3, 2);
+      }
+    }
+
+    ctx.restore();
+
+    // Render Boss Projectiles & Shockwaves in world-to-screen coords
+    if (boss.projectiles) {
+      boss.projectiles.forEach(p => {
+        const sx = Math.round((p.x - (boss.x - screenX / (1 / 4.5))) * (1 / 4.5));
+        // Simple direct draw using screenX offset
+        const prjX = Math.round(screenX + (p.x - boss.x) * (1 / 4.5));
+        const prjY = Math.round(screenY + (p.y - boss.y) * (1 / 4.5));
+
+        if (p.type === 'tomato') {
+          ctx.fillStyle = '#dc2626';
+          ctx.fillRect(prjX - 4, prjY - 4, 8, 8);
+          ctx.fillStyle = '#fca5a5';
+          ctx.fillRect(prjX - 2, prjY - 2, 4, 4);
+        } else {
+          // Sesame Starburst
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(prjX - 2, prjY - 2, 4, 4);
+          ctx.fillStyle = '#fef08a';
+          ctx.fillRect(prjX - 1, prjY - 1, 2, 2);
+        }
+      });
+    }
+
+    if (boss.shockwaves) {
+      boss.shockwaves.forEach(sw => {
+        const swX = Math.round(screenX + (sw.x - boss.x) * (1 / 4.5));
+        const swY = Math.round(screenY + (sw.y - boss.y) * (1 / 4.5));
+        ctx.fillStyle = '#eab308'; // Zesty mustard wave
+        ctx.fillRect(swX - 6, swY - 8, 12, 8);
+        ctx.fillStyle = '#fefce8'; // Creamy mayo crest
+        ctx.fillRect(swX - 4, swY - 10, 8, 3);
+      });
+    }
+  }
+
+  /**
+   * Draw Mustard Mummy in 256x240 pixel space.
+   */
+  drawMustardMummy(ctx, screenX, screenY, width, height, mummy) {
+    if (mummy.isDead) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = mummy.facing || 1;
+
+    if (facing < 0) {
+      ctx.translate(px + 20, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const walkOffset = mummy.isGrounded ? Math.floor(this.tick * 6) % 2 : 0;
+
+    // 1. Shuffling Mummy Legs
+    ctx.fillStyle = '#ca8a04'; // Mustard stain
+    ctx.fillRect(4, 18, 4, 8 - walkOffset);
+    ctx.fillRect(10, 18, 4, 8 + walkOffset);
+    ctx.fillStyle = '#fefce8'; // Deli parchment wraps
+    ctx.fillRect(4, 20, 4, 3);
+    ctx.fillRect(10, 22, 4, 3);
+
+    // 2. Parchment & Mustard Wrapped Torso
+    ctx.fillStyle = '#ca8a04';
+    ctx.fillRect(3, 8, 14, 11);
+    ctx.fillStyle = '#fefce8'; // Clean paper wraps
+    ctx.fillRect(4, 9, 12, 3);
+    ctx.fillRect(4, 14, 12, 3);
+    ctx.fillStyle = '#eab308'; // Spicy mustard drizzle
+    ctx.fillRect(6, 12, 8, 2);
+
+    // 3. Mummy Head & Glowing Eyes
+    ctx.fillStyle = '#ca8a04';
+    ctx.fillRect(4, 1, 12, 8);
+    ctx.fillStyle = '#fefce8';
+    ctx.fillRect(5, 2, 10, 3);
+    // Glowing Condiment Eyes
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(11, 4, 2, 2);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(12, 4, 1, 1);
+
+    // Mustard Glob Charging telegraph
+    if (mummy.isTelegraphing) {
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(14, 2, 5, 5);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(15, 3, 3, 3);
+    }
+
+    ctx.restore();
+
+    // Mustard projectiles
+    if (mummy.mustardProjectiles) {
+      mummy.mustardProjectiles.forEach(p => {
+        const prjX = Math.round(screenX + (p.x - mummy.x) * (1 / 4.5));
+        const prjY = Math.round(screenY + (p.y - mummy.y) * (1 / 4.5));
+        ctx.fillStyle = '#ca8a04';
+        ctx.fillRect(prjX - 3, prjY - 3, 6, 6);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(prjX - 2, prjY - 2, 4, 4);
+      });
+    }
+  }
+
+  /**
+   * Draw Cheese Scorpion in 256x240 pixel space.
+   */
+  drawCheeseScorpion(ctx, screenX, screenY, width, height, scorpion) {
+    if (scorpion.isDead) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = scorpion.facing || 1;
+
+    if (facing < 0) {
+      ctx.translate(px + 24, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const legWalk = Math.floor(this.tick * 10) % 2;
+
+    // 1. Skittering Legs (Swiss cheese crust color)
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(4, 14, 2, 4 + legWalk);
+    ctx.fillRect(8, 14, 2, 4 - legWalk);
+    ctx.fillRect(12, 14, 2, 4 + legWalk);
+
+    // 2. Swiss Cheese Carapace Body (With cheese holes!)
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(3, 7, 14, 8);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(4, 8, 12, 6);
+    // Swiss cheese aeration holes
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(6, 9, 2, 2);
+    ctx.fillRect(11, 11, 2, 2);
+
+    // 3. Sharp Swiss Pincers / Claws
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(16, 9, 5, 3);
+    ctx.fillRect(19, 7, 2, 3);
+    ctx.fillRect(19, 12, 2, 3);
+
+    // 4. Arched Cheddar Tail & Stinger
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(0, 5, 4, 4);
+    ctx.fillRect(1, 2, 4, 4);
+    ctx.fillRect(4, 0, 4, 3);
+    // Cheddar Needle Stinger
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(7, 1, 3, 2);
+    ctx.fillStyle = '#fde047'; // Sharp tip
+    ctx.fillRect(9, 2, 2, 1);
+
+    if (scorpion.isTelegraphing) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(8, 0, 3, 3);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Pickle Bomber in 256x240 pixel space.
+   */
+  drawPickleBomber(ctx, screenX, screenY, width, height, bomber) {
+    if (bomber.isDead) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = bomber.facing || 1;
+
+    if (facing < 0) {
+      ctx.translate(px + 20, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const wingFlap = Math.floor(this.tick * 8) % 2;
+
+    // 1. Crispy Onion Ring Wings
+    ctx.fillStyle = '#fde68a';
+    if (wingFlap === 0) {
+      ctx.fillRect(4, -3, 8, 4);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(6, -2, 4, 2);
+    } else {
+      ctx.fillRect(4, 1, 8, 4);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(6, 2, 4, 2);
+    }
+
+    // 2. Crinkle-Cut Dill Pickle Slice Body
+    ctx.fillStyle = '#14532d'; // Dark cucumber skin rim
+    ctx.fillRect(3, 4, 14, 10);
+    ctx.fillStyle = '#16a34a'; // Vibrant dill flesh
+    ctx.fillRect(4, 5, 12, 8);
+    ctx.fillStyle = '#4ade80'; // Pale inner flesh
+    ctx.fillRect(6, 6, 8, 6);
+
+    // Pickle seed cavities
+    ctx.fillStyle = '#bbf7d0';
+    ctx.fillRect(7, 7, 2, 1);
+    ctx.fillRect(11, 7, 2, 1);
+    ctx.fillRect(8, 9, 2, 1);
+
+    // Glowing Eyes
+    ctx.fillStyle = '#14532d';
+    ctx.fillRect(13, 6, 2, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(14, 6, 1, 1);
+
+    ctx.restore();
+
+    // Brine bombs
+    if (bomber.brineBombs) {
+      bomber.brineBombs.forEach(b => {
+        const bx = Math.round(screenX + (b.x - bomber.x) * (1 / 4.5));
+        const by = Math.round(screenY + (b.y - bomber.y) * (1 / 4.5));
+        ctx.fillStyle = '#4ade80';
+        ctx.fillRect(bx - 2, by - 2, 4, 4);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(bx - 1, by - 1, 2, 2);
+      });
+    }
+  }
 }
 
 export const pixelEnemyRenderer = new PixelEnemyRenderer();

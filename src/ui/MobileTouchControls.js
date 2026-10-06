@@ -317,7 +317,7 @@ export class MobileTouchControls {
         e.preventDefault();
         if (window.game) {
           const currentW = window.game.gameState.world || 1;
-          const nextWorld = currentW === 1 ? 2 : (currentW === 2 ? 3 : (currentW === 3 ? 4 : 1));
+          const nextWorld = currentW === 1 ? 2 : (currentW === 2 ? 3 : (currentW === 3 ? 4 : (currentW === 4 ? 5 : 1)));
           const url = new URL(window.location.href);
           url.searchParams.set('world', nextWorld);
           url.searchParams.set('play', 'true');

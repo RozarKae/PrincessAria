@@ -95,9 +95,47 @@ export class PixelRenderer {
   drawBackground(camera, level) {
     const ctx = this.internalCtx;
     const camX = camera ? camera.x : 0;
+    const isWorld5 = (level && level.world === 5) || (level && level.theme && level.theme.isSandwich5);
     const isWorld4 = (level && level.world === 4) || (level && level.theme && level.theme.isVolcano4);
     const isWorld3 = (level && level.world === 3) || (level && level.theme && level.theme.isCastle3);
     const isWorld2 = (level && level.world === 2) || (level && level.theme && level.theme.isForest2);
+
+    if (isWorld5) {
+      // --- WORLD 5: THE DESERT OF ENDLESS SANDWICHES BACKGROUND ---
+      // Warm Toasted Dusk Sky
+      ctx.fillStyle = P.SANDWICH_SKY_DUSK;
+      ctx.fillRect(0, 0, INTERNAL_WIDTH, 50);
+      ctx.fillStyle = P.SANDWICH_SKY_WARM;
+      ctx.fillRect(0, 50, INTERNAL_WIDTH, 60);
+      ctx.fillStyle = P.SANDWICH_SKY_MUSTARD;
+      ctx.fillRect(0, 110, INTERNAL_WIDTH, 65);
+      ctx.fillStyle = P.SANDWICH_SKY_HORIZON;
+      ctx.fillRect(0, 175, INTERNAL_WIDTH, 65);
+
+      // Colossal Sunny-Side-Up Fried Egg Sun on Horizon
+      const sunX = Math.round((210 - (camX * 0.03)) % (INTERNAL_WIDTH + 100)) - 50;
+      const sunY = 70;
+      ctx.fillStyle = '#ffffff'; // Egg white
+      ctx.fillRect(sunX, sunY, 32, 20);
+      ctx.fillRect(sunX + 4, sunY - 4, 24, 28);
+      ctx.fillStyle = '#fbbf24'; // Golden runny yolk
+      ctx.fillRect(sunX + 8, sunY + 2, 16, 14);
+      ctx.fillStyle = '#fef08a'; // Specular yolk glint
+      ctx.fillRect(sunX + 11, sunY + 4, 5, 4);
+
+      // Drifting golden sesame seeds & toasted breadcrumb dust
+      for (let i = 0; i < 24; i++) {
+        const sx = Math.round((i * 37 + Math.sin(this.timer * 2 + i) * 10 - (camX * 0.06)) % (INTERNAL_WIDTH + 20));
+        const sy = (i * 21 + Math.floor(this.timer * 15)) % INTERNAL_HEIGHT;
+        ctx.fillStyle = (i % 2 === 0) ? P.DUNE_SESAME : P.DUNE_CRUMB_LIGHT;
+        ctx.fillRect(sx, sy, 2, 1);
+      }
+
+      // Layer 1: Distant Toasted Bread Dunes & Colossal Club Spires (Parallax: 0.15)
+      const layer1Offset = (camX * 0.15) * WORLD_TO_PIXEL;
+      this.drawSandwichDunesSilhouettes(ctx, layer1Offset);
+      return;
+    }
 
     if (isWorld4) {
       // --- WORLD 4: THE VOLCANO OF HOT HONEY BACKGROUND ---
@@ -433,6 +471,62 @@ export class PixelRenderer {
       ctx.fillRect(x + 44, 48, 12, 10);
       ctx.fillRect(x + 40, 36, 20, 12);
       ctx.fillRect(x + 36, 22, 28, 14);
+    }
+  }
+
+  drawSandwichDunesSilhouettes(ctx, offset) {
+    const duneW = 160;
+    const startX = -Math.floor(offset % duneW);
+
+    for (let x = startX - duneW; x < INTERNAL_WIDTH + duneW; x += duneW) {
+      // 1. Giant Toasted Bread Dune Ridge
+      ctx.fillStyle = P.DUNE_CRUST_DARK;
+      ctx.fillRect(x + 10, 120, 80, 120);
+      ctx.fillRect(x + 20, 100, 60, 20);
+      ctx.fillRect(x + 30, 85, 40, 15);
+
+      // Warm toasted slope
+      ctx.fillStyle = P.DUNE_TOAST_GOLD;
+      ctx.fillRect(x + 15, 125, 70, 115);
+      ctx.fillRect(x + 25, 105, 50, 20);
+      ctx.fillRect(x + 35, 90, 30, 15);
+
+      // Crumb highlight ridge
+      ctx.fillStyle = P.DUNE_CRUMB_LIGHT;
+      ctx.fillRect(x + 35, 87, 30, 3);
+      ctx.fillRect(x + 25, 102, 10, 3);
+
+      // 2. Distant Colossal Club Sandwich Pyramid Mountain
+      ctx.fillStyle = P.DUNE_CRUST_DARK;
+      ctx.fillRect(x + 85, 130, 65, 110);
+      ctx.fillRect(x + 95, 110, 45, 20);
+      // Club Sandwich layers visible in mountain facade
+      ctx.fillStyle = P.SWISS_CHEESE_GOLD; // Cheese layer
+      ctx.fillRect(x + 90, 138, 55, 4);
+      ctx.fillStyle = P.KING_LETTUCE_CRISP; // Lettuce layer
+      ctx.fillRect(x + 92, 148, 51, 3);
+      ctx.fillStyle = P.KING_TOMATO_RED; // Tomato layer
+      ctx.fillRect(x + 95, 120, 45, 3);
+
+      // 3. Giant Toothpick Spires with Olive Monuments on Horizon
+      ctx.fillStyle = P.TOOTHPICK_WOOD;
+      ctx.fillRect(x + 50, 45, 3, 40);
+      // Spanish Olive
+      ctx.fillStyle = P.OLIVE_GREEN;
+      ctx.fillRect(x + 46, 50, 11, 10);
+      ctx.fillStyle = P.OLIVE_PIMENTO;
+      ctx.fillRect(x + 50, 54, 3, 3);
+      // Party frill on top
+      ctx.fillStyle = P.TOOTHPICK_FRILL;
+      ctx.fillRect(x + 48, 40, 7, 5);
+
+      // Second toothpick on club mountain
+      ctx.fillStyle = P.TOOTHPICK_WOOD;
+      ctx.fillRect(x + 115, 70, 2, 40);
+      ctx.fillStyle = P.OLIVE_GREEN;
+      ctx.fillRect(x + 112, 75, 8, 7);
+      ctx.fillStyle = P.TOOTHPICK_FRILL;
+      ctx.fillRect(x + 113, 66, 6, 4);
     }
   }
 
@@ -1057,6 +1151,25 @@ export class PixelRenderer {
 
       if (plat.type === 'ground') {
         this.renderPixelGround(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'bread_ground' || plat.type === 'toast_dune') {
+        this.renderPixelBreadGround(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'crust_platform') {
+        this.renderPixelCrustPlatform(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'mustard_river' || plat.type === 'hot_mustard') {
+        this.renderPixelMustardRiver(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'slippery_mayo' || plat.type === 'mayo') {
+        this.renderPixelSlipperyMayo(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'bouncy_pickle' || plat.type === 'pickle') {
+        this.renderPixelBouncyPickle(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'swiss_cheese_platform' || plat.type === 'swiss_cheese') {
+        this.renderPixelSwissCheesePlatform(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'crumble_cracker' || plat.type === 'crumble_toast') {
+        if (!plat.isBroken) {
+          const shakeX = plat.isShaking ? (Math.random() < 0.5 ? -1 : 1) : 0;
+          this.renderPixelCrumbleCracker(ctx, scrX + shakeX, scrY, scrW, scrH);
+        }
+      } else if (plat.type === 'climbable_toothpick' || plat.type === 'olive_spear') {
+        this.renderPixelToothpick(ctx, scrX, scrY, scrW, scrH);
       } else if (plat.type === 'basalt_ground') {
         this.renderPixelBasaltGround(ctx, scrX, scrY, scrW, scrH);
       } else if (plat.type === 'basalt_platform') {
@@ -1221,6 +1334,10 @@ export class PixelRenderer {
         this.renderPixelHexPlatform(ctx, scrX, scrY, scrW, scrH, true);
       } else if (mp.type === 'moving_basalt' || mp.type === 'basalt_platform') {
         this.renderPixelBasaltPlatform(ctx, scrX, scrY, scrW, scrH, true);
+      } else if (mp.type === 'moving_crust' || mp.type === 'crust_platform') {
+        this.renderPixelCrustPlatform(ctx, scrX, scrY, scrW, scrH, true);
+      } else if (mp.type === 'moving_cheese' || mp.type === 'swiss_cheese') {
+        this.renderPixelSwissCheesePlatform(ctx, scrX, scrY, scrW, scrH);
       } else {
         this.renderPixelHoneyPlatform(ctx, scrX, scrY, scrW, scrH, true);
       }
@@ -2511,6 +2628,197 @@ export class PixelRenderer {
     ctx.fillRect(x + Math.floor(w / 2) - 3, y + 3, 6, 3);
   }
 
+  /**
+   * World 5 Toasted Bread Dunes Ground with crispy sesame crust, warm crumb loam, and loaf bedrock.
+   */
+  renderPixelBreadGround(ctx, x, y, w, h) {
+    // 1. Walkable Toasted Crust Cap
+    ctx.fillStyle = P.DUNE_CRUMB_LIGHT;
+    ctx.fillRect(x, y, w, 1);
+    ctx.fillStyle = P.DUNE_TOAST_GOLD;
+    ctx.fillRect(x, y + 1, w, 2);
+    ctx.fillStyle = P.DUNE_CRUST_MID;
+    ctx.fillRect(x, y + 3, w, 1);
+
+    // Sesame seeds on walkable crest
+    for (let px = x + 3; px < x + w; px += 7) {
+      if ((px + y) % 5 === 0) {
+        ctx.fillStyle = P.DUNE_SESAME;
+        ctx.fillRect(px, y, 2, 1);
+      }
+    }
+
+    // 2. Dense Golden Sourdough Crumb Body
+    ctx.fillStyle = P.DUNE_TOAST_GOLD;
+    ctx.fillRect(x, y + 4, w, Math.min(h - 4, 14));
+    ctx.fillStyle = P.DUNE_CRUST_DARK;
+    ctx.fillRect(x, y + 18, w, Math.max(0, h - 18));
+
+    // Bread crumb aeration cavities
+    for (let py = y + 6; py < y + h; py += 12) {
+      const rowOffset = ((py - y) / 12) % 2 === 0 ? 0 : 6;
+      for (let px = x + rowOffset; px < x + w; px += 16) {
+        ctx.fillStyle = P.DUNE_CRUST_DARK;
+        ctx.fillRect(px, py, 4, 3);
+        ctx.fillStyle = P.DUNE_CRUMB_LIGHT;
+        ctx.fillRect(px + 1, py + 1, 2, 1);
+      }
+    }
+  }
+
+  /**
+   * World 5 Toasted Baguette / Sourdough Crust Platform.
+   */
+  renderPixelCrustPlatform(ctx, x, y, w, h, isMoving = false) {
+    ctx.fillStyle = P.DUNE_CRUMB_LIGHT;
+    ctx.fillRect(x, y, w, 2);
+    ctx.fillStyle = P.DUNE_TOAST_GOLD;
+    ctx.fillRect(x, y + 2, w, h - 4);
+    ctx.fillStyle = P.DUNE_CRUST_DARK;
+    ctx.fillRect(x, y + h - 2, w, 2);
+
+    // Crust scoring grooves
+    for (let px = x + 6; px < x + w - 6; px += 14) {
+      ctx.fillStyle = P.DUNE_CRUST_DARK;
+      ctx.fillRect(px, y, 3, h);
+      ctx.fillStyle = P.DUNE_SESAME;
+      ctx.fillRect(px + 4, y, 2, 1);
+    }
+
+    if (isMoving) {
+      // Golden honey butter propulsion gleam
+      const pulse = Math.floor(this.tick * 8) % 2;
+      ctx.fillStyle = pulse ? P.DUNE_SESAME : P.DUNE_CRUMB_LIGHT;
+      ctx.fillRect(x + 4, y + h - 1, w - 8, 2);
+    }
+  }
+
+  /**
+   * World 5 Flowing Spicy Mustard River Hazard.
+   */
+  renderPixelMustardRiver(ctx, x, y, w, h) {
+    ctx.fillStyle = P.MUSTARD_DEEP;
+    ctx.fillRect(x, y + 6, w, h - 6);
+    ctx.fillStyle = P.MUSTARD_RIVER;
+    ctx.fillRect(x, y + 2, w, 5);
+    ctx.fillStyle = P.MUSTARD_SURFACE;
+    ctx.fillRect(x, y + 1, w, 2);
+
+    // Flowing ripples
+    const flow = Math.floor(this.timer * 20) % 12;
+    for (let px = x - flow; px < x + w; px += 12) {
+      ctx.fillStyle = P.MUSTARD_HOT;
+      ctx.fillRect(Math.max(x, px), y, 6, 1);
+    }
+
+    // Bubbles
+    for (let px = x + 10; px < x + w - 10; px += 24) {
+      if ((px + Math.floor(this.timer * 3)) % 5 === 0) {
+        ctx.fillStyle = P.MUSTARD_HOT;
+        ctx.fillRect(px, y - 2, 3, 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(px + 1, y - 2, 1, 1);
+      }
+    }
+  }
+
+  /**
+   * World 5 Slippery Mayonnaise Condiment Slide Platform.
+   */
+  renderPixelSlipperyMayo(ctx, x, y, w, h) {
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = P.MAYO_CREAM;
+    ctx.fillRect(x, y, w, h - 2);
+    // Specular slick shine
+    ctx.fillStyle = P.MAYO_SHINE;
+    ctx.fillRect(x + 4, y, w - 8, 2);
+    for (let px = x + 8; px < x + w - 8; px += 16) {
+      ctx.fillStyle = P.MAYO_SLIP;
+      ctx.fillRect(px, y + 2, 6, 2);
+    }
+  }
+
+  /**
+   * World 5 Bouncy Crinkle-Cut Dill Pickle Platform.
+   */
+  renderPixelBouncyPickle(ctx, x, y, w, h) {
+    ctx.fillStyle = P.PICKLE_SKIN_DARK;
+    ctx.fillRect(x, y + 2, w, h - 2);
+    ctx.fillStyle = P.PICKLE_FLESH_MID;
+    ctx.fillRect(x + 2, y + 1, w - 4, h - 2);
+    ctx.fillStyle = P.PICKLE_RIDGE_LIGHT;
+    ctx.fillRect(x + 4, y, w - 8, 3);
+    // Crinkle waves
+    for (let px = x + 4; px < x + w - 4; px += 6) {
+      ctx.fillStyle = P.PICKLE_SKIN_DARK;
+      ctx.fillRect(px, y, 2, 4);
+      ctx.fillStyle = P.PICKLE_SEED;
+      ctx.fillRect(px + 2, y + 3, 2, 2);
+    }
+  }
+
+  /**
+   * World 5 Crumbly Melba Toast / Saltine Cracker Platform.
+   */
+  renderPixelCrumbleCracker(ctx, x, y, w, h) {
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x + 1, y + 1, w - 2, h - 2);
+    ctx.fillStyle = '#fef3c7';
+    // Cracker salt crystals & dock holes
+    for (let px = x + 6; px < x + w - 6; px += 10) {
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(px, y + 3, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(px + 4, y + 1, 1, 1);
+    }
+  }
+
+  /**
+   * World 5 Aged Swiss Cheese Platform with Aeration Holes.
+   */
+  renderPixelSwissCheesePlatform(ctx, x, y, w, h) {
+    ctx.fillStyle = P.SWISS_CHEESE_GOLD;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = P.SWISS_CHEESE_PALE;
+    ctx.fillRect(x + 2, y, w - 4, 2);
+    // Cheese holes
+    for (let px = x + 8; px < x + w - 8; px += 18) {
+      ctx.fillStyle = P.SWISS_CHEESE_HOLE;
+      ctx.fillRect(px, y + 3, 6, 4);
+      ctx.fillRect(px + 2, y + 2, 3, 6);
+    }
+  }
+
+  /**
+   * World 5 Climbable Frilled Party Toothpick with Spanish Olive.
+   */
+  renderPixelToothpick(ctx, x, y, w, h) {
+    const midX = x + Math.floor(w / 2) - 2;
+    // Wood shaft
+    ctx.fillStyle = P.TOOTHPICK_WOOD;
+    ctx.fillRect(midX, y, 4, h);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(midX, y, 1, h);
+
+    // Spanish Olive
+    ctx.fillStyle = P.OLIVE_GREEN;
+    ctx.fillRect(midX - 5, y + 4, 14, 14);
+    ctx.fillStyle = '#65a30d';
+    ctx.fillRect(midX - 3, y + 6, 10, 10);
+    // Red Pimento Core
+    ctx.fillStyle = P.OLIVE_PIMENTO;
+    ctx.fillRect(midX - 1, y + 8, 6, 6);
+
+    // Cellophane party frill
+    ctx.fillStyle = P.TOOTHPICK_FRILL;
+    ctx.fillRect(midX - 4, y - 6, 12, 6);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(midX - 2, y - 8, 8, 4);
+  }
+
   // ========================================================
   // 4. ENTITIES & PARTICLES
   // ========================================================
@@ -2602,6 +2910,14 @@ export class PixelRenderer {
         pixelEnemyRenderer.drawCastleKnight(ctx, scrX, scrY, scrW, scrH, e);
       } else if (type === 'SirSlamALot' || e.name === 'Sir Slam-A-Lot' || type === 'sir_slam_a_lot') {
         pixelEnemyRenderer.drawSirSlamALot(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'SandwichKing' || e.name === 'The Sandwich King' || type === 'sandwich_king') {
+        pixelEnemyRenderer.drawSandwichKing(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'MustardMummy' || e.name === 'Mustard Mummy' || type === 'mustard_mummy') {
+        pixelEnemyRenderer.drawMustardMummy(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'CheeseScorpion' || e.name === 'Cheese Scorpion' || type === 'cheese_scorpion') {
+        pixelEnemyRenderer.drawCheeseScorpion(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'PickleBomber' || e.name === 'Pickle Bomber' || type === 'pickle_bomber') {
+        pixelEnemyRenderer.drawPickleBomber(ctx, scrX, scrY, scrW, scrH, e);
       } else {
         pixelEnemyRenderer.drawHoneyWisp(ctx, scrX, scrY, scrW, scrH, e);
       }

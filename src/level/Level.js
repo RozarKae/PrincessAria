@@ -18,6 +18,10 @@ import { LavaBeetle } from '../entities/LavaBeetle.js';
 import { MagmaGrub } from '../entities/MagmaGrub.js';
 import { HoneyDragon } from '../entities/HoneyDragon.js';
 import { HoneyBumble } from '../entities/HoneyBumble.js';
+import { SandwichKing } from '../entities/SandwichKing.js';
+import { MustardMummy } from '../entities/MustardMummy.js';
+import { CheeseScorpion } from '../entities/CheeseScorpion.js';
+import { PickleBomber } from '../entities/PickleBomber.js';
 import { MovingPlatform } from '../entities/MovingPlatform.js';
 import { Particle } from '../entities/Particle.js';
 import { Batboy } from '../entities/Batboy.js';
@@ -51,7 +55,7 @@ export class Level {
     this.platforms = levelData.platforms;
     this.physics = levelData.physics || {};
     this.theme = levelData.theme;
-    this.spawnPoint = { ...levelData.spawn };
+    this.spawnPoint = { ...(levelData.spawn || levelData.spawnPoint || { x: 280, y: 790 }) };
     this.checkpoints = levelData.checkpoints ? levelData.checkpoints.map(c => ({ ...c, activated: false })) : (levelData.checkpoint ? [{ ...levelData.checkpoint, activated: false }] : []);
     this.checkpoint = this.checkpoints[0] || { x: 740, y: 840, width: 40, height: 40, activated: false };
     this.goal = { ...levelData.goal };
@@ -199,6 +203,14 @@ export class Level {
           return new MagmaGrub(e.x, e.y);
         case 'honey_dragon':
           return new HoneyDragon(e.x, e.y);
+        case 'sandwich_king':
+          return new SandwichKing(e.x, e.y);
+        case 'mustard_mummy':
+          return new MustardMummy(e.x, e.y, pLeft, pRight);
+        case 'cheese_scorpion':
+          return new CheeseScorpion(e.x, e.y, pLeft, pRight);
+        case 'pickle_bomber':
+          return new PickleBomber(e.x, e.y);
         case 'honey_bumble':
         case 'bumble':
           return new HoneyBumble(e.x, e.y);
@@ -213,6 +225,7 @@ export class Level {
     this.forestKing = this.enemies.find(e => e instanceof ForestKing) || null;
     this.sirSlamALot = this.enemies.find(e => e instanceof SirSlamALot) || null;
     this.honeyDragon = this.enemies.find(e => e instanceof HoneyDragon) || null;
+    this.sandwichKing = this.enemies.find(e => e instanceof SandwichKing) || null;
     this.portalDoors = this.data.portalDoors || [];
     this.portalCooldown = 0;
 
@@ -269,16 +282,16 @@ export class Level {
    */
   getAllSolidPlatforms() {
     return [
-      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && p.type !== 'climbable_chain' && p.type !== 'chain' && p.type !== 'portal_door' && p.type !== 'crest_door' && p.type !== 'thermal_updraft' && p.type !== 'updraft' && !(p.type === 'bastion_portcullis' && this.portcullisUnlocked) && !((p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash') && p.isBroken)),
+      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && p.type !== 'climbable_chain' && p.type !== 'chain' && p.type !== 'climbable_toothpick' && p.type !== 'olive_spear' && p.type !== 'portal_door' && p.type !== 'crest_door' && p.type !== 'thermal_updraft' && p.type !== 'updraft' && !(p.type === 'bastion_portcullis' && this.portcullisUnlocked) && !((p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash' || p.type === 'crumble_cracker' || p.type === 'crumble_toast') && p.isBroken)),
       ...this.movingPlatforms
     ];
   }
 
   /**
-   * Returns list of climbable hanging vines/chains in the current world.
+   * Returns list of climbable hanging vines/chains/toothpicks in the current world.
    */
   getClimbableVines() {
-    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine' || p.type === 'climbable_chain' || p.type === 'chain');
+    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine' || p.type === 'climbable_chain' || p.type === 'chain' || p.type === 'climbable_toothpick' || p.type === 'olive_spear');
   }
 
   addParticle(p) {

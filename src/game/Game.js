@@ -4,7 +4,7 @@ import { Input } from '../systems/Input.js';
 import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { Level } from '../level/Level.js';
-import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1 } from '../level/LevelData.js';
+import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1, LEVEL_5_1 } from '../level/LevelData.js';
 import { Player } from '../entities/Player.js';
 import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
@@ -41,13 +41,14 @@ export class Game {
     }, this.audio);
     this.gameOverScreen = new GameOverScreen();
 
-    // Check initial level/world parameter (?world=2 or ?world=3 or ?world=4)
+    // Check initial level/world parameter (?world=2 or ?world=3 or ?world=4 or ?world=5)
     const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const requestedWorld = urlParams ? (urlParams.get('world') || urlParams.get('w') || urlParams.get('level')) : null;
+    const isW5 = requestedWorld === '5' || requestedWorld === '5-1';
     const isW4 = requestedWorld === '4' || requestedWorld === '4-1';
     const isW3 = requestedWorld === '3' || requestedWorld === '3-1';
     const isW2 = requestedWorld === '2' || requestedWorld === '2-1';
-    this.currentLevelData = isW4 ? LEVEL_4_1 : (isW3 ? LEVEL_3_1 : (isW2 ? LEVEL_2_1 : LEVEL_1_1));
+    this.currentLevelData = isW5 ? LEVEL_5_1 : (isW4 ? LEVEL_4_1 : (isW3 ? LEVEL_3_1 : (isW2 ? LEVEL_2_1 : LEVEL_1_1)));
     this.gameState.world = this.currentLevelData.world || 1;
     this.gameState.level = this.currentLevelData.stage || 1;
 
@@ -118,7 +119,10 @@ export class Game {
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
     const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-    if (requestedWorld === '4' || requestedWorld === '4-1') {
+    if (requestedWorld === '5' || requestedWorld === '5-1') {
+      this.currentLevelData = LEVEL_5_1;
+      this.gameState.world = 5;
+    } else if (requestedWorld === '4' || requestedWorld === '4-1') {
       this.currentLevelData = LEVEL_4_1;
       this.gameState.world = 4;
     } else if (requestedWorld === '3' || requestedWorld === '3-1') {
@@ -160,7 +164,9 @@ export class Game {
     } else if (!this.currentLevelData) {
       const urlParams = new URLSearchParams(window.location.search);
       const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-      if (requestedWorld === '4' || requestedWorld === '4-1') {
+      if (requestedWorld === '5' || requestedWorld === '5-1') {
+        this.currentLevelData = LEVEL_5_1;
+      } else if (requestedWorld === '4' || requestedWorld === '4-1') {
         this.currentLevelData = LEVEL_4_1;
       } else if (requestedWorld === '3' || requestedWorld === '3-1') {
         this.currentLevelData = LEVEL_3_1;
@@ -171,10 +177,11 @@ export class Game {
       }
     }
 
+    const isWorld5 = this.currentLevelData && this.currentLevelData.world === 5;
     const isWorld4 = this.currentLevelData && this.currentLevelData.world === 4;
     const isWorld3 = this.currentLevelData && this.currentLevelData.world === 3;
     const isWorld2 = this.currentLevelData && this.currentLevelData.world === 2;
-    const initialBiome = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
+    const initialBiome = isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
 
     if (this.audio) {
       this.audio.unlock();
@@ -205,10 +212,11 @@ export class Game {
       this.camera.x = this.player.x - CANVAS_WIDTH / 2;
       this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
     }
+    const isWorld5 = levelData.world === 5;
     const isWorld4 = levelData.world === 4;
     const isWorld3 = levelData.world === 3;
     const isWorld2 = levelData.world === 2;
-    const initialBiome = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
+    const initialBiome = isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
     if (this.audio) {
       this.audio.setBiome(initialBiome);
       this.audio.startProceduralMusic(initialBiome);
@@ -227,7 +235,10 @@ export class Game {
       console.log('[Game] Advancing from World 3 to World 4: The Volcano of Hot Honey!');
       this.loadLevel(LEVEL_4_1);
     } else if (this.gameState.world === 4) {
-      console.log('[Game] World 4 Complete! Ignis the Honey Dragon liberated! Realm saved!');
+      console.log('[Game] Advancing from World 4 to World 5: The Desert of Endless Sandwiches!');
+      this.loadLevel(LEVEL_5_1);
+    } else if (this.gameState.world === 5) {
+      console.log('[Game] World 5 Complete! Sandwich King defeated & Golden Map Fragment recovered! Returning to World 1...');
       this.loadLevel(LEVEL_1_1);
     } else {
       this.loadLevel(LEVEL_1_1);
@@ -284,7 +295,7 @@ export class Game {
       }
     }
 
-    // Hotkey '1', '2', '3', and '4' to switch between Worlds
+    // Hotkeys '1', '2', '3', '4', and '5' to switch between Worlds
     if (this.input.justPressed('WORLD_1')) {
       this.loadLevel(LEVEL_1_1);
     }
@@ -296,6 +307,9 @@ export class Game {
     }
     if (this.input.justPressed('WORLD_4')) {
       this.loadLevel(LEVEL_4_1);
+    }
+    if (this.input.justPressed('WORLD_5')) {
+      this.loadLevel(LEVEL_5_1);
     }
 
     if (this.dialogue.active) {
@@ -462,13 +476,24 @@ export class Game {
   updateMusicDirector(dt) {
     if (!this.audio) return;
 
+    const isWorld5 = this.gameState && this.gameState.world === 5;
     const isWorld4 = this.gameState && this.gameState.world === 4;
     const isWorld3 = this.gameState && this.gameState.world === 3;
     const isWorld2 = this.gameState && this.gameState.world === 2;
 
     // 1. Determine Scene Progression Across 10,800px Continuum
-    let scene = isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'));
-    if (isWorld4) {
+    let scene = isWorld5 ? 'desert_dunes' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
+    if (isWorld5) {
+      if (this.player.x >= 8200) {
+        scene = 'sandwich_king';  // Section 4: Royal Deli Plateau & Sandwich King Climax (146 BPM)
+      } else if (this.player.x >= 5400) {
+        scene = 'mustard_rapids'; // Section 3: Condiment Rapids & Cracker Colonnade (134 BPM)
+      } else if (this.player.x >= 2600) {
+        scene = 'cheese_canyon';  // Section 2: Swiss Cheese Canyons & Pickle Groves (124 BPM)
+      } else {
+        scene = 'desert_dunes';   // Section 1: Bread Dunes & Mustard Springs (116 BPM)
+      }
+    } else if (isWorld4) {
       if (this.player.x >= 8200) {
         scene = 'honey_dragon';   // Section 4: The Heart of the Volcano & Ignis the Wyrm (148 BPM)
       } else if (this.player.x >= 5400) {
@@ -518,13 +543,13 @@ export class Game {
       specialMode = 'secret'; // Delicate celestial music box, drums muted
     } else if (this.level && this.level.shrineBannerTimer > 0) {
       specialMode = 'cinematic'; // Majestic brass/string swell & sparkling arpeggios
-    } else if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon') {
+    } else if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king') {
       specialMode = 'climax'; // Maximum heroic rescue urgency
     }
 
     // 3. Determine Dynamic Intensity (0.0 to 1.0)
     let intensity = 0.2; // Baseline peaceful exploration
-    if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon') {
+    if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king') {
       intensity = 1.0;
     } else if (this.level && this.level.encounterCoordinator && this.level.encounterCoordinator.activeSynergy) {
       intensity = 0.85; // High coordinated encounter synergy

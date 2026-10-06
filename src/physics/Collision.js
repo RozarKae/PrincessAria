@@ -50,6 +50,10 @@ export class Collision {
           // Surface friction assignment
           if (platform.friction !== undefined) {
             player.currentSurfaceFriction = platform.friction;
+          } else if (platform.type === 'slippery_mayo' || platform.type === 'mayo') {
+            player.currentSurfaceFriction = 0.38; // Ultra slippery mayonnaise condiment slide!
+          } else if (platform.type === 'toast_dune' || platform.type === 'bread_ground') {
+            player.currentSurfaceFriction = 1.08; // Crispy toasted sesame crumb traction
           } else if (platform.type === 'castle_ground' || platform.type === 'castle_stone' || platform.type === 'marble') {
             player.currentSurfaceFriction = 0.72; // Slick polished marble slide
           } else if (platform.type === 'mossy_bark') {
@@ -65,6 +69,12 @@ export class Collision {
             player.isGrounded = false;
             player.scaleX = 0.72;
             player.scaleY = 1.38;
+            result.bounced = true;
+          } else if (platform.type === 'bouncy_pickle' || platform.type === 'pickle') {
+            player.vy = -920; // Crinkle-cut tangy dill pickle spring launch!
+            player.isGrounded = false;
+            player.scaleX = 0.64;
+            player.scaleY = 1.45;
             result.bounced = true;
           } else if (platform.type === 'bouncy_mushroom' || platform.type === 'mushroom') {
             player.vy = -900; // Deep organic fungal spring leap!
@@ -85,7 +95,7 @@ export class Collision {
             player.scaleX = 0.68;
             player.scaleY = 1.42;
             result.bounced = true;
-          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes' || platform.type === 'iron_spikes' || platform.type === 'castle_hazard' || platform.type === 'molten_honey' || platform.type === 'lava') {
+          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes' || platform.type === 'iron_spikes' || platform.type === 'castle_hazard' || platform.type === 'molten_honey' || platform.type === 'lava' || platform.type === 'mustard_river' || platform.type === 'hot_mustard') {
             result.hazard = true;
           } else if (platform.type === 'snapping_flower') {
             // Snapping flower hazard: active if jaws open/chomping
@@ -120,7 +130,12 @@ export class Collision {
             player.vy = 0;
             player.isGrounded = true;
             result.landed = true;
-            if (platform.type === 'crumble_ash' && !platform.isShaking && !platform.isBroken) {
+            if ((platform.type === 'crumble_cracker' || platform.type === 'crumble_toast') && !platform.isShaking && !platform.isBroken) {
+              // Rapid 0.4s cracker crumble in Desert of Sandwiches!
+              platform.isShaking = true;
+              platform.shakeTimer = 0.40;
+              result.crumbled = true;
+            } else if (platform.type === 'crumble_ash' && !platform.isShaking && !platform.isBroken) {
               // Rapid 0.35s ash collapse in Volcano!
               platform.isShaking = true;
               platform.shakeTimer = 0.35;
