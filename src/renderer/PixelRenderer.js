@@ -40,25 +40,16 @@ export class PixelRenderer {
   }
 
   setupViewport() {
+    // Enhanced 320x240 widescreen hi-bit raster grid
     this.internalCanvas.width = INTERNAL_WIDTH;
     this.internalCanvas.height = INTERNAL_HEIGHT;
-    this.internalCtx.imageSmoothingEnabled = true;
-    this.internalCtx.imageSmoothingQuality = 'high';
+    this.internalCtx.imageSmoothingEnabled = false;
 
-    // True 4K / High-DPI physical resolution pipeline:
-    // Determine physical display bounding box and factor in window.devicePixelRatio
-    const rect = this.canvas.parentElement ? this.canvas.parentElement.getBoundingClientRect() : this.canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.0);
-    
-    // Scale canvas physical pixel buffer to match native physical pixels up to 3840x2160
-    const targetWidth = Math.max(1920, Math.round((rect.width || 1920) * dpr));
-    const targetHeight = Math.max(1080, Math.round((rect.height || 1080) * dpr));
-    
-    this.canvas.width = Math.min(3840, targetWidth);
-    this.canvas.height = Math.min(2160, targetHeight);
-
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
+    // Set display canvas buffer to match internal resolution directly!
+    // The browser's CSS scaling handles widescreen scaling cleanly with image-rendering: pixelated.
+    this.canvas.width = INTERNAL_WIDTH;
+    this.canvas.height = INTERNAL_HEIGHT;
+    this.ctx.imageSmoothingEnabled = false;
   }
 
   update(dt) {
@@ -76,20 +67,26 @@ export class PixelRenderer {
   }
 
   endFrame() {
-    // 1. Copy internal buffer to display canvas with high-DPI scaling (up to 4K)
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
-    this.ctx.drawImage(this.internalCanvas, 0, 0, this.canvas.width, this.canvas.height);
+    // 1. Copy internal hi-bit buffer to display canvas with crisp pixel integrity
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.drawImage(this.internalCanvas, 0, 0);
 
-    // 2. Subtle Cinematic Vignette around edges for depth
+    // 2. Futuristic Neo-Pixel Post-Processing:
+    // A. Subtle Ultra-Fine Neo Scanlines (alternating 1px horizontal lines at 4% opacity)
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    for (let y = 0; y < INTERNAL_HEIGHT; y += 2) {
+      this.ctx.fillRect(0, y, INTERNAL_WIDTH, 1);
+    }
+
+    // B. Subtle Cybernetic Vignette around edges (gives that premium arcade monitor depth)
     const vigGrad = this.ctx.createRadialGradient(
-      this.canvas.width / 2, this.canvas.height / 2, this.canvas.height * 0.5,
-      this.canvas.width / 2, this.canvas.height / 2, this.canvas.width * 0.75
+      INTERNAL_WIDTH / 2, INTERNAL_HEIGHT / 2, INTERNAL_HEIGHT * 0.45,
+      INTERNAL_WIDTH / 2, INTERNAL_HEIGHT / 2, INTERNAL_WIDTH * 0.65
     );
     vigGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vigGrad.addColorStop(1, 'rgba(3, 7, 18, 0.22)');
+    vigGrad.addColorStop(1, 'rgba(3, 7, 18, 0.28)');
     this.ctx.fillStyle = vigGrad;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
   }
 
   // ========================================================

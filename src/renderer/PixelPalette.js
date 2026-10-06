@@ -9,13 +9,14 @@
  * - Neo-Retro Bloom & CRT Scanline Shader Effects for "Game from the Future" aesthetic
  */
 
-export const INTERNAL_WIDTH = 1920;
-export const INTERNAL_HEIGHT = 1080;
+export const INTERNAL_WIDTH = 320;
+export const INTERNAL_HEIGHT = 240;
 
 // World to internal screen coordinate conversion factor:
-// In 1080p logical / 4K presentation, world units match internal screen units 1:1.
-export const WORLD_TO_PIXEL = 1.0;
-export const PIXEL_TO_WORLD = 1.0;
+// 1080 world units / 240 screen pixels = 4.5 world units per screen pixel.
+// 1440 world units / 320 screen pixels = 4.5 world units per screen pixel.
+export const WORLD_TO_PIXEL = 1 / 4.5;
+export const PIXEL_TO_WORLD = 4.5;
 
 export const PIXEL_PALETTE = {
   // SKY (Modern rich twilight & aurora gradients)
