@@ -1217,7 +1217,7 @@ export const WORLDS = {
           { id: 2, x: 2400, y: 820, width: 40, height: 40 },
           { id: 3, x: 4200, y: 640, width: 40, height: 40 },
           { id: 4, x: 5800, y: 820, width: 40, height: 40 },
-          { id: 5, x: 7600, y: 600, width: 40, height: 40 },
+          { id: 5, x: 7600, y: 820, width: 40, height: 40 },
           { id: 6, x: 8800, y: 820, width: 40, height: 40 },
         ],
 
@@ -1465,7 +1465,7 @@ export const WORLDS = {
           { id: 2, x: 2400, y: 820, width: 40, height: 40 },
           { id: 3, x: 4200, y: 640, width: 40, height: 40 },
           { id: 4, x: 5800, y: 820, width: 40, height: 40 },
-          { id: 5, x: 7600, y: 600, width: 40, height: 40 },
+          { id: 5, x: 7600, y: 820, width: 40, height: 40 },
           { id: 6, x: 8800, y: 820, width: 40, height: 40 },
         ],
 
@@ -1686,7 +1686,7 @@ export const WORLDS = {
 
           // Encounter 6: "The Chrono Bridge Sentinels" (x: 4600-5200)
           { type: 'clockwork_bee', x: 4760, y: 520 },
-          { type: 'spring_knight', x: 5020, y: 656, patrolMinX: 4940, patrolMaxX: 5120 },
+          { type: 'spring_knight', x: 5020, y: 816, patrolMinX: 4940, patrolMaxX: 5120 },
 
           // --- SECTION 3 ENCOUNTERS ---
           // Encounter 7: "The Solar Foundry Guards" (x: 5500-6200)
