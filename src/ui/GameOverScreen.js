@@ -52,6 +52,7 @@ export class GameOverScreen {
     ctx.textBaseline = 'middle';
 
     if (isVictory) {
+      const isWorld6 = gameState && gameState.world === 6;
       const isWorld5 = gameState && gameState.world === 5;
       const isWorld4 = gameState && gameState.world === 4;
       const isWorld3 = gameState && gameState.world === 3;
@@ -63,7 +64,11 @@ export class GameOverScreen {
       ctx.shadowBlur = 24;
       ctx.fillStyle = '#4ade80';
       ctx.fillText(
-        isWorld5 ? 'WORLD 5-1 CLEARED!' : (isWorld4 ? 'WORLD 4-1 CLEARED!' : (isWorld3 ? 'WORLD 3-1 CLEARED!' : (isWorld2 ? 'WORLD 2-1 CLEARED!' : 'WORLD 1-1 CLEARED!'))),
+        isWorld6
+          ? 'WORLD 6-1 CLEARED!'
+          : (isWorld5
+            ? 'WORLD 5-1 CLEARED!'
+            : (isWorld4 ? 'WORLD 4-1 CLEARED!' : (isWorld3 ? 'WORLD 3-1 CLEARED!' : (isWorld2 ? 'WORLD 2-1 CLEARED!' : 'WORLD 1-1 CLEARED!')))),
         centerX,
         centerY - 80
       );
@@ -72,13 +77,15 @@ export class GameOverScreen {
       ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#fde047';
       ctx.fillText(
-        isWorld5
-          ? 'THE SANDWICH KING DEFEATED & GOLDEN MAP RECOVERED!'
-          : (isWorld4
-            ? 'THE HONEY DRAGON LIBERATED & REALM SAVED!'
-            : (isWorld3
-              ? 'SIR SLAM-A-LOT DEFEATED & GATES UNSEALED!'
-              : (isWorld2 ? 'THE FOREST KING LIBERATED!' : 'BATBOY RESCUED FROM HONEYCOMB CAGE!'))),
+        isWorld6
+          ? 'THE TIME TINKER DEFEATED & GRAND CHRONOMETER RESTORED!'
+          : (isWorld5
+            ? 'THE SANDWICH KING DEFEATED & GOLDEN MAP RECOVERED!'
+            : (isWorld4
+              ? 'THE HONEY DRAGON LIBERATED & REALM SAVED!'
+              : (isWorld3
+                ? 'SIR SLAM-A-LOT DEFEATED & GATES UNSEALED!'
+                : (isWorld2 ? 'THE FOREST KING LIBERATED!' : 'BATBOY RESCUED FROM HONEYCOMB CAGE!')))),
         centerX,
         centerY - 15
       );
@@ -87,15 +94,17 @@ export class GameOverScreen {
       ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#94a3b8';
       ctx.fillText(
-        isWorld5
-          ? 'The Golden Map reveals the path north toward the gears and towers of the Clockwork Kingdom!'
-          : (isWorld4
-            ? 'Ignis the Honey Wyrm bows in gratitude, the hot honey volcano calms, and peace returns!'
-            : (isWorld3
-              ? 'The dimensional portal opens to the smoldering caldera of the Volcano of Hot Honey...'
-              : (isWorld2
-                ? 'The Whispering Forest is restored as the Queen flees into the dimensional castle...'
-                : 'Queen Bee Fimabi fled into the mysterious Whispering Forest...'))),
+        isWorld6
+          ? 'The Time Tinker yields: Khan was transported north 3 hours, 27 minutes ago toward the Kingdom Beneath the Sea!'
+          : (isWorld5
+            ? 'The Golden Map reveals the path north toward the gears and towers of the Clockwork Kingdom!'
+            : (isWorld4
+              ? 'Ignis the Honey Wyrm bows in gratitude, the hot honey volcano calms, and peace returns!'
+              : (isWorld3
+                ? 'The dimensional portal opens to the smoldering caldera of the Volcano of Hot Honey...'
+                : (isWorld2
+                  ? 'The Whispering Forest is restored as the Queen flees into the dimensional castle...'
+                  : 'Queen Bee Fimabi fled into the mysterious Whispering Forest...')))),
         centerX,
         centerY + 30
       );

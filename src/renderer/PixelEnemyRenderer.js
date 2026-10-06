@@ -1818,6 +1818,406 @@ export class PixelEnemyRenderer {
       });
     }
   }
+
+  /**
+   * Draw Clockwork Bee in 256x240 pixel space.
+   */
+  drawClockworkBee(ctx, screenX, screenY, width, height, bee) {
+    if (bee.isDead && bee.defeatTimer > bee.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = bee.facing || 1;
+
+    if (bee.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - bee.defeatTimer / bee.defeatDuration);
+    }
+
+    if (facing < 0) {
+      ctx.translate(px + 22, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const wingTick = Math.floor(this.tick * 16) % 2;
+
+    // 1. Rotating Brass Wind-Up Key on Back
+    const keyRot = Math.floor(this.tick * 8) % 4;
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(6, -4, 2, 5);
+    ctx.fillStyle = '#f59e0b';
+    if (keyRot % 2 === 0) {
+      ctx.fillRect(3, -6, 8, 3);
+      ctx.fillRect(5, -8, 4, 2);
+    } else {
+      ctx.fillRect(5, -6, 4, 3);
+    }
+
+    // 2. Translucent Mesh Brass Wings
+    ctx.fillStyle = 'rgba(254, 243, 199, 0.75)';
+    if (wingTick === 0) {
+      ctx.fillRect(4, -3, 9, 4);
+      ctx.fillRect(8, -5, 6, 3);
+    } else {
+      ctx.fillRect(4, 2, 9, 4);
+      ctx.fillRect(8, 4, 6, 3);
+    }
+
+    // 3. Burnished Brass Armored Carapace Body
+    ctx.fillStyle = '#78350f'; // Dark bronze rim
+    ctx.fillRect(3, 4, 15, 10);
+    ctx.fillStyle = '#b45309'; // Mid brass
+    ctx.fillRect(4, 5, 13, 8);
+    ctx.fillStyle = '#f59e0b'; // Polished core
+    ctx.fillRect(6, 6, 9, 6);
+
+    // Segmented brass bands
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(8, 4, 1, 10);
+    ctx.fillRect(12, 4, 1, 10);
+
+    // 4. Glowing Ruby Optical Lens
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(15, 6, 3, 3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(16, 7, 1, 1);
+
+    // 5. Sunstone Amber Needle Stinger
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(0, 8, 4, 2);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(0, 9, 2, 1);
+
+    if (bee.isTelegraphing) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(14, 5, 4, 4);
+    }
+
+    ctx.restore();
+
+    // Render spinning brass gear dart projectiles
+    if (bee.gearDarts) {
+      bee.gearDarts.forEach(d => {
+        const dx = Math.round(screenX + (d.x - bee.x) * (1 / 4.5));
+        const dy = Math.round(screenY + (d.y - bee.y) * (1 / 4.5));
+        ctx.save();
+        ctx.translate(dx, dy);
+        ctx.rotate(d.rotation || 0);
+        ctx.fillStyle = '#d97706';
+        ctx.fillRect(-3, -3, 6, 6);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(-1, -1, 2, 2);
+        // Cog teeth
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(-4, -1, 8, 2);
+        ctx.fillRect(-1, -4, 2, 8);
+        ctx.restore();
+      });
+    }
+  }
+
+  /**
+   * Draw Spring Knight in 256x240 pixel space.
+   */
+  drawSpringKnight(ctx, screenX, screenY, width, height, knight) {
+    if (knight.isDead && knight.defeatTimer > knight.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = knight.facing || 1;
+
+    if (knight.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - knight.defeatTimer / knight.defeatDuration);
+    }
+
+    if (facing < 0) {
+      ctx.translate(px + 24, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const crouchOffset = knight.springCompression ? Math.round(knight.springCompression * 5) : 0;
+
+    // 1. Heavy Armored Greaves & Boots
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(4, 22 - crouchOffset / 2, 6, 6 + crouchOffset / 2);
+    ctx.fillRect(13, 22 - crouchOffset / 2, 6, 6 + crouchOffset / 2);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(5, 23 - crouchOffset / 2, 4, 5);
+    ctx.fillRect(14, 23 - crouchOffset / 2, 4, 5);
+
+    // 2. Coiled Mainspring Midriff (Compresses or vibrates!)
+    ctx.fillStyle = '#475569'; // Steel spring dark
+    ctx.fillRect(6, 16 + crouchOffset, 11, 6 - crouchOffset);
+    ctx.fillStyle = '#cbd5e1'; // Coiled spring highlight
+    for (let s = 0; s < 3; s++) {
+      ctx.fillRect(7 + s * 3, 17 + crouchOffset, 2, 4 - crouchOffset);
+    }
+
+    // 3. Heavy Burnished Bronze Cuirass (Torso)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(4, 8 + crouchOffset, 15, 9);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(5, 9 + crouchOffset, 13, 7);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(7, 10 + crouchOffset, 9, 5);
+    // Sunstone central crest
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(10, 11 + crouchOffset, 3, 3);
+
+    // 4. Armored Horned Helmet & Glowing Visor
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(5, 0 + crouchOffset, 13, 9);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(6, 1 + crouchOffset, 11, 7);
+    // Helmet crest horn
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(9, -3 + crouchOffset, 5, 4);
+    ctx.fillRect(10, -5 + crouchOffset, 3, 3);
+    // Slit Visor (Amber / Ruby alert)
+    ctx.fillStyle = knight.isCrouching ? '#ef4444' : '#f59e0b';
+    ctx.fillRect(11, 4 + crouchOffset, 6, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(14, 4 + crouchOffset, 2, 1);
+
+    // 5. Brass Rapier / Lance
+    ctx.fillStyle = '#64748b'; // Steel blade
+    ctx.fillRect(18, 12 + crouchOffset, 9, 2);
+    ctx.fillStyle = '#ffffff'; // Tip glint
+    ctx.fillRect(27, 12 + crouchOffset, 2, 1);
+    ctx.fillStyle = '#f59e0b'; // Brass crossguard
+    ctx.fillRect(17, 10 + crouchOffset, 2, 6);
+
+    // Vulnerable oscillating spring sparks when stunned
+    if (knight.isRecovering) {
+      const pulse = Math.floor(this.tick * 10) % 2 === 0;
+      ctx.fillStyle = pulse ? '#ffffff' : '#fde047';
+      ctx.fillRect(4, 15, 15, 2);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw Mechanical Spider in 256x240 pixel space.
+   */
+  drawMechanicalSpider(ctx, screenX, screenY, width, height, spider) {
+    if (spider.isDead && spider.defeatTimer > spider.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const facing = spider.facing || 1;
+
+    // Draw hanging chain tether up to ceiling anchor
+    if (spider.chainLength > 2) {
+      const chainTopScrY = Math.round(screenY - (spider.chainLength * (1 / 4.5)));
+      ctx.fillStyle = '#b45309';
+      for (let cy = chainTopScrY; cy < py + 4; cy += 4) {
+        ctx.fillRect(px + 10, cy, 2, 3);
+        ctx.fillStyle = (ctx.fillStyle === '#b45309') ? '#fde047' : '#b45309';
+      }
+    }
+
+    if (spider.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - spider.defeatTimer / spider.defeatDuration);
+    }
+
+    if (facing < 0) {
+      ctx.translate(px + 22, py);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(px, py);
+    }
+
+    const legMove = Math.floor(this.tick * 8) % 2;
+
+    // 1. Jointed Brass Legs (4 pairs)
+    ctx.fillStyle = '#78350f';
+    // Back legs
+    ctx.fillRect(1, 4 + legMove, 2, 6);
+    ctx.fillRect(5, 5 - legMove, 2, 6);
+    // Front legs
+    ctx.fillRect(15, 5 + legMove, 2, 6);
+    ctx.fillRect(19, 4 - legMove, 2, 6);
+
+    // 2. Central Cogwheel Abdomen & Exposed Gear Teeth
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(3, 1, 10, 8);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(4, 2, 8, 6);
+    // Cog teeth on abdomen
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(2, 3, 1, 4);
+    ctx.fillRect(13, 3, 1, 4);
+    ctx.fillRect(6, 0, 4, 1);
+    ctx.fillRect(6, 8, 4, 1);
+    // Sunstone center core
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(7, 4, 2, 2);
+
+    // 3. Cephalothorax Head & Pincers
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(13, 3, 5, 5);
+    // Red ocular sensors
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(17, 3, 2, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(18, 4, 1, 1);
+    // Brass pincers
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(18, 1, 3, 2);
+    ctx.fillRect(18, 6, 3, 2);
+
+    ctx.restore();
+  }
+
+  /**
+   * Draw The Time Tinker in 256x240 pixel space.
+   */
+  drawTimeTinker(ctx, screenX, screenY, width, height, boss) {
+    if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
+
+    ctx.save();
+    const px = Math.round(screenX);
+    const py = Math.round(screenY);
+    const w = 44;
+    const h = 48;
+
+    if (boss.isDead) {
+      ctx.globalAlpha = Math.max(0, 1 - boss.defeatTimer / boss.defeatDuration);
+    }
+
+    const facing = boss.facing || 1;
+    ctx.translate(px + w / 2, py + h);
+
+    if (boss.wobbleAngle) {
+      ctx.rotate(boss.wobbleAngle * (facing > 0 ? 1 : -1));
+    }
+
+    if (facing < 0) {
+      ctx.scale(-1, 1);
+    }
+
+    const originX = -w / 2;
+    const originY = -h;
+
+    // 1. Giant Rotating Astrolabe Back-Wheel
+    ctx.save();
+    ctx.translate(0, originY + 22);
+    ctx.rotate(boss.clockRotation || 0);
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+    ctx.stroke();
+    // 8 Astrolabe radial spokes / gear teeth
+    ctx.fillStyle = '#f59e0b';
+    for (let a = 0; a < 8; a++) {
+      const ang = (a * Math.PI) / 4;
+      const sx = Math.cos(ang) * 19;
+      const sy = Math.sin(ang) * 19;
+      ctx.fillRect(sx - 1, sy - 1, 3, 3);
+    }
+    ctx.restore();
+
+    // 2. Heavy Royal Velvet Cape (Dark purple with gold filigree)
+    ctx.fillStyle = '#311042';
+    ctx.fillRect(originX + 2, originY + 14, 38, 28);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(originX + 1, originY + 40, 40, 2);
+
+    // 3. Polished Bronze Chassis (Torso)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(originX + 8, originY + 12, 26, 26);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(originX + 10, originY + 14, 22, 22);
+
+    // 4. Grand Ivory Clock Face Chest Dial
+    ctx.fillStyle = '#fefce8'; // Ivory clock face
+    ctx.beginPath();
+    ctx.arc(0, originY + 25, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Rotating Clock Hands
+    const handAngle = boss.clockHandsAngle || 0;
+    ctx.strokeStyle = '#1c1917';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, originY + 25);
+    ctx.lineTo(Math.cos(handAngle) * 7, originY + 25 + Math.sin(handAngle) * 7);
+    ctx.stroke();
+
+    // 5. Exposed Glowing Sunstone Heart (Center Core)
+    const heartPulse = Math.sin(Date.now() * 0.01) * 0.5 + 0.5;
+    ctx.fillStyle = boss.isStaggered ? (heartPulse > 0.5 ? '#ffffff' : '#fde047') : '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(0, originY + 25, boss.isStaggered ? 5 : 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 6. Horologist Automaton Head & Ruby Monocle
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(originX + 14, originY + 2, 14, 11);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(originX + 15, originY + 3, 12, 9);
+    // Master Top Hat / Brass Crown
+    ctx.fillStyle = '#311042';
+    ctx.fillRect(originX + 13, originY - 4, 16, 6);
+    ctx.fillRect(originX + 11, originY + 1, 20, 2);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(originX + 13, originY, 16, 1);
+    // Ruby Monocle Eye
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(originX + 21, originY + 5, 4, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(originX + 23, originY + 6, 1, 1);
+
+    // 7. Brass Gauntlets
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(originX + 4, originY + 22, 6, 10);
+    ctx.fillRect(originX + 32, originY + 22, 6, 10);
+
+    ctx.restore();
+
+    // Render rolling cogs & falling gear rain projectiles
+    if (boss.projectiles) {
+      boss.projectiles.forEach(p => {
+        const px = Math.round(screenX + (p.x - boss.x) * (1 / 4.5));
+        const py = Math.round(screenY + (p.y - boss.y) * (1 / 4.5));
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(p.rotation || 0);
+        ctx.fillStyle = '#d97706';
+        ctx.fillRect(-5, -5, 10, 10);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(-7, -2, 14, 4);
+        ctx.fillRect(-2, -7, 4, 14);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(-2, -2, 4, 4);
+        ctx.restore();
+      });
+    }
+
+    // Render chrono shockwaves
+    if (boss.shockwaves) {
+      boss.shockwaves.forEach(sw => {
+        const sx = Math.round(screenX + (sw.x - boss.x) * (1 / 4.5));
+        const sy = Math.round(screenY + (sw.y - boss.y) * (1 / 4.5));
+        const swW = Math.round(sw.width * (1 / 4.5));
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(sx, sy - 4, swW, 6);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(sx + 2, sy - 2, swW - 4, 2);
+      });
+    }
+  }
 }
 
 export const pixelEnemyRenderer = new PixelEnemyRenderer();

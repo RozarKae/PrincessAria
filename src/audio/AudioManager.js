@@ -84,6 +84,7 @@ export class AudioManager {
 
     this.unlocked = false;
     this.audioBlocked = false;
+    this.sceneThemes = SCENE_THEMES;
   }
 
   // ========================================================
@@ -1234,6 +1235,19 @@ export class AudioManager {
       case 'sandwich_king':
         this.targetTempo = 146;
         break;
+      case 'clockwork':
+      case 'clockwork_gear':
+        this.targetTempo = 116;
+        break;
+      case 'escapement_bridge':
+        this.targetTempo = 124;
+        break;
+      case 'steam_conduit':
+        this.targetTempo = 134;
+        break;
+      case 'time_tinker':
+        this.targetTempo = 148;
+        break;
       default:
         this.targetTempo = 112;
     }
@@ -2178,4 +2192,101 @@ const SCENE_THEMES = {
       makeBar([[0, NOTES.D6], [2, NOTES.B5], [4, NOTES.G5], [8, NOTES.B5], [12, NOTES.G6]]),
     ],
   },
+
+  // ========================================================
+  // WORLD 6: THE CLOCKWORK KINGDOM MUSIC PROFILES
+  // ========================================================
+  // Section 1: The Brass Gearworks (116 BPM Baroque Ticking Counterpoint)
+  clockwork: {
+    tempo: 116,
+    chords: [
+      [NOTES.D3, NOTES.F3, NOTES.A3, NOTES.D4],   // Dm (Ticking clock precision)
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.A3],   // F Major
+      [NOTES.C3, NOTES.G3, NOTES.C4, NOTES.E4],   // C Major
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.Cs4],  // A7 (Grand baroque turnaround)
+    ],
+    bass: [
+      makeBar([[0, NOTES.D2], [2, NOTES.D3], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.D2], [10, NOTES.F2], [12, NOTES.E2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F3], [4, NOTES.C3], [6, NOTES.F3], [8, NOTES.F2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.C3], [2, NOTES.C4], [4, NOTES.G2], [6, NOTES.C3], [8, NOTES.C3], [10, NOTES.E3], [12, NOTES.D3], [14, NOTES.C3]]),
+      makeBar([[0, NOTES.A2], [2, NOTES.A3], [4, NOTES.E3], [6, NOTES.A3], [8, NOTES.A2], [10, NOTES.Cs3], [12, NOTES.E3], [14, NOTES.A3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.D5], [2, NOTES.F5], [4, NOTES.A5], [8, NOTES.D6], [12, NOTES.Cs6], [14, NOTES.D6]]),
+      makeBar([[0, NOTES.C6], [4, NOTES.A5], [8, NOTES.F5], [12, NOTES.A5]]),
+      makeBar([[0, NOTES.G5], [4, NOTES.C6], [8, NOTES.E6], [12, NOTES.D6]]),
+      makeBar([[0, NOTES.Cs6], [4, NOTES.E6], [8, NOTES.A6], [12, NOTES.G6]]),
+    ],
+  },
+
+  // Section 2: The Astrolabe Chasm & Chrono Bridges (124 BPM)
+  escapement_bridge: {
+    tempo: 124,
+    chords: [
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.Bb3], // Gm
+      [NOTES.Bb2, NOTES.F3, NOTES.Bb3, NOTES.D4], // Bb
+      [NOTES.Eb3, NOTES.Bb3, NOTES.Eb4, NOTES.G4], // Eb
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.Fs4],  // D7
+    ],
+    bass: [
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.Bb2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.Bb2], [2, NOTES.Bb2], [4, NOTES.F3], [6, NOTES.Bb2], [8, NOTES.D3], [10, NOTES.C3], [12, NOTES.Bb2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.Eb2], [2, NOTES.Eb2], [4, NOTES.Bb2], [6, NOTES.Eb3], [8, NOTES.G2], [10, NOTES.F2], [12, NOTES.Eb2], [14, NOTES.Bb2]]),
+      makeBar([[0, NOTES.D2], [2, NOTES.D2], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.Fs2], [10, NOTES.A2], [12, NOTES.D3], [14, NOTES.C3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.G5], [2, NOTES.Bb5], [6, NOTES.D6], [10, NOTES.G6], [14, NOTES.Fs6]]),
+      makeBar([[0, NOTES.F6], [4, NOTES.D6], [8, NOTES.Bb5], [12, NOTES.D6]]),
+      makeBar([[0, NOTES.Eb6], [4, NOTES.G6], [8, NOTES.Bb6], [12, NOTES.A6]]),
+      makeBar([[0, NOTES.Fs6], [4, NOTES.A6], [8, NOTES.D7], [12, NOTES.C7]]),
+    ],
+  },
+
+  // Section 3: The Sunstone Foundry & Steam Conduits (134 BPM)
+  steam_conduit: {
+    tempo: 134,
+    chords: [
+      [NOTES.A2, NOTES.E3, NOTES.A3, NOTES.C4],  // Am
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.A3],  // F
+      [NOTES.D3, NOTES.A3, NOTES.D4, NOTES.F4],  // Dm
+      [NOTES.E2, NOTES.B2, NOTES.E3, NOTES.Gs3], // E7
+    ],
+    bass: [
+      makeBar([[0, NOTES.A2], [2, NOTES.A2], [4, NOTES.E3], [6, NOTES.A2], [8, NOTES.A2], [10, NOTES.C3], [12, NOTES.B2], [14, NOTES.A2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.C3], [6, NOTES.F2], [8, NOTES.F2], [10, NOTES.A2], [12, NOTES.G2], [14, NOTES.F2]]),
+      makeBar([[0, NOTES.D2], [2, NOTES.D2], [4, NOTES.A2], [6, NOTES.D3], [8, NOTES.D2], [10, NOTES.F2], [12, NOTES.E2], [14, NOTES.D2]]),
+      makeBar([[0, NOTES.E2], [2, NOTES.E2], [4, NOTES.B2], [6, NOTES.E3], [8, NOTES.E2], [10, NOTES.Gs2], [12, NOTES.B2], [14, NOTES.D3]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.A5], [3, NOTES.C6], [6, NOTES.E6], [10, NOTES.A6], [14, NOTES.Gs6]]),
+      makeBar([[0, NOTES.F6], [4, NOTES.A5], [8, NOTES.C6], [12, NOTES.F6]]),
+      makeBar([[0, NOTES.D6], [3, NOTES.F6], [6, NOTES.A6], [10, NOTES.D7], [14, NOTES.C7]]),
+      makeBar([[0, NOTES.B6], [4, NOTES.Gs6], [8, NOTES.E6], [12, NOTES.Gs6]]),
+    ],
+  },
+
+  // Section 4 Climax: The Time Tinker (148 BPM Epic Fugue Climax)
+  time_tinker: {
+    tempo: 148,
+    chords: [
+      [NOTES.C3, NOTES.Eb3, NOTES.G3, NOTES.C4],   // Cm (Chrono Titan majesty)
+      [NOTES.Ab2, NOTES.Eb3, NOTES.Ab3, NOTES.C4], // Ab
+      [NOTES.F2, NOTES.C3, NOTES.F3, NOTES.Ab3],  // Fm
+      [NOTES.G2, NOTES.D3, NOTES.G3, NOTES.B3],    // G (Chrono Overload resolution)
+    ],
+    bass: [
+      makeBar([[0, NOTES.C2], [2, NOTES.C2], [4, NOTES.G2], [6, NOTES.C3], [8, NOTES.C2], [10, NOTES.Eb2], [12, NOTES.D2], [14, NOTES.C2]]),
+      makeBar([[0, NOTES.Ab2], [2, NOTES.Ab2], [4, NOTES.Eb3], [6, NOTES.Ab2], [8, NOTES.C3], [10, NOTES.Bb2], [12, NOTES.Ab2], [14, NOTES.Eb2]]),
+      makeBar([[0, NOTES.F2], [2, NOTES.F2], [4, NOTES.C3], [6, NOTES.F2], [8, NOTES.Ab2], [10, NOTES.G2], [12, NOTES.F2], [14, NOTES.C2]]),
+      makeBar([[0, NOTES.G2], [2, NOTES.G2], [4, NOTES.D3], [6, NOTES.G2], [8, NOTES.B2], [10, NOTES.D3], [12, NOTES.G3], [14, NOTES.F2]]),
+    ],
+    melody: [
+      makeBar([[0, NOTES.C5], [2, NOTES.Eb5], [6, NOTES.G5], [10, NOTES.C6], [14, NOTES.D6]]),
+      makeBar([[0, NOTES.Eb6], [4, NOTES.C6], [8, NOTES.Ab5], [12, NOTES.G5]]),
+      makeBar([[0, NOTES.F5], [3, NOTES.Bb5], [6, NOTES.D6], [10, NOTES.F6], [14, NOTES.Eb6]]),
+      makeBar([[0, NOTES.D6], [2, NOTES.B5], [4, NOTES.G5], [8, NOTES.B5], [12, NOTES.G6]]),
+    ],
+  },
 };
+
+export { SCENE_THEMES };

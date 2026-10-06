@@ -61,4 +61,5 @@ export const KEY_BINDINGS = {
   WORLD_3: ['Digit3', 'Numpad3'],
   WORLD_4: ['Digit4', 'Numpad4'],
   WORLD_5: ['Digit5', 'Numpad5'],
+  WORLD_6: ['Digit6', 'Numpad6'],
 };

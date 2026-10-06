@@ -4,7 +4,7 @@ import { Input } from '../systems/Input.js';
 import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { Level } from '../level/Level.js';
-import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1, LEVEL_5_1 } from '../level/LevelData.js';
+import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1, LEVEL_5_1, LEVEL_6_1 } from '../level/LevelData.js';
 import { Player } from '../entities/Player.js';
 import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
@@ -41,14 +41,15 @@ export class Game {
     }, this.audio);
     this.gameOverScreen = new GameOverScreen();
 
-    // Check initial level/world parameter (?world=2 or ?world=3 or ?world=4 or ?world=5)
+    // Check initial level/world parameter (?world=2 or ?world=3 or ?world=4 or ?world=5 or ?world=6)
     const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const requestedWorld = urlParams ? (urlParams.get('world') || urlParams.get('w') || urlParams.get('level')) : null;
+    const isW6 = requestedWorld === '6' || requestedWorld === '6-1';
     const isW5 = requestedWorld === '5' || requestedWorld === '5-1';
     const isW4 = requestedWorld === '4' || requestedWorld === '4-1';
     const isW3 = requestedWorld === '3' || requestedWorld === '3-1';
     const isW2 = requestedWorld === '2' || requestedWorld === '2-1';
-    this.currentLevelData = isW5 ? LEVEL_5_1 : (isW4 ? LEVEL_4_1 : (isW3 ? LEVEL_3_1 : (isW2 ? LEVEL_2_1 : LEVEL_1_1)));
+    this.currentLevelData = isW6 ? LEVEL_6_1 : (isW5 ? LEVEL_5_1 : (isW4 ? LEVEL_4_1 : (isW3 ? LEVEL_3_1 : (isW2 ? LEVEL_2_1 : LEVEL_1_1))));
     this.gameState.world = this.currentLevelData.world || 1;
     this.gameState.level = this.currentLevelData.stage || 1;
 
@@ -119,7 +120,10 @@ export class Game {
     // Autoplay query parameter for automated testing / headless review
     const urlParams = new URLSearchParams(window.location.search);
     const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-    if (requestedWorld === '5' || requestedWorld === '5-1') {
+    if (requestedWorld === '6' || requestedWorld === '6-1') {
+      this.currentLevelData = LEVEL_6_1;
+      this.gameState.world = 6;
+    } else if (requestedWorld === '5' || requestedWorld === '5-1') {
       this.currentLevelData = LEVEL_5_1;
       this.gameState.world = 5;
     } else if (requestedWorld === '4' || requestedWorld === '4-1') {
@@ -164,7 +168,9 @@ export class Game {
     } else if (!this.currentLevelData) {
       const urlParams = new URLSearchParams(window.location.search);
       const requestedWorld = urlParams.get('world') || urlParams.get('w') || urlParams.get('level');
-      if (requestedWorld === '5' || requestedWorld === '5-1') {
+      if (requestedWorld === '6' || requestedWorld === '6-1') {
+        this.currentLevelData = LEVEL_6_1;
+      } else if (requestedWorld === '5' || requestedWorld === '5-1') {
         this.currentLevelData = LEVEL_5_1;
       } else if (requestedWorld === '4' || requestedWorld === '4-1') {
         this.currentLevelData = LEVEL_4_1;
@@ -177,11 +183,12 @@ export class Game {
       }
     }
 
+    const isWorld6 = this.currentLevelData && this.currentLevelData.world === 6;
     const isWorld5 = this.currentLevelData && this.currentLevelData.world === 5;
     const isWorld4 = this.currentLevelData && this.currentLevelData.world === 4;
     const isWorld3 = this.currentLevelData && this.currentLevelData.world === 3;
     const isWorld2 = this.currentLevelData && this.currentLevelData.world === 2;
-    const initialBiome = isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
+    const initialBiome = isWorld6 ? 'clockwork' : (isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'))));
 
     if (this.audio) {
       this.audio.unlock();
@@ -212,11 +219,12 @@ export class Game {
       this.camera.x = this.player.x - CANVAS_WIDTH / 2;
       this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
     }
+    const isWorld6 = levelData.world === 6;
     const isWorld5 = levelData.world === 5;
     const isWorld4 = levelData.world === 4;
     const isWorld3 = levelData.world === 3;
     const isWorld2 = levelData.world === 2;
-    const initialBiome = isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
+    const initialBiome = isWorld6 ? 'clockwork' : (isWorld5 ? 'desert' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'))));
     if (this.audio) {
       this.audio.setBiome(initialBiome);
       this.audio.startProceduralMusic(initialBiome);
@@ -238,7 +246,10 @@ export class Game {
       console.log('[Game] Advancing from World 4 to World 5: The Desert of Endless Sandwiches!');
       this.loadLevel(LEVEL_5_1);
     } else if (this.gameState.world === 5) {
-      console.log('[Game] World 5 Complete! Sandwich King defeated & Golden Map Fragment recovered! Returning to World 1...');
+      console.log('[Game] Advancing from World 5 to World 6: The Clockwork Kingdom!');
+      this.loadLevel(LEVEL_6_1);
+    } else if (this.gameState.world === 6) {
+      console.log('[Game] World 6 Complete! Time Tinker defeated & Grand Chronometer restored! Heading to World 7...');
       this.loadLevel(LEVEL_1_1);
     } else {
       this.loadLevel(LEVEL_1_1);
@@ -310,6 +321,9 @@ export class Game {
     }
     if (this.input.justPressed('WORLD_5')) {
       this.loadLevel(LEVEL_5_1);
+    }
+    if (this.input.justPressed('WORLD_6')) {
+      this.loadLevel(LEVEL_6_1);
     }
 
     if (this.dialogue.active) {
@@ -476,14 +490,25 @@ export class Game {
   updateMusicDirector(dt) {
     if (!this.audio) return;
 
+    const isWorld6 = this.gameState && this.gameState.world === 6;
     const isWorld5 = this.gameState && this.gameState.world === 5;
     const isWorld4 = this.gameState && this.gameState.world === 4;
     const isWorld3 = this.gameState && this.gameState.world === 3;
     const isWorld2 = this.gameState && this.gameState.world === 2;
 
     // 1. Determine Scene Progression Across 10,800px Continuum
-    let scene = isWorld5 ? 'desert_dunes' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade')));
-    if (isWorld5) {
+    let scene = isWorld6 ? 'clockwork' : (isWorld5 ? 'desert_dunes' : (isWorld4 ? 'volcano' : (isWorld3 ? 'castle' : (isWorld2 ? 'forest' : 'glade'))));
+    if (isWorld6) {
+      if (this.player.x >= 8200) {
+        scene = 'time_tinker';        // Section 4: Grand Chronometer Citadel & Time Tinker (148 BPM)
+      } else if (this.player.x >= 5400) {
+        scene = 'steam_conduit';      // Section 3: High-Pressure Steam Conduits (136 BPM)
+      } else if (this.player.x >= 2600) {
+        scene = 'escapement_bridge';  // Section 2: Celestial Astrolabe & Escapement Bridge (126 BPM)
+      } else {
+        scene = 'clockwork';          // Section 1: Great Gear Ascent (118 BPM)
+      }
+    } else if (isWorld5) {
       if (this.player.x >= 8200) {
         scene = 'sandwich_king';  // Section 4: Royal Deli Plateau & Sandwich King Climax (146 BPM)
       } else if (this.player.x >= 5400) {
@@ -543,13 +568,13 @@ export class Game {
       specialMode = 'secret'; // Delicate celestial music box, drums muted
     } else if (this.level && this.level.shrineBannerTimer > 0) {
       specialMode = 'cinematic'; // Majestic brass/string swell & sparkling arpeggios
-    } else if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king') {
+    } else if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king' || scene === 'time_tinker') {
       specialMode = 'climax'; // Maximum heroic rescue urgency
     }
 
     // 3. Determine Dynamic Intensity (0.0 to 1.0)
     let intensity = 0.2; // Baseline peaceful exploration
-    if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king') {
+    if (scene === 'climax' || scene === 'forest_king' || scene === 'slam_a_lot' || scene === 'honey_dragon' || scene === 'sandwich_king' || scene === 'time_tinker') {
       intensity = 1.0;
     } else if (this.level && this.level.encounterCoordinator && this.level.encounterCoordinator.activeSynergy) {
       intensity = 0.85; // High coordinated encounter synergy

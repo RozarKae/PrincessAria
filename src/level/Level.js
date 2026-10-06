@@ -22,6 +22,10 @@ import { SandwichKing } from '../entities/SandwichKing.js';
 import { MustardMummy } from '../entities/MustardMummy.js';
 import { CheeseScorpion } from '../entities/CheeseScorpion.js';
 import { PickleBomber } from '../entities/PickleBomber.js';
+import { ClockworkBee } from '../entities/ClockworkBee.js';
+import { SpringKnight } from '../entities/SpringKnight.js';
+import { MechanicalSpider } from '../entities/MechanicalSpider.js';
+import { TimeTinker } from '../entities/TimeTinker.js';
 import { MovingPlatform } from '../entities/MovingPlatform.js';
 import { Particle } from '../entities/Particle.js';
 import { Batboy } from '../entities/Batboy.js';
@@ -211,6 +215,14 @@ export class Level {
           return new CheeseScorpion(e.x, e.y, pLeft, pRight);
         case 'pickle_bomber':
           return new PickleBomber(e.x, e.y);
+        case 'clockwork_bee':
+          return new ClockworkBee(e.x, e.y);
+        case 'spring_knight':
+          return new SpringKnight(e.x, e.y, pLeft, pRight);
+        case 'mechanical_spider':
+          return new MechanicalSpider(e.x, e.y, { patrolLeft: pLeft, patrolRight: pRight, dropDistance: e.dropDistance });
+        case 'time_tinker':
+          return new TimeTinker(e.x, e.y);
         case 'honey_bumble':
         case 'bumble':
           return new HoneyBumble(e.x, e.y);
@@ -226,6 +238,7 @@ export class Level {
     this.sirSlamALot = this.enemies.find(e => e instanceof SirSlamALot) || null;
     this.honeyDragon = this.enemies.find(e => e instanceof HoneyDragon) || null;
     this.sandwichKing = this.enemies.find(e => e instanceof SandwichKing) || null;
+    this.timeTinker = this.enemies.find(e => e instanceof TimeTinker) || null;
     this.portalDoors = this.data.portalDoors || [];
     this.portalCooldown = 0;
 
@@ -258,7 +271,7 @@ export class Level {
     // Reset crumble blocks
     if (this.platforms) {
       this.platforms.forEach(p => {
-        if (p.type === 'crumble_block' || p.type === 'crumble') {
+        if (p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash' || p.type === 'crumble_cracker' || p.type === 'crumble_toast' || p.type === 'collapsing_spring') {
           p.isShaking = false;
           p.shakeTimer = 0;
           p.isBroken = false;
@@ -282,16 +295,16 @@ export class Level {
    */
   getAllSolidPlatforms() {
     return [
-      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && p.type !== 'climbable_chain' && p.type !== 'chain' && p.type !== 'climbable_toothpick' && p.type !== 'olive_spear' && p.type !== 'portal_door' && p.type !== 'crest_door' && p.type !== 'thermal_updraft' && p.type !== 'updraft' && !(p.type === 'bastion_portcullis' && this.portcullisUnlocked) && !((p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash' || p.type === 'crumble_cracker' || p.type === 'crumble_toast') && p.isBroken)),
+      ...this.platforms.filter(p => p.type !== 'climbable_vine' && p.type !== 'vine' && p.type !== 'climbable_chain' && p.type !== 'chain' && p.type !== 'climbable_toothpick' && p.type !== 'olive_spear' && p.type !== 'climbable_gear_chain' && p.type !== 'gear_chain' && p.type !== 'portal_door' && p.type !== 'crest_door' && p.type !== 'thermal_updraft' && p.type !== 'updraft' && !(p.type === 'bastion_portcullis' && this.portcullisUnlocked) && !((p.type === 'crumble_block' || p.type === 'crumble' || p.type === 'crumble_stone' || p.type === 'crumble_ash' || p.type === 'crumble_cracker' || p.type === 'crumble_toast' || p.type === 'collapsing_spring') && p.isBroken)),
       ...this.movingPlatforms
     ];
   }
 
   /**
-   * Returns list of climbable hanging vines/chains/toothpicks in the current world.
+   * Returns list of climbable hanging vines/chains/toothpicks/gear chains in the current world.
    */
   getClimbableVines() {
-    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine' || p.type === 'climbable_chain' || p.type === 'chain' || p.type === 'climbable_toothpick' || p.type === 'olive_spear');
+    return this.platforms.filter(p => p.type === 'climbable_vine' || p.type === 'vine' || p.type === 'climbable_chain' || p.type === 'chain' || p.type === 'climbable_toothpick' || p.type === 'olive_spear' || p.type === 'climbable_gear_chain' || p.type === 'gear_chain');
   }
 
   addParticle(p) {
@@ -677,6 +690,81 @@ export class Level {
         if (camera && camera.focus) camera.focus(10200, 680, 2.8);
         if (camera && camera.shake) camera.shake(14, 0.5);
       }
+    } else if (this.world === 6) {
+      // WORLD 6 SECRETS & LANDMARKS: THE CLOCKWORK KINGDOM
+      // Secret 1: The Grand Astrolabe Gallery (x: 1600-1900, y <= 400)
+      if (!this.secretAreaDiscovered && player.x >= 1600 && player.x <= 1900 && player.y <= 400) {
+        this.secretAreaDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE GRAND ASTROLABE GALLERY (+500 PTS)';
+        this.secretBannerTimer = 3.5;
+        gameState.addScore(500);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 24);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 2: The Celestial Horology Vault (x: 3500-3800, y <= 350)
+      if (!this.apiaryDiscovered && player.x >= 3500 && player.x <= 3800 && player.y <= 350) {
+        this.apiaryDiscovered = true;
+        this.secretBannerText = '✨ SECRET DISCOVERY: THE CELESTIAL HOROLOGY VAULT (+750 PTS)';
+        this.secretBannerTimer = 3.8;
+        gameState.addScore(750);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 32);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Secret 3: The Eternal Mainspring Chamber (x: 6800-7150, y <= 320)
+      if (!this.armoryDiscovered && player.x >= 6800 && player.x <= 7150 && player.y <= 320) {
+        this.armoryDiscovered = true;
+        this.secretBannerText = '🗝️ SECRET DISCOVERED: THE ETERNAL MAINSPRING CHAMBER (+1,000 PTS)';
+        this.secretBannerTimer = 4.2;
+        gameState.addScore(1000);
+        this.spawnSparkles(player.x + player.width / 2, player.y, 40);
+        if (audio && audio.playSecretDiscovery) audio.playSecretDiscovery();
+        else if (audio && audio.playCollect) audio.playCollect();
+      }
+
+      // Landmark 1: The Brass Gearworks Colonnade (x >= 1950 and x < 2400)
+      if (!this.shrineCinematicTriggered && player.x >= 1950 && player.x < 2400) {
+        this.shrineCinematicTriggered = true;
+        this.shrineBannerText = '⚙️ LANDMARK: THE BRASS GEARWORKS COLONNADE';
+        this.shrineBannerTimer = 3.5;
+        this.spawnSparkles(2100, 840, 28);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(2100, 750, 2.2);
+      }
+
+      // Landmark 2: The Great Escapement Chasm (x >= 4000 and x < 4500)
+      if (!this.hollowRedwoodTriggered && player.x >= 4000 && player.x < 4500) {
+        this.hollowRedwoodTriggered = true;
+        this.shrineBannerText = '⚙️ LANDMARK: THE GREAT ESCAPEMENT CHASM';
+        this.shrineBannerTimer = 3.8;
+        this.spawnSparkles(4200, 600, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(4200, 600, 2.5);
+      }
+
+      // Landmark 3: The Sunstone Foundry Furnace (x >= 7000 and x < 7450)
+      if (!this.watchtowerTriggered && player.x >= 7000 && player.x < 7450) {
+        this.watchtowerTriggered = true;
+        this.shrineBannerText = '☀️ LANDMARK: THE SUNSTONE FOUNDRY FURNACE';
+        this.shrineBannerTimer = 4.0;
+        this.spawnSparkles(7200, 520, 36);
+        if (audio && audio.playCheckpoint) audio.playCheckpoint();
+        if (camera && camera.focus) camera.focus(7200, 520, 2.5);
+      }
+
+      // Landmark 4: The Grand Chronometer Citadel (x >= 9950)
+      if (!this.sovereignThroneTriggered && player.x >= 9950) {
+        this.sovereignThroneTriggered = true;
+        this.shrineBannerText = '🕰️ CLIMAX: THE TIME TINKER — GRAND CHRONOMETER CITADEL!';
+        this.shrineBannerTimer = 4.5;
+        this.spawnSparkles(10200, 700, 48);
+        if (audio && audio.playQueenBeeAppearance) audio.playQueenBeeAppearance();
+        if (camera && camera.focus) camera.focus(10200, 680, 2.8);
+        if (camera && camera.shake) camera.shake(14, 0.5);
+      }
     } else {
       // WORLD 1 SECRETS & LANDMARKS
       // Secret 1: Sunstone Canopy Sanctum (x: 1240-1460, y <= 490)
@@ -818,15 +906,15 @@ export class Level {
     // 5C. Crumble Blocks Simulation (Shake -> Shatter -> Reform)
     if (this.platforms) {
       this.platforms.forEach(plat => {
-        if (plat.type === 'crumble_block' || plat.type === 'crumble' || plat.type === 'crumble_stone' || plat.type === 'crumble_ash') {
+        if (plat.type === 'crumble_block' || plat.type === 'crumble' || plat.type === 'crumble_stone' || plat.type === 'crumble_ash' || plat.type === 'crumble_cracker' || plat.type === 'collapsing_spring') {
           if (plat.isShaking) {
             plat.shakeTimer -= dt;
             if (plat.shakeTimer <= 0) {
               plat.isShaking = false;
               plat.isBroken = true;
-              plat.respawnTimer = 3.4;
+              plat.respawnTimer = 3.2;
               if (audio && audio.playCrumble) audio.playCrumble();
-              this.spawnBurst(plat.x + plat.width / 2, plat.y + plat.height / 2, 16, plat.type === 'crumble_ash' ? '#543f3b' : '#94a3b8');
+              this.spawnBurst(plat.x + plat.width / 2, plat.y + plat.height / 2, 16, plat.type === 'collapsing_spring' ? '#d97706' : (plat.type === 'crumble_ash' ? '#543f3b' : '#94a3b8'));
               this.spawnDust(plat.x + plat.width / 2, plat.y + plat.height / 2, 10);
               if (camera && camera.shake) camera.shake(5, 0.15);
             }
@@ -841,21 +929,20 @@ export class Level {
       });
     }
 
-    // 5D. Honey Geyser & Thermal Updraft Ambient Rising Particles
+    // 5D. Honey Geyser & Thermal Updraft / Steam Vent Ambient Rising Particles
     if (this.platforms && Math.random() < 0.45) {
       this.platforms.forEach(plat => {
-        if (plat.type === 'honey_geyser' || plat.type === 'geyser' || plat.type === 'thermal_updraft' || plat.type === 'updraft') {
+        if (plat.type === 'honey_geyser' || plat.type === 'geyser' || plat.type === 'thermal_updraft' || plat.type === 'updraft' || plat.type === 'steam_vent') {
           const gx = plat.x + Math.random() * plat.width;
           const gy = plat.y + plat.height * 0.7;
           const vy = -180 - Math.random() * 120;
-          const color = (plat.type === 'thermal_updraft' || plat.type === 'updraft') ? '#f97316' : '#fef08a';
+          const color = plat.type === 'steam_vent' ? '#fef3c7' : ((plat.type === 'thermal_updraft' || plat.type === 'updraft') ? '#f97316' : '#fef08a');
           this.particles.push(new Particle(gx, gy, (Math.random() - 0.5) * 20, vy, 'sparkle', color, 0.6, 5));
         }
       });
     }
 
     // 5E. WORLD-SPECIFIC ENVIRONMENTAL MECHANICS
-    // World 1: Snapping Flowers & Wooden Spoon Tilt
     if (this.platforms) {
       this.platforms.forEach(plat => {
         if (plat.type === 'snapping_flower') {
@@ -869,6 +956,17 @@ export class Level {
           if (player.standingPlatform !== plat) {
             plat.tilt = (plat.tilt || 0) * (1 - 6 * dt);
           }
+        } else if (plat.type === 'ticking_bridge') {
+          plat.tickTimer = (plat.tickTimer || 0) + dt;
+          const cycle = plat.tickTimer % 2.6; // 1.6s extended, 1.0s retracted
+          plat.isRetracted = cycle >= 1.6;
+          plat.tickPhase = cycle / 2.6;
+        } else if (plat.type === 'solar_grill') {
+          plat.heatTimer = (plat.heatTimer || 0) + dt;
+          const cycle = plat.heatTimer % 3.0; // 2.0s safe, 1.0s incandescent solar burst
+          plat.isHot = cycle >= 2.0;
+        } else if (plat.type === 'rotating_gear' || plat.type === 'cog_platform') {
+          plat.rotation = (plat.rotation || 0) + dt * (plat.rotSpeed || 1.2);
         }
       });
     }

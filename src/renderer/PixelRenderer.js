@@ -95,10 +95,55 @@ export class PixelRenderer {
   drawBackground(camera, level) {
     const ctx = this.internalCtx;
     const camX = camera ? camera.x : 0;
+    const isWorld6 = (level && level.world === 6) || (level && level.theme && level.theme.isClockwork6);
     const isWorld5 = (level && level.world === 5) || (level && level.theme && level.theme.isSandwich5);
     const isWorld4 = (level && level.world === 4) || (level && level.theme && level.theme.isVolcano4);
     const isWorld3 = (level && level.world === 3) || (level && level.theme && level.theme.isCastle3);
     const isWorld2 = (level && level.world === 2) || (level && level.theme && level.theme.isForest2);
+
+    if (isWorld6) {
+      // --- WORLD 6: THE CLOCKWORK KINGDOM BACKGROUND ---
+      // Midnight Indigo to Celestial Bronze Horizon Sky
+      ctx.fillStyle = P.CLOCKWORK_SKY_DEEP;
+      ctx.fillRect(0, 0, INTERNAL_WIDTH, 50);
+      ctx.fillStyle = P.CLOCKWORK_SKY_MID;
+      ctx.fillRect(0, 50, INTERNAL_WIDTH, 60);
+      ctx.fillStyle = P.CLOCKWORK_SKY_BRONZE;
+      ctx.fillRect(0, 110, INTERNAL_WIDTH, 65);
+      ctx.fillStyle = P.CLOCKWORK_SKY_AMBER;
+      ctx.fillRect(0, 175, INTERNAL_WIDTH, 65);
+
+      // Colossal Rotating Celestial Astrolabe Ring in Sky (Distant)
+      const astroX = Math.round((180 - (camX * 0.02)) % (INTERNAL_WIDTH + 140)) - 70;
+      const astroY = 65;
+      ctx.save();
+      ctx.translate(astroX, astroY);
+      ctx.rotate(this.timer * 0.08);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, 42, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(253, 224, 71, 0.25)';
+      ctx.beginPath();
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Drifting golden sparks & steam motes
+      for (let i = 0; i < 24; i++) {
+        const sx = Math.round((i * 37 + Math.sin(this.timer * 2.2 + i) * 12 - (camX * 0.05)) % (INTERNAL_WIDTH + 20));
+        const sy = (i * 19 + Math.floor(this.timer * 20)) % INTERNAL_HEIGHT;
+        const pulse = Math.floor(this.timer * 6 + i) % 2 === 0;
+        ctx.fillStyle = pulse ? P.BRASS_HIGHLIGHT : P.SUNSTONE_AMBER_BRIGHT;
+        ctx.fillRect(sx, sy, 1, 1);
+      }
+
+      // Layer 1: Distant Clock Towers, Astrolabes & Cog Silhouettes (Parallax: 0.15)
+      const layer1Offset = (camX * 0.15) * WORLD_TO_PIXEL;
+      this.drawClockworkSilhouettes(ctx, layer1Offset);
+      return;
+    }
 
     if (isWorld5) {
       // --- WORLD 5: THE DESERT OF ENDLESS SANDWICHES BACKGROUND ---
@@ -530,6 +575,47 @@ export class PixelRenderer {
     }
   }
 
+  drawClockworkSilhouettes(ctx, offset) {
+    const clockW = 160;
+    const startX = -Math.floor(offset % clockW);
+
+    for (let x = startX - clockW; x < INTERNAL_WIDTH + clockW; x += clockW) {
+      // 1. Distant Gothic Clock Tower
+      ctx.fillStyle = P.BRONZE_SHADOW;
+      ctx.fillRect(x + 12, 110, 36, 130);
+      ctx.fillRect(x + 16, 85, 28, 25);
+      // Spire cone
+      ctx.fillRect(x + 24, 60, 12, 25);
+      ctx.fillRect(x + 28, 45, 4, 15);
+
+      // Ivory Clock Face with dark hands
+      ctx.fillStyle = P.CLOCK_FACE_IVORY;
+      ctx.fillRect(x + 20, 90, 20, 16);
+      ctx.fillStyle = P.CLOCK_NUMERAL_DARK;
+      ctx.fillRect(x + 29, 93, 2, 6);
+      ctx.fillRect(x + 27, 98, 6, 2);
+
+      // 2. Colossal Interlocking Astrolabe Ring & Cog Silhouette
+      ctx.fillStyle = P.BRONZE_MID;
+      ctx.fillRect(x + 75, 130, 75, 110);
+      ctx.fillRect(x + 90, 105, 45, 25);
+
+      // Rotating silhouette cog teeth
+      ctx.fillStyle = P.BRASS_DARK;
+      ctx.fillRect(x + 85, 115, 8, 8);
+      ctx.fillRect(x + 105, 110, 8, 8);
+      ctx.fillRect(x + 125, 115, 8, 8);
+
+      // 3. Sunstone Conduit Veins
+      ctx.fillStyle = P.SUNSTONE_AMBER_BRIGHT;
+      ctx.fillRect(x + 28, 125, 4, 30);
+      ctx.fillRect(x + 110, 140, 4, 35);
+      ctx.fillStyle = P.SUNSTONE_AMBER_CORE;
+      ctx.fillRect(x + 29, 130, 2, 20);
+      ctx.fillRect(x + 111, 145, 2, 25);
+    }
+  }
+
   // ========================================================
   // 2. MIDGROUND PROPS (Simple Trees & Rare Landmarks)
   // ========================================================
@@ -589,6 +675,14 @@ export class PixelRenderer {
         this.drawDragonToothLandmark(ctx, scrX, scrY);
       } else if (p.type === 'dragon_throne' || p.type === 'wyrm_throne') {
         this.drawDragonThroneLandmark(ctx, scrX, scrY);
+      } else if (p.type === 'grand_astrolabe' || p.type === 'astrolabe') {
+        this.drawGrandAstrolabeLandmark(ctx, scrX, scrY);
+      } else if (p.type === 'clock_tower' || p.type === 'chronometer_tower') {
+        this.drawClockTowerLandmark(ctx, scrX, scrY);
+      } else if (p.type === 'mainspring_forge' || p.type === 'forge_engine') {
+        this.drawMainspringForgeLandmark(ctx, scrX, scrY);
+      } else if (p.type === 'chronometer_throne' || p.type === 'tinker_throne') {
+        this.drawChronometerThroneLandmark(ctx, scrX, scrY);
       }
     });
   }
@@ -1131,6 +1225,142 @@ export class PixelRenderer {
     ctx.fillRect(x - 20, y - 26, 40, 12);
   }
 
+  drawGrandAstrolabeLandmark(ctx, x, y) {
+    // Marble & Bronze Foundation Dais
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x - 36, y - 24, 72, 24);
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(x - 30, y - 20, 60, 18);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x - 28, y - 18, 56, 3);
+
+    // Twin Flanking Pillar Pedestals
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(x - 28, y - 70, 8, 50);
+    ctx.fillRect(x + 20, y - 70, 8, 50);
+
+    // Triple Concentric Astrolabe Rings
+    ctx.strokeStyle = P.BRASS_POLISHED;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y - 65, 24, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = P.BRASS_HIGHLIGHT;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y - 65, 16, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Central Sunstone Luminous Sphere
+    const pulse = Math.sin(this.timer * 4) * 0.5 + 0.5;
+    ctx.fillStyle = pulse > 0.5 ? P.SUNSTONE_AMBER_WHITE : P.SUNSTONE_AMBER_BRIGHT;
+    ctx.beginPath();
+    ctx.arc(x, y - 65, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 2, y - 67, 3, 3);
+  }
+
+  drawClockTowerLandmark(ctx, x, y) {
+    // Tall Gothic Clock Tower Spire (85px)
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x - 22, y - 130, 44, 130);
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(x - 18, y - 120, 36, 120);
+
+    // Spire Roof & Finial
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(x - 14, y - 150, 28, 20);
+    ctx.fillRect(x - 6, y - 165, 12, 15);
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x - 2, y - 172, 4, 8);
+
+    // Grand Ivory Clock Face
+    ctx.fillStyle = P.CLOCK_FACE_IVORY;
+    ctx.beginPath();
+    ctx.arc(x, y - 100, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = P.BRONZE_SHADOW;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Moving Clock Hands
+    const ang = this.timer * 0.5;
+    ctx.strokeStyle = P.CLOCK_NUMERAL_DARK;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 100);
+    ctx.lineTo(x + Math.cos(ang) * 9, y - 100 + Math.sin(ang) * 9);
+    ctx.stroke();
+  }
+
+  drawMainspringForgeLandmark(ctx, x, y) {
+    // Heavy Bronze Forge Furnace Cylinder
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x - 34, y - 110, 68, 110);
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(x - 28, y - 100, 56, 100);
+
+    // Coiled Steel Mainspring Torus
+    ctx.fillStyle = P.ESCAPEMENT_STEEL_DARK;
+    ctx.fillRect(x - 22, y - 90, 44, 40);
+    ctx.fillStyle = P.ESCAPEMENT_STEEL_LIGHT;
+    for (let c = 0; c < 4; c++) {
+      ctx.fillRect(x - 18 + c * 10, y - 88, 3, 36);
+    }
+
+    // Glowing Sunstone Hearth Vent
+    const pulse = Math.floor(this.timer * 6) % 2 === 0;
+    ctx.fillStyle = pulse ? P.SUNSTONE_AMBER_BRIGHT : P.SUNSTONE_AMBER_DEEP;
+    ctx.fillRect(x - 16, y - 35, 32, 22);
+    ctx.fillStyle = P.SUNSTONE_AMBER_CORE;
+    ctx.fillRect(x - 10, y - 30, 20, 12);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 4, y - 26, 8, 5);
+
+    // Twin Exhaust Steam Pipes
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(x - 26, y - 130, 8, 25);
+    ctx.fillRect(x + 18, y - 130, 8, 25);
+  }
+
+  drawChronometerThroneLandmark(ctx, x, y) {
+    // The Time Tinker's Grand Chronometer Dais
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x - 45, y - 130, 90, 130);
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(x - 38, y - 120, 76, 120);
+
+    // Twin Flanking Escapement Gears
+    ctx.strokeStyle = P.BRASS_POLISHED;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x - 25, y - 80, 12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x + 25, y - 80, 12, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Central Sunstone Astrolabe Throne Backing
+    ctx.fillStyle = P.TINKER_ROBE_PURPLE;
+    ctx.fillRect(x - 18, y - 105, 36, 60);
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x - 16, y - 103, 32, 2);
+
+    // Glowing Sunstone Heart Core
+    ctx.fillStyle = P.SUNSTONE_AMBER_BRIGHT;
+    ctx.beginPath();
+    ctx.arc(x, y - 75, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = P.SUNSTONE_AMBER_CORE;
+    ctx.beginPath();
+    ctx.arc(x, y - 75, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 2, y - 77, 4, 4);
+  }
+
   // ========================================================
   // 3. PLATFORMS (Disciplined Small Vocabulary)
   // ========================================================
@@ -1151,6 +1381,27 @@ export class PixelRenderer {
 
       if (plat.type === 'ground') {
         this.renderPixelGround(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'clockwork_ground' || plat.type === 'gear_ground') {
+        this.renderPixelClockworkGround(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'rotating_gear' || plat.type === 'cog_platform') {
+        this.renderPixelRotatingGear(ctx, scrX, scrY, scrW, scrH, plat.rotation || 0);
+      } else if (plat.type === 'ticking_bridge') {
+        this.renderPixelTickingBridge(ctx, scrX, scrY, scrW, scrH, plat.isRetracted, plat.tickPhase || 0);
+      } else if (plat.type === 'brass_conveyor') {
+        this.renderPixelBrassConveyor(ctx, scrX, scrY, scrW, scrH, plat.conveyorSpeed || 180);
+      } else if (plat.type === 'solar_grill') {
+        this.renderPixelSolarGrill(ctx, scrX, scrY, scrW, scrH, plat.isHot);
+      } else if (plat.type === 'steam_vent') {
+        this.renderPixelSteamVent(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'clock_pendulum' || plat.type === 'pendulum_hazard') {
+        this.renderPixelClockPendulum(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'climbable_gear_chain') {
+        this.renderPixelGearChain(ctx, scrX, scrY, scrW, scrH);
+      } else if (plat.type === 'collapsing_spring') {
+        if (!plat.isBroken) {
+          const shakeX = plat.isShaking ? (Math.random() < 0.5 ? -1 : 1) : 0;
+          this.renderPixelCollapsingSpring(ctx, scrX + shakeX, scrY, scrW, scrH);
+        }
       } else if (plat.type === 'bread_ground' || plat.type === 'toast_dune') {
         this.renderPixelBreadGround(ctx, scrX, scrY, scrW, scrH);
       } else if (plat.type === 'crust_platform') {
@@ -2819,6 +3070,300 @@ export class PixelRenderer {
     ctx.fillRect(midX - 2, y - 8, 8, 4);
   }
 
+  /**
+   * World 6 Clockwork Gear Ground with burnished bronze foundation and engraved gear trim.
+   */
+  renderPixelClockworkGround(ctx, x, y, w, h) {
+    // 1. Polished Brass Walkable Surface & Specular Rim
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x, y, w, 1);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x, y + 1, w, 2);
+    ctx.fillStyle = P.BRASS_LIGHT;
+    ctx.fillRect(x, y + 3, w, 2);
+
+    // Cog teeth pattern along upper rim
+    for (let px = x; px < x + w; px += 8) {
+      ctx.fillStyle = P.BRASS_SPECULAR;
+      ctx.fillRect(px, y, 3, 1);
+      ctx.fillStyle = P.BRONZE_SHADOW;
+      ctx.fillRect(px + 4, y + 3, 2, 2);
+    }
+
+    // 2. Heavy Burnished Bronze Foundation
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(x, y + 5, w, Math.min(h - 5, 14));
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y + 19, w, Math.max(0, h - 19));
+
+    // 3. Brass Rivets & Sunstone Conduit Line Veins
+    for (let py = y + 7; py < y + h; py += 12) {
+      const rowOffset = ((py - y) / 12) % 2 === 0 ? 0 : 8;
+      for (let px = x + rowOffset; px < x + w; px += 16) {
+        // Brass Rivet
+        ctx.fillStyle = P.BRASS_POLISHED;
+        ctx.fillRect(px, py, 2, 2);
+        ctx.fillStyle = P.BRONZE_SHADOW;
+        ctx.fillRect(px + 2, py + 1, 1, 1);
+      }
+    }
+
+    // Ambient Sunstone Glowing Conduit Wire
+    const pulse = Math.floor(this.timer * 4) % 2 === 0;
+    ctx.fillStyle = pulse ? P.SUNSTONE_AMBER_BRIGHT : P.SUNSTONE_AMBER_DEEP;
+    ctx.fillRect(x, y + 14, w, 1);
+    ctx.fillStyle = P.SUNSTONE_AMBER_CORE;
+    for (let px = x + 6; px < x + w; px += 18) {
+      ctx.fillRect(px, y + 14, 3, 1);
+    }
+  }
+
+  /**
+   * World 6 Rotating Brass Cog Platform.
+   */
+  renderPixelRotatingGear(ctx, x, y, w, h, rot = 0) {
+    // Platform Walkway Bar across top
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x, y, w, 1);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x, y + 1, w, h - 2);
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y + h - 1, w, 1);
+
+    // Spoked Cogwheel Body & Teeth
+    const cx = x + Math.floor(w / 2);
+    const cy = y + Math.floor(h / 2);
+    const radius = Math.min(Math.floor(w / 2) - 4, 16);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+
+    // Spoke Arms
+    ctx.fillStyle = P.BRONZE_MID;
+    ctx.fillRect(-radius, -2, radius * 2, 4);
+    ctx.fillRect(-2, -radius, 4, radius * 2);
+
+    // Perimeter Gear Ring
+    ctx.strokeStyle = P.BRASS_LIGHT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Rotating Cog Teeth
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    for (let a = 0; a < 6; a++) {
+      const ang = (a * Math.PI) / 3;
+      const tx = Math.cos(ang) * (radius + 2);
+      const ty = Math.sin(ang) * (radius + 2);
+      ctx.fillRect(tx - 1, ty - 1, 3, 3);
+    }
+
+    // Central Sunstone Bearing Hub
+    ctx.fillStyle = P.SUNSTONE_AMBER_BRIGHT;
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  /**
+   * World 6 Ticking Escapement Folding Bridge.
+   */
+  renderPixelTickingBridge(ctx, x, y, w, h, isRetracted = false, phase = 0) {
+    if (isRetracted) {
+      // Retracted Folding Struts: Flashing Warning Indicator & Folded Brackets
+      ctx.fillStyle = P.BRONZE_SHADOW;
+      ctx.fillRect(x, y, 8, h);
+      ctx.fillRect(x + w - 8, y, 8, h);
+      ctx.fillStyle = P.BRASS_DARK;
+      ctx.fillRect(x + 2, y + 2, 4, h - 4);
+      ctx.fillRect(x + w - 6, y + 2, 4, h - 4);
+
+      // Flashing Red/Amber Ticking Indicator LED
+      const flash = Math.floor(this.timer * 8) % 2 === 0;
+      ctx.fillStyle = flash ? '#ef4444' : '#f59e0b';
+      ctx.fillRect(x + 3, y - 2, 3, 3);
+      ctx.fillRect(x + w - 6, y - 2, 3, 3);
+      return;
+    }
+
+    // Extended Walkable Escapement Bridge
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x, y, w, 1);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x, y + 1, w, h - 2);
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y + h - 1, w, 1);
+
+    // Escapement Interlocking Struts
+    for (let px = x + 6; px < x + w - 6; px += 12) {
+      ctx.fillStyle = P.BRONZE_MID;
+      ctx.fillRect(px, y + 2, 3, h - 4);
+      ctx.fillStyle = P.BRASS_SPECULAR;
+      ctx.fillRect(px, y, 2, 1);
+    }
+
+    // Chrono Tick Progress Indicator Bar
+    const progressW = Math.round(w * (1 - phase));
+    ctx.fillStyle = '#22c55e'; // Green ticks down to warning
+    ctx.fillRect(x + 2, y + h - 2, Math.max(0, progressW - 4), 1);
+  }
+
+  /**
+   * World 6 Brass Conveyor Belt Platform.
+   */
+  renderPixelBrassConveyor(ctx, x, y, w, h, speed = 180) {
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(x, y + 1, w, h - 2);
+
+    // Moving Chevron Rollers / Tread Marks
+    const rollerOffset = Math.floor(this.timer * (speed > 0 ? 30 : -30)) % 10;
+    ctx.fillStyle = P.BRASS_HIGHLIGHT;
+    ctx.fillRect(x, y, w, 1); // Top glint
+
+    for (let px = x - 10 + rollerOffset; px < x + w + 10; px += 10) {
+      if (px >= x && px + 4 <= x + w) {
+        ctx.fillStyle = P.BRASS_POLISHED;
+        ctx.fillRect(px, y + 1, 4, h - 2);
+        ctx.fillStyle = P.BRONZE_SHADOW;
+        ctx.fillRect(px + (speed > 0 ? 3 : 0), y + 1, 1, h - 2);
+      }
+    }
+  }
+
+  /**
+   * World 6 Solar Heat Grill Platform.
+   */
+  renderPixelSolarGrill(ctx, x, y, w, h, isHot = false) {
+    // Hearth Frame
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = isHot ? P.LAVA_HONEY_DEEP : P.BRASS_DARK;
+    ctx.fillRect(x + 1, y + 1, w - 2, h - 2);
+
+    // Radiant Solar Bars
+    ctx.fillStyle = isHot ? '#f97316' : P.BRASS_POLISHED;
+    for (let px = x + 3; px < x + w - 3; px += 6) {
+      ctx.fillRect(px, y, 2, h);
+      if (isHot) {
+        ctx.fillStyle = '#fef08a';
+        ctx.fillRect(px, y, 2, 1); // White-hot rim
+        ctx.fillStyle = '#f97316';
+      }
+    }
+
+    // Incandescent Core Glow when Hot
+    if (isHot) {
+      const pulse = Math.floor(this.timer * 6) % 2 === 0;
+      ctx.fillStyle = pulse ? '#ffffff' : P.SUNSTONE_AMBER_BRIGHT;
+      ctx.fillRect(x + 4, y + 2, w - 8, 2);
+    }
+  }
+
+  /**
+   * World 6 Steam Vent Nozzle.
+   */
+  renderPixelSteamVent(ctx, x, y, w, h) {
+    // Heavy Bronze Chimney Base
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x + 2, y + h - 5, w - 4, 5);
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(x + 4, y + h - 6, w - 8, 2);
+
+    // Vent Nozzle Opening
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x + 6, y + h - 3, w - 12, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 8, y + h - 2, w - 16, 1);
+
+    // Rising Steam Plumes
+    for (let s = 0; s < 3; s++) {
+      const sy = y + h - 8 - ((Math.floor(this.timer * 40 + s * 14)) % 24);
+      const sx = x + 6 + (s * 4);
+      ctx.fillStyle = P.STEAM_VENT_WARM;
+      ctx.fillRect(sx, sy, 3, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(sx + 1, sy + 1, 1, 1);
+    }
+  }
+
+  /**
+   * World 6 Swinging Clock Counterweight Pendulum Hazard.
+   */
+  renderPixelClockPendulum(ctx, x, y, w, h) {
+    // Swinging Bob Angle
+    const swingAngle = Math.sin(this.timer * 3.5) * 0.45;
+    const cx = x + Math.floor(w / 2);
+    const cy = y;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(swingAngle);
+
+    // Brass Rod
+    ctx.fillStyle = P.BRASS_DARK;
+    ctx.fillRect(-1, 0, 2, 26);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(0, 0, 1, 26);
+
+    // Heavy Round Brass Bob
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.beginPath();
+    ctx.arc(0, 28, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.beginPath();
+    ctx.arc(0, 28, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sharp Ruby Pendulum Crescent Blade
+    ctx.fillStyle = P.PENDULUM_RUBY;
+    ctx.fillRect(-7, 34, 14, 3);
+    ctx.fillRect(-4, 37, 8, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-1, 38, 2, 1);
+
+    ctx.restore();
+  }
+
+  /**
+   * World 6 Climbable Gear Chain Link.
+   */
+  renderPixelGearChain(ctx, x, y, w, h) {
+    const cx = x + Math.floor(w / 2) - 2;
+    for (let cy = y; cy < y + h; cy += 6) {
+      ctx.fillStyle = P.BRONZE_SHADOW;
+      ctx.fillRect(cx - 1, cy, 6, 5);
+      ctx.fillStyle = P.BRASS_POLISHED;
+      ctx.fillRect(cx, cy + 1, 4, 3);
+      ctx.fillStyle = P.BRONZE_SHADOW;
+      ctx.fillRect(cx + 1, cy + 2, 2, 1); // Hollow link hole
+    }
+  }
+
+  /**
+   * World 6 Spring-Loaded Collapsing Platform.
+   */
+  renderPixelCollapsingSpring(ctx, x, y, w, h) {
+    ctx.fillStyle = P.BRONZE_SHADOW;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = P.BRASS_POLISHED;
+    ctx.fillRect(x + 1, y + 1, w - 2, h - 2);
+
+    // Coiled Spring Indicators underneath
+    for (let px = x + 6; px < x + w - 6; px += 8) {
+      ctx.fillStyle = P.ESCAPEMENT_STEEL_DARK;
+      ctx.fillRect(px, y + 2, 3, h - 3);
+      ctx.fillStyle = P.ESCAPEMENT_STEEL_LIGHT;
+      ctx.fillRect(px + 1, y + 2, 1, h - 4);
+    }
+  }
+
   // ========================================================
   // 4. ENTITIES & PARTICLES
   // ========================================================
@@ -2918,6 +3463,14 @@ export class PixelRenderer {
         pixelEnemyRenderer.drawCheeseScorpion(ctx, scrX, scrY, scrW, scrH, e);
       } else if (type === 'PickleBomber' || e.name === 'Pickle Bomber' || type === 'pickle_bomber') {
         pixelEnemyRenderer.drawPickleBomber(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'ClockworkBee' || e.name === 'Clockwork Bee' || type === 'clockwork_bee') {
+        pixelEnemyRenderer.drawClockworkBee(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'SpringKnight' || e.name === 'Spring Knight' || type === 'spring_knight') {
+        pixelEnemyRenderer.drawSpringKnight(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'MechanicalSpider' || e.name === 'Mechanical Spider' || type === 'mechanical_spider') {
+        pixelEnemyRenderer.drawMechanicalSpider(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'TimeTinker' || e.name === 'The Time Tinker' || type === 'time_tinker') {
+        pixelEnemyRenderer.drawTimeTinker(ctx, scrX, scrY, scrW, scrH, e);
       } else {
         pixelEnemyRenderer.drawHoneyWisp(ctx, scrX, scrY, scrW, scrH, e);
       }

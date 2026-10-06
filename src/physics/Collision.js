@@ -56,12 +56,21 @@ export class Collision {
             player.currentSurfaceFriction = 1.08; // Crispy toasted sesame crumb traction
           } else if (platform.type === 'castle_ground' || platform.type === 'castle_stone' || platform.type === 'marble') {
             player.currentSurfaceFriction = 0.72; // Slick polished marble slide
+          } else if (platform.type === 'clockwork_ground' || platform.type === 'gear_ground' || platform.type === 'rotating_gear' || platform.type === 'cog_platform') {
+            player.currentSurfaceFriction = 0.96; // Solid burnished brass gear traction
+          } else if (platform.type === 'brass_conveyor') {
+            player.currentSurfaceFriction = 0.88;
           } else if (platform.type === 'mossy_bark') {
             player.currentSurfaceFriction = 1.15; // Grippy organic moss
           } else if (platform.type === 'sticky_amber') {
             player.currentSurfaceFriction = 2.2; // High viscous drag
           } else {
             player.currentSurfaceFriction = 1.0;
+          }
+
+          if (platform.type === 'ticking_bridge' && platform.isRetracted) {
+            // Retracted bridge is intangible during ticking cycle
+            return result;
           }
 
           if (platform.type === 'honey' || platform.type === 'moving_honey') {
@@ -95,7 +104,7 @@ export class Collision {
             player.scaleX = 0.68;
             player.scaleY = 1.42;
             result.bounced = true;
-          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes' || platform.type === 'iron_spikes' || platform.type === 'castle_hazard' || platform.type === 'molten_honey' || platform.type === 'lava' || platform.type === 'mustard_river' || platform.type === 'hot_mustard') {
+          } else if (platform.type === 'thorn_bramble' || platform.type === 'bramble' || platform.type === 'hazard' || platform.type === 'spikes' || platform.type === 'iron_spikes' || platform.type === 'castle_hazard' || platform.type === 'molten_honey' || platform.type === 'lava' || platform.type === 'mustard_river' || platform.type === 'hot_mustard' || platform.type === 'clock_pendulum' || platform.type === 'pendulum_hazard' || (platform.type === 'solar_grill' && platform.isHot !== false)) {
             result.hazard = true;
           } else if (platform.type === 'snapping_flower') {
             // Snapping flower hazard: active if jaws open/chomping
@@ -106,12 +115,18 @@ export class Collision {
               player.isGrounded = true;
               result.landed = true;
             }
-          } else if (platform.type === 'honey_geyser' || platform.type === 'geyser' || platform.type === 'thermal_updraft' || platform.type === 'updraft') {
-            player.vy = -940; // Buoyant updraft thermal catapult!
+          } else if (platform.type === 'honey_geyser' || platform.type === 'geyser' || platform.type === 'thermal_updraft' || platform.type === 'updraft' || platform.type === 'steam_vent') {
+            player.vy = -950; // High-pressure sunstone steam launch!
             player.isGrounded = false;
-            player.scaleX = 0.65;
+            player.scaleX = 0.64;
             player.scaleY = 1.48;
             result.geyserLaunch = true;
+          } else if (platform.type === 'brass_conveyor') {
+            player.vy = 0;
+            player.isGrounded = true;
+            result.landed = true;
+            const convSpeed = platform.conveyorSpeed || 160;
+            player.x += convSpeed * (1 / 60); // Conveyor pushes player horizontally
           } else if (platform.type === 'sticky_amber') {
             player.vy = 0;
             player.isGrounded = true;
@@ -130,10 +145,10 @@ export class Collision {
             player.vy = 0;
             player.isGrounded = true;
             result.landed = true;
-            if ((platform.type === 'crumble_cracker' || platform.type === 'crumble_toast') && !platform.isShaking && !platform.isBroken) {
-              // Rapid 0.4s cracker crumble in Desert of Sandwiches!
+            if ((platform.type === 'crumble_cracker' || platform.type === 'crumble_toast' || platform.type === 'collapsing_spring') && !platform.isShaking && !platform.isBroken) {
+              // Rapid 0.38s collapse in Clockwork / Desert!
               platform.isShaking = true;
-              platform.shakeTimer = 0.40;
+              platform.shakeTimer = 0.38;
               result.crumbled = true;
             } else if (platform.type === 'crumble_ash' && !platform.isShaking && !platform.isBroken) {
               // Rapid 0.35s ash collapse in Volcano!

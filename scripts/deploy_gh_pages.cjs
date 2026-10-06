@@ -19,7 +19,7 @@ console.log('Initializing git in dist...');
 execSync('git init', { cwd: distDir, stdio: 'inherit' });
 execSync('git checkout -B gh-pages', { cwd: distDir, stdio: 'inherit' });
 execSync('git add -A', { cwd: distDir, stdio: 'inherit' });
-execSync('git commit -m "deploy: release World 5 to aria.batpaiyancatponnu.online"', { cwd: distDir, stdio: 'inherit' });
+execSync('git commit -m "deploy: release World 6 (The Clockwork Kingdom) to aria.batpaiyancatponnu.online"', { cwd: distDir, stdio: 'inherit' });
 execSync('git remote add origin https://github.com/RozarKae/PrincessAria.git', { cwd: distDir, stdio: 'inherit' });
 
 console.log('Pushing gh-pages branch to origin...');

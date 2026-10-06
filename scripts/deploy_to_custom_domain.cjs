@@ -44,7 +44,7 @@ try {
 
   console.log('Committing PrincessAria to project-ra gh-pages...');
   execSync('git add -A', { cwd: tmpDir, stdio: 'inherit' });
-  execSync('git commit -m "feat: deploy Princess Aria to batpaiyancatponnu.online/PrincessAria"', {
+  execSync('git commit -m "feat: deploy Princess Aria World 6 to batpaiyancatponnu.online/PrincessAria"', {
     cwd: tmpDir,
     stdio: 'inherit'
   });

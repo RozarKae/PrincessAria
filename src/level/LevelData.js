@@ -1474,6 +1474,261 @@ export const WORLDS = {
       },
     },
   },
+
+  // ========================================================
+  // WORLD 6: THE CLOCKWORK KINGDOM
+  // ========================================================
+  WORLD_6: {
+    name: 'The Clockwork Kingdom',
+    levels: {
+      '6-1': {
+        name: 'The Grand Chronometer Citadel',
+        world: 6,
+        stage: 1,
+        width: 10800,
+        height: 1080,
+        totalShards: 40,
+        spawnPoint: { x: 120, y: 840 },
+        theme: {
+          isClockwork6: true,
+          biome: 'clockwork',
+          name: 'The Clockwork Kingdom',
+        },
+
+        // --- WORLD 6 PLATFORMS ---
+        platforms: [
+          // ========================================================
+          // SECTION 1: THE BRASS GEARWORKS (0 - 2,700px)
+          // ========================================================
+          // Segment 1A: Entrance Portal Dais & Initial Gear Bridges (0 - 800px)
+          { id: 'w6_ground_1a', x: 0, y: 880, width: 680, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_gear_1', x: 740, y: 800, width: 140, height: 32, type: 'rotating_gear', rotSpeed: 1.4 },
+          { id: 'w6_bridge_1', x: 940, y: 740, width: 160, height: 24, type: 'ticking_bridge' },
+
+          // Segment 1B: The Escapement Promenade & Astrolabe Gallery (800 - 1,800px)
+          { id: 'w6_ground_1b', x: 1160, y: 880, width: 560, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_conveyor_1', x: 1300, y: 760, width: 220, height: 28, type: 'brass_conveyor', conveyorSpeed: 180 },
+          { id: 'w6_spring_1', x: 1560, y: 680, width: 110, height: 24, type: 'collapsing_spring' },
+          { id: 'w6_vent_1', x: 1700, y: 880, width: 70, height: 30, type: 'steam_vent' },
+
+          // Secret 1: The Grand Astrolabe Gallery (Elevated Catwalk)
+          { id: 'w6_secret1_catwalk', x: 1640, y: 440, width: 240, height: 24, type: 'clockwork_ground' },
+          { id: 'w6_gear_2', x: 1920, y: 520, width: 120, height: 28, type: 'rotating_gear', rotSpeed: -1.2 },
+
+          // Segment 1C: Gear Colonnade & Mainspring Arch (1,800 - 2,700px)
+          { id: 'w6_ground_1c', x: 2080, y: 880, width: 640, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_bridge_2', x: 2240, y: 740, width: 150, height: 24, type: 'ticking_bridge' },
+          { id: 'w6_chain_1', x: 2440, y: 380, width: 24, height: 360, type: 'climbable_gear_chain' },
+          { id: 'w6_gear_3', x: 2500, y: 660, width: 130, height: 28, type: 'rotating_gear', rotSpeed: 1.5 },
+
+          // ========================================================
+          // SECTION 2: THE ASTROLABE CHASM & CHRONO BRIDGES (2,700 - 5,400px)
+          // ========================================================
+          // Segment 2A: Deep Chasm & Swinging Pendulum Crossing (2,700 - 3,600px)
+          { id: 'w6_pendulum_gap_hazard', x: 2720, y: 1040, width: 780, height: 60, type: 'clock_pendulum' },
+          { id: 'w6_gear_4', x: 2760, y: 780, width: 130, height: 28, type: 'rotating_gear', rotSpeed: -1.6 },
+          { id: 'w6_spring_2', x: 2940, y: 700, width: 100, height: 24, type: 'collapsing_spring' },
+          { id: 'w6_pendulum_1', x: 3080, y: 640, width: 40, height: 40, type: 'clock_pendulum' },
+          { id: 'w6_bridge_3', x: 3160, y: 740, width: 160, height: 24, type: 'ticking_bridge' },
+          { id: 'w6_gear_5', x: 3360, y: 680, width: 140, height: 28, type: 'rotating_gear', rotSpeed: 1.3 },
+
+          // Segment 2B: The Celestial Horology Vault & Opposing Conveyors (3,600 - 4,500px)
+          { id: 'w6_ground_2b', x: 3540, y: 880, width: 540, height: 200, type: 'clockwork_ground' },
+          // Secret 2: High Horology Vault
+          { id: 'w6_secret2_catwalk', x: 3520, y: 380, width: 260, height: 24, type: 'clockwork_ground' },
+          { id: 'w6_chain_2', x: 3620, y: 404, width: 20, height: 360, type: 'climbable_gear_chain' },
+          { id: 'w6_conveyor_2', x: 3740, y: 760, width: 240, height: 28, type: 'brass_conveyor', conveyorSpeed: -180 }, // Opposing speed!
+          { id: 'w6_vent_2', x: 4020, y: 880, width: 70, height: 30, type: 'steam_vent' },
+
+          // Segment 2C: High Chronometer Trusses (4,500 - 5,400px)
+          { id: 'w6_ground_2c', x: 4120, y: 880, width: 620, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_gear_6', x: 4780, y: 780, width: 140, height: 28, type: 'rotating_gear', rotSpeed: -1.4 },
+          { id: 'w6_bridge_4', x: 4960, y: 720, width: 160, height: 24, type: 'ticking_bridge' },
+          { id: 'w6_spring_3', x: 5160, y: 660, width: 110, height: 24, type: 'collapsing_spring' },
+          { id: 'w6_pendulum_2', x: 5300, y: 600, width: 40, height: 40, type: 'clock_pendulum' },
+
+          // ========================================================
+          // SECTION 3: THE SUNSTONE FOUNDRY & STEAM CONDUITS (5,400 - 8,200px)
+          // ========================================================
+          // Segment 3A: Solar Heat Grills & Steam Geysers (5,400 - 6,400px)
+          { id: 'w6_ground_3a', x: 5440, y: 880, width: 620, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_solar_grill_1', x: 5660, y: 876, width: 180, height: 24, type: 'solar_grill' },
+          { id: 'w6_vent_3', x: 5900, y: 880, width: 70, height: 30, type: 'steam_vent' },
+          { id: 'w6_gear_7', x: 6020, y: 660, width: 150, height: 30, type: 'rotating_gear', rotSpeed: 1.5 },
+          { id: 'w6_conveyor_3', x: 6220, y: 740, width: 220, height: 28, type: 'brass_conveyor', conveyorSpeed: 200 },
+
+          // Segment 3B: The Eternal Mainspring Chamber (6,400 - 7,300px)
+          { id: 'w6_ground_3b', x: 6480, y: 880, width: 580, height: 200, type: 'clockwork_ground' },
+          // Secret 3: High Mainspring Chamber
+          { id: 'w6_secret3_catwalk', x: 6840, y: 360, width: 280, height: 24, type: 'clockwork_ground' },
+          { id: 'w6_chain_3', x: 6940, y: 384, width: 20, height: 380, type: 'climbable_gear_chain' },
+          { id: 'w6_solar_grill_2', x: 6720, y: 876, width: 160, height: 24, type: 'solar_grill' },
+          { id: 'w6_bridge_5', x: 7100, y: 720, width: 160, height: 24, type: 'ticking_bridge' },
+
+          // Segment 3C: Foundry Battlement Towers (7,300 - 8,200px)
+          { id: 'w6_ground_3c', x: 7300, y: 880, width: 680, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_gear_8', x: 7520, y: 740, width: 140, height: 28, type: 'rotating_gear', rotSpeed: -1.5 },
+          { id: 'w6_spring_4', x: 7720, y: 680, width: 110, height: 24, type: 'collapsing_spring' },
+          { id: 'w6_vent_4', x: 7880, y: 880, width: 70, height: 30, type: 'steam_vent' },
+          { id: 'w6_conveyor_4', x: 8000, y: 760, width: 200, height: 28, type: 'brass_conveyor', conveyorSpeed: 180 },
+
+          // ========================================================
+          // SECTION 4: THE GRAND CHRONOMETER CITADEL & TIME TINKER (8,200 - 10,800px)
+          // ========================================================
+          // Segment 4A: The Royal Chronometer Gate (8,200 - 9,400px)
+          { id: 'w6_ground_4a', x: 8240, y: 880, width: 680, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_gear_9', x: 8460, y: 760, width: 140, height: 28, type: 'rotating_gear', rotSpeed: 1.3 },
+          { id: 'w6_bridge_6', x: 8660, y: 700, width: 160, height: 24, type: 'ticking_bridge' },
+          { id: 'w6_ground_4b', x: 8960, y: 880, width: 720, height: 200, type: 'clockwork_ground' },
+          { id: 'w6_spring_5', x: 9240, y: 740, width: 120, height: 24, type: 'collapsing_spring' },
+          { id: 'w6_solar_grill_3', x: 9420, y: 876, width: 160, height: 24, type: 'solar_grill' },
+
+          // Segment 4B: THE GRAND CHRONOMETER ARENA (9,800 - 10,800px)
+          { id: 'w6_arena_floor', x: 9780, y: 880, width: 1020, height: 200, type: 'clockwork_ground' },
+          // Escapement Platform Stations (Boss Battle Tiers)
+          { id: 'w6_arena_tier_left', x: 9940, y: 720, width: 140, height: 26, type: 'rotating_gear', rotSpeed: 0.8 },
+          { id: 'w6_arena_tier_center', x: 10220, y: 620, width: 160, height: 26, type: 'ticking_bridge' },
+          { id: 'w6_arena_tier_right', x: 10500, y: 720, width: 140, height: 26, type: 'rotating_gear', rotSpeed: -0.8 },
+        ],
+
+        // --- WORLD 6 MIDGROUND PROPS (Landmarks & Clockwork Monuments) ---
+        midgroundProps: [
+          // Section 1 Landmark: The Grand Astrolabe Gallery
+          { type: 'grand_astrolabe', x: 2100, y: 840 },
+          // Section 2 Landmark: The Clock Tower of Thousand Escapements
+          { type: 'clock_tower', x: 4200, y: 840 },
+          // Section 3 Landmark: The Mainspring Forge Engine
+          { type: 'mainspring_forge', x: 7200, y: 840 },
+          // Section 4 Climax: The Time Tinker's Grand Chronometer Dais
+          { type: 'chronometer_throne', x: 10240, y: 840 },
+        ],
+
+        // --- 40 ROYAL SUNSTONE SHARDS ---
+        shards: [
+          // Section 1 Shards (1 - 10)
+          { id: 1, x: 380, y: 820 },
+          { id: 2, x: 560, y: 800 },
+          { id: 3, x: 780, y: 720 },
+          { id: 4, x: 1010, y: 660 },
+          { id: 5, x: 1380, y: 700 },
+          { id: 6, x: 1580, y: 610 },
+          // Secret 1: Astrolabe Gallery Shards
+          { id: 7, x: 1680, y: 380 },
+          { id: 8, x: 1760, y: 350 },
+          { id: 9, x: 1840, y: 380 },
+          { id: 10, x: 2300, y: 680 },
+
+          // Section 2 Shards (11 - 20)
+          { id: 11, x: 2620, y: 760 },
+          { id: 12, x: 2810, y: 700 },
+          { id: 13, x: 3000, y: 630 },
+          { id: 14, x: 3220, y: 660 },
+          { id: 15, x: 3420, y: 600 },
+          // Secret 2: Horology Vault Shards
+          { id: 16, x: 3580, y: 320 },
+          { id: 17, x: 3660, y: 300 },
+          { id: 18, x: 3740, y: 320 },
+          { id: 19, x: 4320, y: 800 },
+          { id: 20, x: 4840, y: 700 },
+
+          // Section 3 Shards (21 - 30)
+          { id: 21, x: 5040, y: 640 },
+          { id: 22, x: 5240, y: 580 },
+          { id: 23, x: 5540, y: 800 },
+          { id: 24, x: 5740, y: 780 },
+          { id: 25, x: 6080, y: 580 },
+          { id: 26, x: 6300, y: 660 },
+          // Secret 3: Mainspring Chamber Shards
+          { id: 27, x: 6880, y: 300 },
+          { id: 28, x: 6980, y: 280 },
+          { id: 29, x: 7080, y: 300 },
+          { id: 30, x: 7600, y: 660 },
+
+          // Section 4 Shards (31 - 40)
+          { id: 31, x: 7800, y: 600 },
+          { id: 32, x: 8080, y: 680 },
+          { id: 33, x: 8360, y: 800 },
+          { id: 34, x: 8520, y: 680 },
+          { id: 35, x: 8720, y: 620 },
+          { id: 36, x: 9100, y: 800 },
+          { id: 37, x: 9320, y: 660 },
+          { id: 38, x: 9540, y: 780 },
+          // Boss Arena Victory Shards
+          { id: 39, x: 10000, y: 640 },
+          { id: 40, x: 10440, y: 640 },
+        ],
+
+        movingPlatforms: [],
+
+        // --- WORLD 6 BESTIARY ENCOUNTERS ---
+        enemies: [
+          // --- SECTION 1 ENCOUNTERS ---
+          // Encounter 1: "The Gearworks Vanguard" (x: 400-900)
+          { type: 'spring_knight', x: 520, y: 816, patrolMinX: 420, patrolMaxX: 620 },
+          { type: 'clockwork_bee', x: 800, y: 580 },
+
+          // Encounter 2: "The Escapement Ambush" (x: 1200-1700)
+          { type: 'mechanical_spider', x: 1420, y: 460, dropDistance: 280 },
+          { type: 'spring_knight', x: 1600, y: 816, patrolMinX: 1480, patrolMaxX: 1700 },
+
+          // Encounter 3: "The Astrolabe Sentry" (x: 2100-2600)
+          { type: 'clockwork_bee', x: 2260, y: 540 },
+          { type: 'spring_knight', x: 2480, y: 816, patrolMinX: 2360, patrolMaxX: 2600 },
+
+          // --- SECTION 2 ENCOUNTERS ---
+          // Encounter 4: "The Chasm Droppers" (x: 2800-3400)
+          { type: 'mechanical_spider', x: 2980, y: 420, dropDistance: 260 },
+          { type: 'clockwork_bee', x: 3200, y: 500 },
+
+          // Encounter 5: "The Horology Patrol" (x: 3600-4200)
+          { type: 'spring_knight', x: 3820, y: 816, patrolMinX: 3700, patrolMaxX: 3980 },
+          { type: 'mechanical_spider', x: 4100, y: 440, dropDistance: 280 },
+
+          // Encounter 6: "The Chrono Bridge Sentinels" (x: 4600-5200)
+          { type: 'clockwork_bee', x: 4760, y: 520 },
+          { type: 'spring_knight', x: 5020, y: 656, patrolMinX: 4940, patrolMaxX: 5120 },
+
+          // --- SECTION 3 ENCOUNTERS ---
+          // Encounter 7: "The Solar Foundry Guards" (x: 5500-6200)
+          { type: 'clockwork_bee', x: 5680, y: 520 },
+          { type: 'spring_knight', x: 5960, y: 816, patrolMinX: 5840, patrolMaxX: 6060 },
+
+          // Encounter 8: "The Mainspring Ambush" (x: 6500-7200)
+          { type: 'mechanical_spider', x: 6680, y: 440, dropDistance: 280 },
+          { type: 'clockwork_bee', x: 7040, y: 500 },
+
+          // Encounter 9: "The Foundry Battlement Phalanx" (x: 7400-8000)
+          { type: 'spring_knight', x: 7600, y: 816, patrolMinX: 7480, patrolMaxX: 7720 },
+          { type: 'mechanical_spider', x: 7920, y: 460, dropDistance: 260 },
+
+          // --- SECTION 4 ENCOUNTERS ---
+          // Encounter 10: "The Citadel Portcullis Sentinels" (x: 8400-9200)
+          { type: 'clockwork_bee', x: 8560, y: 520 },
+          { type: 'spring_knight', x: 8840, y: 816, patrolMinX: 8700, patrolMaxX: 8980 },
+          { type: 'mechanical_spider', x: 9140, y: 440, dropDistance: 280 },
+
+          // Encounter 11: "THE TIME TINKER CLIMAX" (x: 9800-10600)
+          { type: 'time_tinker', x: 10240, y: 720 },
+          { type: 'clockwork_bee', x: 10020, y: 440 },
+          { type: 'clockwork_bee', x: 10420, y: 440 },
+        ],
+
+        // 6 Regional Checkpoints
+        checkpoint: { x: 600, y: 840, width: 40, height: 40 },
+        checkpoints: [
+          { id: 1, x: 600, y: 840, width: 40, height: 40 },
+          { id: 2, x: 2400, y: 820, width: 40, height: 40 },
+          { id: 3, x: 4200, y: 820, width: 40, height: 40 },
+          { id: 4, x: 5800, y: 820, width: 40, height: 40 },
+          { id: 5, x: 7600, y: 820, width: 40, height: 40 },
+          { id: 6, x: 8800, y: 820, width: 40, height: 40 },
+        ],
+
+        // Goal: Ancient Ocean Gate to World 7 (The Kingdom Beneath the Sea)
+        goal: { x: 10560, y: 780, width: 64, height: 64, type: 'portal' },
+      },
+    },
+  },
 };
 
 export const LEVEL_1_1 = WORLDS.WORLD_1.levels['1-1'];
@@ -1481,6 +1736,7 @@ export const LEVEL_2_1 = WORLDS.WORLD_2.levels['2-1'];
 export const LEVEL_3_1 = WORLDS.WORLD_3.levels['3-1'];
 export const LEVEL_4_1 = WORLDS.WORLD_4.levels['4-1'];
 export const LEVEL_5_1 = WORLDS.WORLD_5.levels['5-1'];
+export const LEVEL_6_1 = WORLDS.WORLD_6.levels['6-1'];
 
 
 
