@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 256" width="512" height="256">
+  <defs>
+    <!-- Lush Fairy-Tale Grass Rim Gradient -->
+    <linearGradient id="meadowGrassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bef264" />
+      <stop offset="25%" stop-color="#84cc16" />
+      <stop offset="60%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#14532d" />
+    </linearGradient>
+
+    <!-- Rich Earth & Peat Loam Gradient -->
+    <linearGradient id="meadowLoamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3d1d09" />
+      <stop offset="20%" stop-color="#2a1406" />
+      <stop offset="65%" stop-color="#1b0c03" />
+      <stop offset="100%" stop-color="#0a0502" />
+    </linearGradient>
+
+    <!-- Subterranean Root Tendril Gradient -->
+    <linearGradient id="meadowRootGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="50%" stop-color="#92400e" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+
+    <!-- Buried River Pebble Gradient -->
+    <linearGradient id="meadowPebbleGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+  </defs>
+
+  <!-- ======================================================== -->
+  <!-- 1. CENTER TILE (x: 0 to 256, y: 0 to 256) -->
+  <!-- ======================================================== -->
+  <g id="centerTile">
+    <!-- Deep Loam Earth Foundation -->
+    <rect x="0" y="24" width="256" height="232" fill="url(#meadowLoamGrad)" />
+
+    <!-- Organic Soil Strata (Subtle hand-painted earth layers) -->
+    <g fill="none" opacity="0.4" stroke-linecap="round">
+      <path d="M0 65 Q60 55 130 68 Q200 78 256 60" stroke="#1b0c03" stroke-width="6" />
+      <path d="M0 125 Q70 138 145 120 Q215 130 256 122" stroke="#2a1406" stroke-width="7" />
+      <path d="M0 190 Q80 180 150 195 Q220 185 256 192" stroke="#1b0c03" stroke-width="6" />
+    </g>
+
+    <!-- Winding Ancient Root Tendrils Branching through Earth -->
+    <g fill="none" stroke="url(#meadowRootGrad)" stroke-linecap="round">
+      <path d="M35 28 Q48 70 75 110 Q110 150 155 175 Q205 200 235 235" stroke-width="4.5" />
+      <path d="M75 110 Q60 140 38 170" stroke-width="2.5" />
+      <path d="M155 175 Q140 210 125 245" stroke-width="2" />
+      <path d="M210 28 Q195 70 170 100 Q145 130 110 145" stroke-width="3" />
+    </g>
+
+    <!-- Buried Smooth River Stones -->
+    <ellipse cx="55" cy="145" rx="10" ry="7" fill="url(#meadowPebbleGrad)" stroke="#1e293b" stroke-width="1.2" />
+    <ellipse cx="195" cy="105" rx="13" ry="9" fill="url(#meadowPebbleGrad)" stroke="#1e293b" stroke-width="1.2" />
+    <ellipse cx="115" cy="215" rx="9" ry="6" fill="url(#meadowPebbleGrad)" stroke="#1e293b" stroke-width="1" />
+
+    <!-- Humus Topsoil Transition -->
+    <rect x="0" y="20" width="256" height="14" fill="#3d1d09" opacity="0.8" />
+
+    <!-- Lush Grass Turf Rim (Scalloped sod mass with natural overhang) -->
+    <path d="M0 24 
+             Q12 12 28 20 Q44 8 60 22 Q76 10 92 22 Q108 8 124 20 
+             Q140 10 156 22 Q172 8 188 20 Q204 10 220 22 Q236 8 256 20 
+             L256 30 L0 30 Z"
+          fill="url(#meadowGrassGrad)" />
+
+    <!-- Individual Natural Grass Blades with varied angles & heights -->
+    <g stroke="#bef264" stroke-width="1.8" stroke-linecap="round">
+      <path d="M10 24 L12 11 M14 24 L17 14 M36 22 L38 9 M41 22 L45 12" />
+      <path d="M70 23 L73 10 M75 23 L79 13 M102 22 L105 8 M107 22 L111 12" />
+      <path d="M136 23 L139 10 M142 23 L146 13 M168 22 L171 8 M173 22 L177 12" />
+      <path d="M200 23 L203 10 M206 23 L210 14 M232 22 L235 9 M238 22 L242 13" />
+    </g>
+
+    <!-- Storybook Wildflowers Nestled in Turf (Buttercups & Bluebells) -->
+    <g fill="#fef08a" stroke="#d97706" stroke-width="0.8">
+      <circle cx="28" cy="14" r="3" />
+      <circle cx="92" cy="13" r="3" />
+      <circle cx="156" cy="14" r="3" />
+      <circle cx="220" cy="13" r="3" />
+    </g>
+    <!-- Tiny Azure Bluebell Blossoms -->
+    <g fill="#38bdf8" stroke="#0284c7" stroke-width="0.8">
+      <circle cx="60" cy="12" r="2.5" />
+      <circle cx="124" cy="11" r="2.5" />
+      <circle cx="188" cy="12" r="2.5" />
+    </g>
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 2. LEFT CLIFF CAP (x: 256 to 384, y: 0 to 256) -->
+  <!-- ======================================================== -->
+  <g id="cliffLeft" transform="translate(256, 0)">
+    <path d="M24 24 Q10 60 14 120 Q6 180 16 256 L128 256 L128 24 Q80 24 24 24 Z"
+          fill="url(#meadowLoamGrad)" />
+    <!-- Overhanging Turf & Exposed Cliff Roots -->
+    <path d="M20 70 Q60 60 128 72" fill="none" stroke="#1b0c03" stroke-width="5" opacity="0.4" />
+    <path d="M14 140 Q70 130 128 145" fill="none" stroke="#2a1406" stroke-width="6" opacity="0.4" />
+    <path d="M22 26 Q4 70 10 120 Q14 150 8 180" fill="none" stroke="url(#meadowRootGrad)" stroke-width="3.5" stroke-linecap="round" />
+    <ellipse cx="65" cy="110" rx="10" ry="7" fill="url(#meadowPebbleGrad)" stroke="#1e293b" stroke-width="1.2" />
+
+    <!-- Cliff Top Grass Rim -->
+    <path d="M12 24 Q30 10 50 22 Q70 8 90 22 Q110 8 128 20 L128 30 L16 30 Z" fill="url(#meadowGrassGrad)" />
+    <g stroke="#bef264" stroke-width="1.8" stroke-linecap="round">
+      <path d="M30 22 L33 9 M36 22 L40 12 M70 22 L73 8 M76 22 L80 12" />
+    </g>
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- 3. RIGHT CLIFF CAP (x: 384 to 512, y: 0 to 256) -->
+  <!-- ======================================================== -->
+  <g id="cliffRight" transform="translate(384, 0)">
+    <path d="M0 24 L104 24 Q118 60 114 120 Q122 180 112 256 L0 256 Z"
+          fill="url(#meadowLoamGrad)" />
+    <!-- Exposed Roots & Turf on Right -->
+    <path d="M0 72 Q60 60 108 70" fill="none" stroke="#1b0c03" stroke-width="5" opacity="0.4" />
+    <path d="M0 145 Q60 130 114 140" fill="none" stroke="#2a1406" stroke-width="6" opacity="0.4" />
+    <path d="M106 26 Q124 70 118 120 Q114 150 120 180" fill="none" stroke="url(#meadowRootGrad)" stroke-width="3.5" stroke-linecap="round" />
+    <ellipse cx="65" cy="110" rx="10" ry="7" fill="url(#meadowPebbleGrad)" stroke="#1e293b" stroke-width="1.2" />
+
+    <!-- Cliff Top Grass Rim -->
+    <path d="M0 20 Q18 8 38 22 Q58 8 78 22 Q98 10 116 24 L112 30 L0 30 Z" fill="url(#meadowGrassGrad)" />
+    <g stroke="#bef264" stroke-width="1.8" stroke-linecap="round">
+      <path d="M38 22 L41 9 M44 22 L48 12 M78 22 L81 8 M84 22 L88 12" />
+    </g>
+  </g>
+</svg>

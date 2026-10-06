@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 540" width="680" height="540">
+  <defs>
+    <!-- Weathered Granite Masonry -->
+    <linearGradient id="graniteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="35%" stop-color="#64748b" />
+      <stop offset="70%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Deep Arch Shadow -->
+    <linearGradient id="deepArchShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="60%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Cascading Crystal Waterfall -->
+    <linearGradient id="waterfallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#7dd3fc" stop-opacity="0.8" />
+      <stop offset="70%" stop-color="#bae6fd" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#e0f2fe" stop-opacity="0.5" />
+    </linearGradient>
+
+    <!-- Honey Sludge Leak -->
+    <linearGradient id="honeySludge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="60%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+
+    <!-- Nightshade Purple Ivy -->
+    <linearGradient id="nightshadeIvy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="50%" stop-color="#7e22ce" />
+      <stop offset="100%" stop-color="#3b0764" />
+    </linearGradient>
+  </defs>
+
+  <!-- Distant Background Silhouette of Upper Tier Arches -->
+  <g id="distant_aqueduct_tier" opacity="0.45">
+    <path d="M40 140 H640 V170 H40 Z" fill="#334155" />
+    <!-- Row of Smaller High Arches -->
+    <path d="M80 170 Q110 120 140 170 Z M180 170 Q210 120 240 170 Z M280 170 Q310 120 340 170 Z M380 170 Q410 120 440 170 Z M480 170 Q510 120 540 170 Z M580 170 Q610 120 640 170 Z" fill="#1e293b" />
+  </g>
+
+  <!-- Main Aqueduct Channel Deck (y: 160 to 210) -->
+  <g id="aqueduct_deck">
+    <rect x="20" y="160" width="640" height="42" rx="4" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3.5" />
+    <!-- Classical Cornice Moulding -->
+    <rect x="15" y="152" width="650" height="12" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2" />
+    <!-- Parapet Blocks -->
+    <rect x="30" y="138" width="50" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="110" y="138" width="60" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="200" y="138" width="60" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="290" y="138" width="60" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="380" y="138" width="60" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="470" y="138" width="60" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+    <rect x="560" y="138" width="50" height="16" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="2" />
+  </g>
+
+  <!-- Grand Colonnade Pillars & Arches (y: 200 to 540) -->
+  <g id="colonnade_pillars">
+    <!-- Pillar 1 (Left Plinth & Shaft) -->
+    <rect x="35" y="490" width="80" height="50" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="45" y="200" width="60" height="290" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <line x1="60" y1="210" x2="60" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="75" y1="210" x2="75" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="90" y1="210" x2="90" y2="480" stroke="#334155" stroke-width="2" />
+
+    <!-- Pillar 2 (Center-Left) -->
+    <rect x="185" y="490" width="80" height="50" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="195" y="200" width="60" height="290" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <line x1="210" y1="210" x2="210" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="225" y1="210" x2="225" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="240" y1="210" x2="240" y2="480" stroke="#334155" stroke-width="2" />
+
+    <!-- Pillar 3 (Center-Right) -->
+    <rect x="335" y="490" width="80" height="50" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <rect x="345" y="200" width="60" height="290" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <line x1="360" y1="210" x2="360" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="375" y1="210" x2="375" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="390" y1="210" x2="390" y2="480" stroke="#334155" stroke-width="2" />
+
+    <!-- Pillar 4 (Right Broken Pillar) -->
+    <rect x="485" y="490" width="80" height="50" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <!-- Fractured jagged top -->
+    <path d="M495 490 V270 L515 250 L530 280 L545 240 L555 260 V490 Z" fill="url(#graniteGrad)" stroke="#1e293b" stroke-width="3" />
+    <line x1="510" y1="290" x2="510" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="525" y1="290" x2="525" y2="480" stroke="#334155" stroke-width="2" />
+    <line x1="540" y1="290" x2="540" y2="480" stroke="#334155" stroke-width="2" />
+  </g>
+
+  <!-- Arch Voids & Vault Intrados (Shaded Open Spaces Under Arches) -->
+  <g id="arch_vaults">
+    <!-- Arch 1 (Between Pillar 1 & 2) -->
+    <path d="M105 290 Q150 200 195 290 Z" fill="url(#deepArchShadow)" />
+    <!-- Arch 2 (Between Pillar 2 & 3) -->
+    <path d="M255 290 Q300 200 345 290 Z" fill="url(#deepArchShadow)" />
+    <!-- Arch 3 (Between Pillar 3 & 4) -->
+    <path d="M405 290 Q450 200 495 290 Z" fill="url(#deepArchShadow)" />
+
+    <!-- Stone Arch Keystone Headers -->
+    <polygon points="140,202 160,202 155,225 145,225" fill="#e2e8f0" stroke="#1e293b" stroke-width="2" />
+    <polygon points="290,202 310,202 305,225 295,225" fill="#e2e8f0" stroke="#1e293b" stroke-width="2" />
+    <polygon points="440,202 460,202 455,225 445,225" fill="#e2e8f0" stroke="#1e293b" stroke-width="2" />
+  </g>
+
+  <!-- Cascading Waterfalls from Broken Aqueduct Channel -->
+  <g id="crystal_waterfall">
+    <!-- Main Cataract Spilling Through Broken Arch 2 -->
+    <path d="M285 202 C280 260, 275 360, 280 540 L315 540 C320 360, 315 260, 310 202 Z" fill="url(#waterfallGrad)" />
+    <!-- Frothing Waterfall Streams & Splash Highlights -->
+    <path d="M292 205 Q290 350 295 530" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.85" />
+    <path d="M303 205 Q306 370 302 530" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75" />
+    <!-- Water Mist Spray at Base -->
+    <ellipse cx="298" cy="535" rx="35" ry="12" fill="#e0f2fe" opacity="0.6" />
+    <ellipse cx="298" cy="535" rx="55" ry="8" fill="#bae6fd" opacity="0.4" />
+  </g>
+
+  <!-- Honey Sludge Overgrowth Breaching Arch 1 Conduit -->
+  <g id="honey_spill">
+    <path d="M140 202 C135 240, 142 270, 138 310 C134 330, 126 330, 126 310 C128 270, 132 230, 135 202 Z" fill="url(#honeySludge)" />
+    <ellipse cx="132" cy="318" rx="8" ry="4" fill="#fbbf24" />
+  </g>
+
+  <!-- Nightshade Purple Ivy Tendrils -->
+  <g id="ivy_ruins">
+    <!-- Ivy Swathing Pillar 3 -->
+    <path d="M340 510 Q355 420 342 340 T365 240" fill="none" stroke="#581c87" stroke-width="4" stroke-linecap="round" />
+    <circle cx="348" cy="460" r="10" fill="url(#nightshadeIvy)" />
+    <circle cx="342" cy="400" r="11" fill="url(#nightshadeIvy)" />
+    <circle cx="356" cy="350" r="10" fill="url(#nightshadeIvy)" />
+    <circle cx="350" cy="290" r="12" fill="url(#nightshadeIvy)" />
+    <circle cx="362" cy="245" r="9" fill="url(#nightshadeIvy)" />
+
+    <!-- Hanging Ivy tendril from Arch 1 -->
+    <path d="M125 210 Q120 250 128 285" fill="none" stroke="#581c87" stroke-width="3" stroke-linecap="round" />
+    <circle cx="122" cy="240" r="7" fill="url(#nightshadeIvy)" />
+    <circle cx="127" cy="275" r="8" fill="url(#nightshadeIvy)" />
+  </g>
+</svg>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64">
+  <defs>
+    <!-- Weathered Cedar Plank Gradient -->
+    <linearGradient id="bridgePlankGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a16207" />
+      <stop offset="25%" stop-color="#854d0e" />
+      <stop offset="70%" stop-color="#713f12" />
+      <stop offset="100%" stop-color="#422006" />
+    </linearGradient>
+
+    <!-- Hemp Rope Gradient -->
+    <linearGradient id="ropeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+
+    <!-- Soft Moss Gradient -->
+    <linearGradient id="bridgeMossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#84cc16" />
+      <stop offset="100%" stop-color="#4d7c0f" />
+    </linearGradient>
+  </defs>
+
+  <!-- Drop Shadow beneath planks -->
+  <path d="M12 44 Q160 52 308 44 L308 50 Q160 58 12 50 Z" fill="#1c1917" opacity="0.35" />
+
+  <!-- 1. LEFT CAP (0 - 48px): Sturdy Wooden Anchor Post with Wrapped Rope -->
+  <g id="leftCap">
+    <!-- Post -->
+    <rect x="10" y="8" width="18" height="42" rx="4" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="2" />
+    <ellipse cx="19" cy="9" rx="8" ry="4" fill="#a16207" stroke="#422006" stroke-width="1.5" />
+    <!-- Rope coiled around post -->
+    <ellipse cx="19" cy="20" rx="10" ry="3.5" fill="none" stroke="url(#ropeGrad)" stroke-width="3" />
+    <ellipse cx="19" cy="26" rx="10" ry="3.5" fill="none" stroke="url(#ropeGrad)" stroke-width="3" />
+    <!-- Moss on post top -->
+    <ellipse cx="17" cy="8" rx="6" ry="2.5" fill="url(#bridgeMossGrad)" />
+    <!-- Leftmost bridge plank -->
+    <rect x="26" y="24" width="22" height="18" rx="3" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <!-- Nail heads -->
+    <circle cx="32" cy="28" r="1.5" fill="#1e293b" />
+    <circle cx="42" cy="38" r="1.5" fill="#1e293b" />
+  </g>
+
+  <!-- 2. CENTER SECTION (48 - 272px): Suspended Wooden Planks with Sagging Hemp Support Ropes -->
+  <g id="centerPlanks">
+    <!-- Lower Support Rope (Slight Catenary Curve) -->
+    <path d="M48 38 Q160 48 272 38" fill="none" stroke="url(#ropeGrad)" stroke-width="4" stroke-linecap="round" />
+    <path d="M48 38 Q160 48 272 38" fill="none" stroke="#451a03" stroke-width="1" stroke-dasharray="3,2" />
+
+    <!-- Upper Handrail Rope -->
+    <path d="M48 16 Q160 22 272 16" fill="none" stroke="url(#ropeGrad)" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Vertical Rope Struts -->
+    <line x1="88" y1="18" x2="88" y2="40" stroke="url(#ropeGrad)" stroke-width="2" />
+    <line x1="128" y1="20" x2="128" y2="43" stroke="url(#ropeGrad)" stroke-width="2" />
+    <line x1="168" y1="21" x2="168" y2="44" stroke="url(#ropeGrad)" stroke-width="2" />
+    <line x1="208" y1="20" x2="208" y2="43" stroke="url(#ropeGrad)" stroke-width="2" />
+    <line x1="248" y1="18" x2="248" y2="40" stroke="url(#ropeGrad)" stroke-width="2" />
+
+    <!-- Individual Planks -->
+    <!-- Plank 1 -->
+    <rect x="52" y="25" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="58" cy="29" r="1.5" fill="#1e293b" />
+    <circle cx="70" cy="39" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 2 -->
+    <rect x="80" y="27" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <path d="M82 28 Q88 26 94 28" fill="url(#bridgeMossGrad)" />
+    <circle cx="86" cy="31" r="1.5" fill="#1e293b" />
+    <circle cx="98" cy="41" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 3 -->
+    <rect x="108" y="29" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="114" cy="33" r="1.5" fill="#1e293b" />
+    <circle cx="126" cy="43" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 4 (Center - lowest sag) -->
+    <rect x="136" y="30" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <path d="M140 31 Q148 29 154 31" fill="url(#bridgeMossGrad)" />
+    <circle cx="142" cy="34" r="1.5" fill="#1e293b" />
+    <circle cx="154" cy="44" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 5 -->
+    <rect x="164" y="30" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="170" cy="34" r="1.5" fill="#1e293b" />
+    <circle cx="182" cy="44" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 6 -->
+    <rect x="192" y="29" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <path d="M198 30 Q206 28 212 30" fill="url(#bridgeMossGrad)" />
+    <circle cx="198" cy="33" r="1.5" fill="#1e293b" />
+    <circle cx="210" cy="43" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 7 -->
+    <rect x="220" y="27" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="226" cy="31" r="1.5" fill="#1e293b" />
+    <circle cx="238" cy="41" r="1.5" fill="#1e293b" />
+
+    <!-- Plank 8 -->
+    <rect x="248" y="25" width="24" height="18" rx="2" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="254" cy="29" r="1.5" fill="#1e293b" />
+    <circle cx="266" cy="39" r="1.5" fill="#1e293b" />
+  </g>
+
+  <!-- 3. RIGHT CAP (272 - 320px): Right Wooden Anchor Post with Coiled Rope -->
+  <g id="rightCap">
+    <!-- Rightmost plank -->
+    <rect x="272" y="24" width="22" height="18" rx="3" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="1.5" />
+    <circle cx="278" cy="28" r="1.5" fill="#1e293b" />
+    <circle cx="288" cy="38" r="1.5" fill="#1e293b" />
+    <!-- Post -->
+    <rect x="292" y="8" width="18" height="42" rx="4" fill="url(#bridgePlankGrad)" stroke="#422006" stroke-width="2" />
+    <ellipse cx="301" cy="9" rx="8" ry="4" fill="#a16207" stroke="#422006" stroke-width="1.5" />
+    <!-- Rope coiled around post -->
+    <ellipse cx="301" cy="20" rx="10" ry="3.5" fill="none" stroke="url(#ropeGrad)" stroke-width="3" />
+    <ellipse cx="301" cy="26" rx="10" ry="3.5" fill="none" stroke="url(#ropeGrad)" stroke-width="3" />
+    <!-- Moss on post top -->
+    <ellipse cx="303" cy="8" rx="6" ry="2.5" fill="url(#bridgeMossGrad)" />
+  </g>
+</svg>
