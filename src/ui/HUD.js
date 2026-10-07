@@ -290,6 +290,7 @@ export class HUD {
 
     const isForestKing = boss.species === 'forest_king' || boss.name === 'Forest King';
     const isSirSlamALot = boss.species === 'sir_slam_a_lot' || boss.name === 'Sir Slam-A-Lot';
+    const isHoneyDragon = boss.species === 'honey_dragon' || boss.name === 'The Honey Dragon' || boss.name === 'Honey Dragon';
 
     if (isForestKing) {
       if (boss.phase === 3) {
@@ -311,6 +312,23 @@ export class HUD {
         hpGrad.addColorStop(0.5, '#38bdf8');
         hpGrad.addColorStop(1, '#bae6fd');
       }
+    } else if (isHoneyDragon) {
+      if (boss.phase === 3) {
+        // White-hot caldera eruption
+        hpGrad.addColorStop(0, '#7f1d1d');
+        hpGrad.addColorStop(0.5, '#ef4444');
+        hpGrad.addColorStop(1, '#fef08a');
+      } else if (boss.phase === 2) {
+        // Boiling magma
+        hpGrad.addColorStop(0, '#9a3412');
+        hpGrad.addColorStop(0.5, '#f97316');
+        hpGrad.addColorStop(1, '#fed7aa');
+      } else {
+        // Molten honey amber
+        hpGrad.addColorStop(0, '#b45309');
+        hpGrad.addColorStop(0.5, '#f59e0b');
+        hpGrad.addColorStop(1, '#fef08a');
+      }
     } else if (boss.phase === 3) {
       hpGrad.addColorStop(0, '#dc2626');
       hpGrad.addColorStop(0.5, '#ef4444');
@@ -324,7 +342,7 @@ export class HUD {
     ctx.fillRect(barX, barY, fillWidth, barHeight);
 
     // Boss Name & Phase Badge
-    ctx.fillStyle = isForestKing ? '#f0abfc' : (isSirSlamALot ? '#38bdf8' : '#fef08a');
+    ctx.fillStyle = isForestKing ? '#f0abfc' : (isSirSlamALot ? '#38bdf8' : (isHoneyDragon ? '#fdba74' : '#fef08a'));
     ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';

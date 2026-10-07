@@ -143,6 +143,20 @@ export class StarProjectile {
         }
       }
 
+      // Check collision with HoneyDragon heart core when vulnerable/stunned
+      const dragon = level && (level.honeyDragon || (level.enemies ? level.enemies.find(e => e.constructor.name === 'HoneyDragon' || e.name === 'The Honey Dragon' || e.species === 'honey_dragon') : null));
+      if (dragon && !dragon.isDead && !dragon.isDefeated && dragon.heartCore && (dragon.isStunned || dragon.heartCore.vulnerable)) {
+        const bounds = this.getBounds();
+        if (Collision.intersects(bounds, dragon.heartCore)) {
+          this.isDead = true;
+          if (dragon.hurt) {
+            dragon.hurt(1, this.facing, 'projectile');
+          }
+          if (audio && audio.playStarHit) audio.playStarHit();
+          return;
+        }
+      }
+
       // Check collision with enemies
       if (level && level.enemies) {
         const bounds = this.getBounds();

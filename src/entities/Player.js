@@ -61,6 +61,18 @@ export class Player {
     this.shieldMaxStamina = 100;
     this.shieldDrainRate = 32; // per second while holding
     this.shieldRegenRate = 12; // per second when not holding
+    // Resource bars: Super, Slize, Special
+    this.superCharge = 0;
+    this.superMax = 100;
+    this.superRegen = 6; // per second when idle (not attacking/dashing)
+
+    this.slize = 0;
+    this.slizeMax = 100;
+    this.slizeRegen = 10; // per second when grounded
+
+    this.specialCharge = 0;
+    this.specialMax = 100;
+    this.specialRegen = 2; // very slow passive regen
 
     // Mid-Air Double Jump (Celestial Starlight Flutter)
     this.canDoubleJump = true;
@@ -77,6 +89,10 @@ export class Player {
     this.isAttacking = false;
     this.attackTimer = 0;
     this.attackCooldownTimer = 0;
+    // Visual slash effect
+    this.slashTimer = 0;
+    this.slashDuration = 0.22;
+    this.slashParticles = [];
 
     // Ranged Celestial Starbeam Power
     this.projectiles = [];
@@ -456,6 +472,18 @@ export class Player {
       this.isAttacking = true;
       this.attackTimer = 0.22;
       this.attackCooldownTimer = 0.42;
+      this.slashTimer = this.slashDuration;
+      // spawn a few slash particles for extra visibility
+      for (let i = 0; i < 8; i++) {
+        this.slashParticles.push({
+          x: this.x + this.width / 2,
+          y: this.y + this.height * 0.45 + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 120,
+          vy: (Math.random() - 0.5) * 20,
+          alpha: 1,
+          color: i % 2 === 0 ? '#fef08a' : '#f59e0b',
+        });
+      }
       this.scaleX = 1.25;
       this.scaleY = 0.88;
       if (audio) {
@@ -781,10 +809,28 @@ export class Player {
       }
     }
 
+    // Passive resource regeneration
+    if (!this.isAttacking && !this.isDashing) {
+      this.superCharge = Math.min(this.superMax, this.superCharge + this.superRegen * dt);
+    }
+    if (this.isGrounded) {
+      this.slize = Math.min(this.slizeMax, this.slize + this.slizeRegen * dt);
+    }
+    this.specialCharge = Math.min(this.specialMax, this.specialCharge + this.specialRegen * dt);
+
     // Advance animation controller & rig
     this.anim.update(dt);
     if (this.rig) {
       this.rig.update(dt, this);
+    }
+
+    // Update slash particles
+    for (let i = this.slashParticles.length - 1; i >= 0; i--) {
+      const p = this.slashParticles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.alpha -= dt * 3.5;
+      if (p.alpha <= 0) this.slashParticles.splice(i, 1);
     }
   }
 
@@ -966,6 +1012,48 @@ export class Player {
       ctx.fillRect(0, -4, 2, 2);
 
       ctx.restore();
+    }
+
+    // 6. Draw magical sword slash when slashTimer active
+    if (this.slashTimer > 0 || this.slashParticles.length > 0) {
+      // large sweeping arc
+      ctx.save();
+      const centerX = this.facing > 0 ? this.x + this.width : this.x;
+      const centerY = this.y + this.height * 0.45;
+      ctx.translate(centerX, centerY);
+      ctx.rotate(this.facing > 0 ? -0.35 : 0.35);
+
+      // main glowing stroke
+      const progress = Math.max(0, Math.min(1, this.slashTimer / this.slashDuration));
+      const glowW = 18 * (0.6 + progress * 0.8);
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = glowW;
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.85 * (0.6 + progress * 0.4);
+      ctx.beginPath();
+      ctx.moveTo(-10, 0);
+      ctx.quadraticCurveTo(this.facing * 60, -18, this.facing * 120, 6);
+      ctx.stroke();
+
+      // inner sharp white core
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-6, 0);
+      ctx.quadraticCurveTo(this.facing * 54, -12, this.facing * 106, 4);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // draw slash particles
+      this.slashParticles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - 2, p.y - 1, 4, 2);
+        ctx.restore();
+      });
     }
   }
 }
