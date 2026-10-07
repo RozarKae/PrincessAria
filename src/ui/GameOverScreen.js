@@ -151,11 +151,15 @@ export class GameOverScreen {
       ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#0f172a';
       ctx.fillText(
-        isWorld4
-          ? 'GRAND VICTORY! PLAY FROM WORLD 1 ➔'
-          : (isWorld3
-            ? 'CONTINUE TO WORLD 4 ➔'
-            : (isWorld2 ? 'CONTINUE TO WORLD 3 ➔' : 'CONTINUE TO WORLD 2 ➔')),
+        isWorld6
+          ? 'GRAND VICTORY! BACK TO WORLD 1 ➔'
+          : (isWorld5
+            ? 'CONTINUE TO WORLD 6 ➔'
+            : (isWorld4
+              ? 'GRAND VICTORY! PLAY FROM WORLD 1 ➔'
+              : (isWorld3
+                ? 'CONTINUE TO WORLD 4 ➔'
+                : (isWorld2 ? 'CONTINUE TO WORLD 3 ➔' : 'CONTINUE TO WORLD 2 ➔')))),
         centerX,
         b.y + b.height / 2
       );

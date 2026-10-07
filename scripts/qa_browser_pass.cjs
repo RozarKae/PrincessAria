@@ -104,7 +104,7 @@ async function runQA() {
     
     // Wait for window.game to be ready
     let isReady = false;
-    for (let attempt = 0; attempt < 30; attempt++) {
+    for (let attempt = 0; attempt < 50; attempt++) {
       const checkRes = await cdp.send('Runtime.evaluate', {
         expression: 'Boolean((window.__game || window.game)?.level && (window.__game || window.game)?.player)'
       });

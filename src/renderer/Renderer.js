@@ -1,4 +1,5 @@
 import { INTERNAL_WIDTH, INTERNAL_HEIGHT, WORLD_TO_PIXEL, PIXEL_PALETTE } from './PixelPalette.js';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from '../game/Constants.js';
 import { PixelRenderer } from './PixelRenderer.js';
 import { pixelAriaRenderer } from './PixelCharacterRenderer.js';
 import { pixelEnemyRenderer } from './PixelEnemyRenderer.js';
@@ -86,11 +87,10 @@ export class Renderer {
   }
 
   /**
-   * Draw the entire gameplay world to the 256x240 internal canvas.
+   * Draw the entire gameplay world to the 320×240 internal canvas.
+   * NOTE: HUD is drawn at display resolution via drawHUDOverlay() after endFrame().
    */
   drawWorld(camera, level, player, gameState) {
-    const ctx = this.internalCtx;
-
     // 1. Draw 2-Layer Minimal Background (Sky + Distant Silhouette Hills)
     this.pixelRenderer.drawBackground(camera, level);
 
@@ -103,13 +103,27 @@ export class Renderer {
     // 4. Draw Entities (Checkpoints, Goal & Batboy, Shards, Enemies, Queen Bee silhouette, Particles, Player)
     this.pixelRenderer.drawEntities(camera, level, player);
 
-    // 5. Draw Minimal Retro HUD (Top 12px)
-    this.pixelRenderer.drawHUD(gameState, player);
-
-    // 6. Visual Debug Overlay (F2)
+    // 5. Visual Debug Overlay (F2)
     if (this.debugVisual) {
       this.drawDebugVisual(60, camera, level);
     }
+  }
+
+  /**
+   * Draw the HUD at native display canvas resolution.
+   * Must be called AFTER endFrame() so it overlays the upscaled pixel art crisply.
+   * Uses HUD.js (1920×1080 coordinate space) scaled to fit the actual display.
+   */
+  drawHUDOverlay(hud, gameState, player) {
+    if (!hud || !gameState) return;
+    const ctx = this.ctx;
+    const dW = this.canvas.width;
+    const dH = this.canvas.height;
+    ctx.save();
+    // Scale from logical 1920×1080 HUD coordinate space to actual display resolution
+    ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
+    hud.draw(ctx, gameState);
+    ctx.restore();
   }
 
   // Backward-compatibility wrappers for Game.js rendering calls
@@ -241,6 +255,7 @@ export class Renderer {
 
   /**
    * Game Over / Stage Clear screen at 256x240 internal retro resolution.
+   * @deprecated Replaced by drawGameOverOverlay() for sharp display-resolution rendering.
    */
   drawGameOverScreen(gameOverScreen, gameState, isClear, stats = {}) {
     const ctx = this.internalCtx;
@@ -291,6 +306,23 @@ export class Renderer {
       }
     }
 
+    ctx.restore();
+  }
+
+  /**
+   * Draw the Game Over / Level Clear screen at native display canvas resolution.
+   * Must be called AFTER endFrame(). Uses GameOverScreen.js at 1920×1080 coordinates,
+   * scaled to fit the actual display — sharp text, buttons, and panels.
+   */
+  drawGameOverOverlay(gameOverScreen, gameState, isClear, levelInfo = {}) {
+    if (!gameOverScreen) return;
+    const ctx = this.ctx;
+    const dW = this.canvas.width;
+    const dH = this.canvas.height;
+    ctx.save();
+    // Scale from logical 1920×1080 GameOverScreen coordinate space to display resolution
+    ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
+    gameOverScreen.draw(ctx, gameState, isClear, levelInfo);
     ctx.restore();
   }
 

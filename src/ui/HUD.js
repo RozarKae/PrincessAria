@@ -65,8 +65,16 @@ export class HUD {
     ctx.letterSpacing = '1px';
     ctx.fillText('KINGDOM', 60, 26);
 
+    const isWorld6 = gameState && gameState.world === 6;
+    const isWorld5 = gameState && gameState.world === 5;
+    const isWorld4 = gameState && gameState.world === 4;
+    const isWorld3 = gameState && gameState.world === 3;
     const isWorld2 = gameState && gameState.world === 2;
-    const kingdomName = isWorld2 ? 'FOREST' : 'HONEYWOOD';
+    const kingdomName = isWorld6 ? 'CLOCKWORK'
+      : (isWorld5 ? 'SANDWICH'
+      : (isWorld4 ? 'VOLCANO'
+      : (isWorld3 ? 'CASTLE'
+      : (isWorld2 ? 'FOREST' : 'HONEYWOOD'))));
     const stageStr = `${gameState?.world || 1}-${gameState?.level || 1}`;
 
     ctx.font = '900 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -74,7 +82,7 @@ export class HUD {
     ctx.fillText(kingdomName, 60, 52);
 
     ctx.fillStyle = '#fbbf24';
-    ctx.fillText(stageStr, isWorld2 ? 180 : 236, 52);
+    ctx.fillText(stageStr, 236, 52);
 
     // Divider ornament
     ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
@@ -140,6 +148,7 @@ export class HUD {
     ctx.fillStyle = '#fbbf24';
     ctx.fillText('ROYAL HEARTS', livesX, 26);
 
+    const heartStartX = CANVAS_WIDTH - 290;
     const maxHearts = gameState.maxLives || 5;
     for (let i = 0; i < maxHearts; i++) {
       const hx = heartStartX + i * 32 + 14;

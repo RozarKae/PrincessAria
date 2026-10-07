@@ -69,8 +69,8 @@ export class Game {
     // Attach click handler for on-screen debug pill and level completion buttons
     this.canvas.addEventListener('pointerdown', (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const scaleX = 256 / rect.width;
-      const scaleY = 240 / rect.height;
+      const scaleX = CANVAS_WIDTH / rect.width;
+      const scaleY = CANVAS_HEIGHT / rect.height;
       const canvasX = (e.clientX - rect.left) * scaleX;
       const canvasY = (e.clientY - rect.top) * scaleY;
 
@@ -617,16 +617,18 @@ export class Game {
     }
 
     if (this.state === GAME_STATES.GAME_OVER) {
+      // Draw world in background, then blit pixel art, then draw HD Game Over overlay
       this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
-      this.renderer.drawGameOverScreen(this.gameOverScreen, this.gameState, false);
       this.renderer.endFrame();
+      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, false);
       return;
     }
 
     if (this.state === GAME_STATES.LEVEL_CLEAR) {
+      // Draw world in background, then blit pixel art, then draw HD Level Clear overlay
       this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
-      this.renderer.drawGameOverScreen(this.gameOverScreen, this.gameState, true, { totalShards: this.level.shards.length });
       this.renderer.endFrame();
+      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, true, { totalShards: this.level.shards.length });
       return;
     }
 
@@ -641,6 +643,10 @@ export class Game {
     // Cinematic Fades / Transitions
     this.renderer.drawCinematic();
 
+    // Blit pixel art world to display canvas
     this.renderer.endFrame();
+
+    // Draw HUD at native display resolution (sharp text and icons, no pixelation)
+    this.renderer.drawHUDOverlay(this.hud, this.gameState, this.player);
   }
 }

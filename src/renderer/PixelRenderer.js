@@ -40,15 +40,24 @@ export class PixelRenderer {
   }
 
   setupViewport() {
-    // Enhanced 320x240 widescreen hi-bit raster grid
+    // Internal pixel art buffer: 320×240 for retro gameplay rendering
     this.internalCanvas.width = INTERNAL_WIDTH;
     this.internalCanvas.height = INTERNAL_HEIGHT;
     this.internalCtx.imageSmoothingEnabled = false;
 
-    // Set display canvas buffer to match internal resolution directly!
-    // The browser's CSS scaling handles widescreen scaling cleanly with image-rendering: pixelated.
-    this.canvas.width = INTERNAL_WIDTH;
-    this.canvas.height = INTERNAL_HEIGHT;
+    // Display canvas: set to container CSS size × devicePixelRatio so that the
+    // HUD and Game Over screen can be rendered at native display resolution
+    // (sharp text and icons). The pixel art world is upscaled from 320×240
+    // in endFrame() via drawImage() with nearest-neighbor sampling.
+    const container = this.canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = (container && container.clientWidth) || window.innerWidth || 1280;
+    const cssH = (container && container.clientHeight) || window.innerHeight || 720;
+    this.canvas.width = Math.round(cssW * dpr);
+    this.canvas.height = Math.round(cssH * dpr);
+    // Prevent any browser CSS upscale; the canvas buffer matches the display exactly.
+    this.canvas.style.width = cssW + 'px';
+    this.canvas.style.height = cssH + 'px';
     this.ctx.imageSmoothingEnabled = false;
   }
 
@@ -67,26 +76,30 @@ export class PixelRenderer {
   }
 
   endFrame() {
-    // 1. Copy internal hi-bit buffer to display canvas with crisp pixel integrity
-    this.ctx.imageSmoothingEnabled = false;
-    this.ctx.drawImage(this.internalCanvas, 0, 0);
+    const dW = this.canvas.width;
+    const dH = this.canvas.height;
 
-    // 2. Futuristic Neo-Pixel Post-Processing:
-    // A. Subtle Ultra-Fine Neo Scanlines (alternating 1px horizontal lines at 4% opacity)
+    // 1. Blit 320×240 internal pixel art buffer to full display canvas (nearest-neighbor)
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.drawImage(this.internalCanvas, 0, 0, dW, dH);
+
+    // 2. Futuristic Neo-Pixel Post-Processing at display resolution:
+    // A. Subtle neo scanlines scaled proportionally to display height
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    for (let y = 0; y < INTERNAL_HEIGHT; y += 2) {
-      this.ctx.fillRect(0, y, INTERNAL_WIDTH, 1);
+    const scanlineStep = Math.max(2, Math.round(dH / INTERNAL_HEIGHT));
+    for (let y = 0; y < dH; y += scanlineStep) {
+      this.ctx.fillRect(0, y, dW, 1);
     }
 
-    // B. Subtle Cybernetic Vignette around edges (gives that premium arcade monitor depth)
+    // B. Subtle cybernetic vignette (premium arcade monitor depth)
     const vigGrad = this.ctx.createRadialGradient(
-      INTERNAL_WIDTH / 2, INTERNAL_HEIGHT / 2, INTERNAL_HEIGHT * 0.45,
-      INTERNAL_WIDTH / 2, INTERNAL_HEIGHT / 2, INTERNAL_WIDTH * 0.65
+      dW / 2, dH / 2, dH * 0.45,
+      dW / 2, dH / 2, dW * 0.65
     );
     vigGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
     vigGrad.addColorStop(1, 'rgba(3, 7, 18, 0.28)');
     this.ctx.fillStyle = vigGrad;
-    this.ctx.fillRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
+    this.ctx.fillRect(0, 0, dW, dH);
   }
 
   // ========================================================

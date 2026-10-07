@@ -52,9 +52,9 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
+  /* image-rendering: pixelated removed — pixel art upscaling is handled by
+     PixelRenderer.endFrame() via drawImage(), allowing the HUD and Game Over
+     screens to render at native display resolution (no CSS upscale artifacts). */
 }
 
 /* ======================================================== */
