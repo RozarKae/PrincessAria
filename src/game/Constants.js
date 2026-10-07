@@ -50,6 +50,7 @@ export const KEY_BINDINGS = {
   DASH: ['ShiftLeft', 'ShiftRight', 'KeyX', 'KeyK'],
   ATTACK: ['KeyZ', 'KeyJ', 'KeyF'],
   SHOOT: ['KeyC', 'KeyL', 'KeyE', 'KeyQ'],
+  SHIELD: ['KeyV', 'KeyB'],
   START: ['Enter', 'Space'],
   RESTART: ['KeyR', 'Enter'],
   DEBUG: ['F3', 'KeyO', 'Backquote'],

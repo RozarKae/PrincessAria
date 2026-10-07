@@ -248,9 +248,11 @@ export class PixelHUD {
     drawBitmapText(ctx, 'SZ', baseX + (barW + spacing) * 2 - 18, baseY, '#a78bfa');
     drawMiniBar(baseX + (barW + spacing) * 2, baseY, barW, slizeMax > 0 ? slizeCur / slizeMax : 0, '#a78bfa');
 
-    // SPECIAL (cyan)
-    drawBitmapText(ctx, 'SPC', baseX + (barW + spacing) * 3 - 18, baseY, '#38bdf8');
-    drawMiniBar(baseX + (barW + spacing) * 3, baseY, barW, specialMax > 0 ? specialCur / specialMax : 0, '#38bdf8');
+    // SHIELD (cyan) - stamina bar shown when player has shield fields
+    const shieldCur = (player && player.shieldStamina !== undefined) ? player.shieldStamina : (gameState.shield !== undefined ? gameState.shield : 0);
+    const shieldMax = (player && player.shieldMaxStamina !== undefined) ? player.shieldMaxStamina : (gameState.shieldMax !== undefined ? gameState.shieldMax : 100);
+    drawBitmapText(ctx, 'SHD', baseX + (barW + spacing) * 3 - 18, baseY, '#38bdf8');
+    drawMiniBar(baseX + (barW + spacing) * 3, baseY, barW, shieldMax > 0 ? shieldCur / shieldMax : 0, '#38bdf8');
 
     // 3. THREE POWERS INDICATOR: [Z] Melee  [X] Dash  [C] Starbeam
     this.drawAbilityIcons(ctx, 60, 2, player);

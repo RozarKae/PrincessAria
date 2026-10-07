@@ -38,6 +38,7 @@ export class GamepadManager {
       DASH: [5, 4, 1, 7],        // Right bumper (RB/R1), Left bumper (LB/L1), Right face (B/Circle), RT
       ATTACK: [2, 1],            // Left face button (Xbox X, PS Square, Switch Y), B/Circle
       SHOOT: [3, 7, 6],          // Top face button (Xbox Y, PS Triangle, Switch X), RT, LT
+      SHIELD: [4, 5, 6],         // Map to bumpers / triggers as default hold shield (LB/RB/RT)
       LEFT: ['dpad_left', 'stick_left'],
       RIGHT: ['dpad_right', 'stick_right'],
       UP: ['dpad_up', 'stick_up'],

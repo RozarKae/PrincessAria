@@ -55,6 +55,13 @@ export class Player {
     this.dashCooldownTimer = 0;
     this.dashParticles = [];
 
+    // Shield state (hold-to-block)
+    this.isShielding = false;
+    this.shieldStamina = 100; // current stamina
+    this.shieldMaxStamina = 100;
+    this.shieldDrainRate = 32; // per second while holding
+    this.shieldRegenRate = 12; // per second when not holding
+
     // Mid-Air Double Jump (Celestial Starlight Flutter)
     this.canDoubleJump = true;
     this.doubleJumpParticles = [];
@@ -478,6 +485,16 @@ export class Player {
     this.scaleX += (1 - this.scaleX) * 14 * dt;
     this.scaleY += (1 - this.scaleY) * 14 * dt;
 
+    // --- SHIELD (hold) ---
+    const wantsShield = input.isDown('SHIELD') && !this.isDead && !this.isDashing;
+    if (wantsShield && this.shieldStamina > 0) {
+      this.isShielding = true;
+      this.shieldStamina = Math.max(0, this.shieldStamina - this.shieldDrainRate * dt);
+    } else {
+      this.isShielding = false;
+      this.shieldStamina = Math.min(this.shieldMaxStamina, this.shieldStamina + this.shieldRegenRate * dt);
+    }
+
     // --- 1. CROUCH HANDLING ---
     const wantsCrouch = input.isDown('CROUCH') && this.isGrounded && !this.isDashing;
     this.isCrouching = wantsCrouch;
@@ -825,6 +842,19 @@ export class Player {
 
   hurt() {
     if (this.invincibilityTimer > 0) return false;
+
+    // If shielding and have stamina, reduce or negate damage
+    if (this.isShielding && this.shieldStamina > 0) {
+      // Successful block: short window of reduced knockback and no hurt state
+      this.shieldStamina = Math.max(0, this.shieldStamina - 12);
+      if (this.inputRef && this.inputRef.rumbleAttack) this.inputRef.rumbleAttack();
+      // play block sound if available
+      if (this.inputRef && this.inputRef.gamepad && this.inputRef.gamepad.playBlock) {
+        try { this.inputRef.gamepad.playBlock(); } catch (e) {}
+      }
+      return false; // did not enter hurt state
+    }
+
     this.invincibilityTimer = PHYSICS.INVINCIBILITY_TIME;
     this.isHurt = true;
     this.isDashing = false;
@@ -914,5 +944,28 @@ export class Player {
 
     // 4. Draw Active Starbeam Projectiles
     this.projectiles.forEach(p => p.draw(ctx));
+
+    // 5. Draw shield in hand when shielding (simple pixel shield)
+    if (this.isShielding) {
+      ctx.save();
+      // shield position relative to facing and player
+      const sx = this.facing > 0 ? this.x + this.width - 6 : this.x - 10;
+      const sy = this.y + this.height * 0.42;
+      ctx.translate(sx, sy);
+      if (this.facing < 0) ctx.scale(-1, 1);
+
+      // shield body
+      ctx.fillStyle = '#0ea5a4';
+      ctx.fillRect(-2, -6, 10, 12);
+      // shield rim
+      ctx.strokeStyle = '#be185d';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-2, -6, 10, 12);
+      // shimmer
+      ctx.fillStyle = '#ffffff88';
+      ctx.fillRect(0, -4, 2, 2);
+
+      ctx.restore();
+    }
   }
 }
