@@ -496,6 +496,56 @@ const RAW_FRAMES = {
     ".###.###........",
     "................",
     "................",
+  ],
+
+  // --- ATTACK / SWORD SLASH (lunging swing with extended arm & blade) ---
+  attack_0: [
+    "....#####.......",
+    "...#CcCgC#......",
+    "...#ccccc#......",
+    "..#HHHHHH##.....",
+    ".#HSSSEEEH#D#...",
+    ".#HSSSSEEH#DD#..",
+    "..#SSSSH##HDD#..",
+    "...#WWH###HHH#..",
+    "..#PVVPH##HH#...",
+    "..#PPPP#HHH#....",
+    ".#KPPPPKSS#.....",
+    "#KPPPPKSSSS#....",
+    "#KKKKKK#........",
+    "...#SSSS#.......",
+    ".#SSSS#.#BB#....",
+    "..#BB#..#BB#....",
+    "..#BB#...##.....",
+    "...##...........",
+    "................",
+    "................",
+    "................",
+    "................",
+  ],
+  attack_1: [
+    "....#####.......",
+    "...#CcCgC#......",
+    "...#ccccc#......",
+    "..#HHHHHH##DDD#.",
+    ".#HSSSEEEH#HDDD#",
+    ".#HSSSSEEH##HDH#",
+    "..#SSSSH####HH#.",
+    "...#WWH###......",
+    "..#PVVP#H#......",
+    "..#PPPP#H#S#....",
+    ".#KPPPPK#SSSS#..",
+    "#KKKKKKK#..#SS#.",
+    ".#SSSS##........",
+    "..#BB#..#SSSS#..",
+    "..#BB#...#BB#...",
+    "...##....#BB#...",
+    "..........##....",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
   ]
 };
 
@@ -543,6 +593,9 @@ export class PixelCharacterRenderer {
     if (player.isVictorious) return 'victory';
     if (player.isHurt) return 'hit';
     if (player.isDashing) return 'dash';
+    if (player.isAttacking) {
+      return (player.attackTimer > 0.11) ? 'attack_0' : 'attack_1';
+    }
 
     // Air states
     if (!player.isGrounded) {

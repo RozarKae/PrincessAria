@@ -478,6 +478,10 @@ export class Player {
       }
     }
 
+    if (this.slashTimer > 0) {
+      this.slashTimer -= dt;
+    }
+
     // Extensible Primary Attack Trigger (Melee Stardust Slash)
     if (
       input.justPressed('ATTACK') &&
@@ -487,19 +491,43 @@ export class Player {
     ) {
       this.isAttacking = true;
       this.attackTimer = 0.22;
-      this.attackCooldownTimer = 0.42;
-      this.slashTimer = this.slashDuration;
-      // spawn a few slash particles for extra visibility
-      for (let i = 0; i < 8; i++) {
+      this.attackCooldownTimer = 0.38;
+      this.slashDuration = 0.22;
+      this.slashTimer = 0.22;
+      
+      // Spawn a dynamic, vibrant sword slash impact splash!
+      const splashOriginX = this.facing > 0 ? this.x + this.width + 10 : this.x - 10;
+      const splashOriginY = this.y + this.height * 0.45;
+
+      // Burst of fast, bright crescent sparks and radiant embers
+      const splashColors = ['#ffffff', '#fef08a', '#fde047', '#fbbf24', '#f59e0b', '#38bdf8', '#34d399'];
+      for (let i = 0; i < 22; i++) {
+        const angle = (this.facing > 0 ? -0.8 : Math.PI - 0.8) + (Math.random() - 0.5) * 1.6;
+        const speed = 120 + Math.random() * 260;
         this.slashParticles.push({
-          x: this.x + this.width / 2,
-          y: this.y + this.height * 0.45 + (Math.random() - 0.5) * 8,
-          vx: (Math.random() - 0.5) * 120,
-          vy: (Math.random() - 0.5) * 20,
-          alpha: 1,
-          color: i % 2 === 0 ? '#fef08a' : '#f59e0b',
+          x: splashOriginX + (Math.random() - 0.5) * 12,
+          y: splashOriginY + (Math.random() - 0.5) * 16,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1.0,
+          size: Math.random() < 0.3 ? 3 : (Math.random() < 0.6 ? 2 : 1),
+          color: splashColors[Math.floor(Math.random() * splashColors.length)],
         });
       }
+
+      // Add a couple of forward-thrust crescent splash crests
+      for (let i = 0; i < 6; i++) {
+        this.slashParticles.push({
+          x: splashOriginX + this.facing * (i * 8),
+          y: splashOriginY + (Math.sin(i * 0.6) * 14),
+          vx: this.facing * (160 + i * 20),
+          vy: (Math.random() - 0.5) * 40,
+          alpha: 1.0,
+          size: 3,
+          color: i % 2 === 0 ? '#ffffff' : '#fef08a',
+        });
+      }
+
       this.scaleX = 1.25;
       this.scaleY = 0.88;
       if (audio) {

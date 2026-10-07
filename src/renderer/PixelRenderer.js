@@ -3511,7 +3511,12 @@ export class PixelRenderer {
         this.drawDoubleJumpRings(ctx, camX, camY, player.doubleJumpParticles);
       }
 
-      // 9. Royal Starbeam Projectiles (Ranged Power)
+      // 9. Royal Sword Slash Arc & Splash
+      if (player.isAttacking || player.slashTimer > 0 || (player.slashParticles && player.slashParticles.length > 0)) {
+        this.drawSwordSlash(ctx, camX, camY, player);
+      }
+
+      // 10. Royal Starbeam Projectiles (Ranged Power)
       if (player.projectiles && player.projectiles.length > 0) {
         this.drawStarProjectiles(ctx, camX, camY, player.projectiles);
       }
@@ -3624,6 +3629,87 @@ export class PixelRenderer {
         ctx.fillRect(cx, cy, 1, 1);
       }
     });
+  }
+
+  /**
+   * Render Royal Sword Slash arc and radiant stardust impact splash in authentic pixel art.
+   */
+  drawSwordSlash(ctx, camX, camY, player) {
+    if (!player) return;
+
+    // 1. Draw Sword Slash Radiant Arc when attacking or slashTimer active
+    if (player.isAttacking || player.slashTimer > 0) {
+      const progress = player.attackTimer > 0 ? (1 - player.attackTimer / 0.22) : (1 - (player.slashTimer || 0) / (player.slashDuration || 0.22));
+      const clampedProg = Math.max(0, Math.min(1, progress));
+
+      // Calculate anchor at Aria's weapon hand in 256x240 screen coordinates
+      const ariaScrX = (player.x - camX) * WORLD_TO_PIXEL;
+      const ariaScrY = (player.y + player.height) * WORLD_TO_PIXEL - 22;
+
+      // Arc center forward from Aria's chest
+      const facing = player.facing || 1;
+      const arcCenterX = ariaScrX + (facing > 0 ? 14 : 2);
+      const arcCenterY = ariaScrY + 11;
+
+      // Draw sweeping multi-layered pixel crescent arc
+      const radius = 10 + Math.floor(clampedProg * 4); // 10 to 14 pixel arc radius
+
+      ctx.save();
+      // Start and end angles depending on facing direction
+      const baseAngle = facing > 0 ? -0.45 : Math.PI - 0.75;
+      const sweepAngle = (facing > 0 ? 1.4 : -1.4);
+
+      // Outer golden aura
+      ctx.fillStyle = '#f59e0b';
+      const steps = 10;
+      for (let s = 0; s <= steps; s++) {
+        const t = s / steps;
+        const ang = baseAngle + t * sweepAngle;
+        const px = Math.round(arcCenterX + Math.cos(ang) * radius);
+        const py = Math.round(arcCenterY + Math.sin(ang) * radius);
+        if (px >= 0 && px < INTERNAL_WIDTH && py >= 0 && py < INTERNAL_HEIGHT) {
+          ctx.fillRect(px, py, 2, 2);
+        }
+      }
+
+      // Brilliant core sharp white/yellow blade glint
+      ctx.fillStyle = clampedProg < 0.5 ? '#ffffff' : '#fef08a';
+      for (let s = 1; s <= steps - 1; s++) {
+        const t = s / steps;
+        const ang = baseAngle + t * sweepAngle;
+        const px = Math.round(arcCenterX + Math.cos(ang) * (radius - 1));
+        const py = Math.round(arcCenterY + Math.sin(ang) * (radius - 1));
+        if (px >= 0 && px < INTERNAL_WIDTH && py >= 0 && py < INTERNAL_HEIGHT) {
+          ctx.fillRect(px, py, 1, 1);
+        }
+      }
+
+      // Tip sparkle / flash on leading edge
+      const tipAngle = baseAngle + sweepAngle;
+      const tipX = Math.round(arcCenterX + Math.cos(tipAngle) * radius);
+      const tipY = Math.round(arcCenterY + Math.sin(tipAngle) * radius);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(tipX - 1, tipY, 3, 1);
+      ctx.fillRect(tipX, tipY - 1, 1, 3);
+
+      ctx.restore();
+    }
+
+    // 2. Draw Slash Splash Particles (sparks, radiant embers, stardust droplets)
+    if (player.slashParticles && player.slashParticles.length > 0) {
+      player.slashParticles.forEach(p => {
+        const px = Math.round((p.x - camX) * WORLD_TO_PIXEL);
+        const py = Math.round((p.y - camY) * WORLD_TO_PIXEL);
+        if (px >= -2 && px < INTERNAL_WIDTH + 2 && py >= -2 && py < INTERNAL_HEIGHT + 2) {
+          const sz = p.size || 1;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0.1, Math.min(1.0, p.alpha !== undefined ? p.alpha : 1.0));
+          ctx.fillStyle = p.color || '#fde047';
+          ctx.fillRect(px, py, sz, sz);
+          ctx.restore();
+        }
+      });
+    }
   }
 
   drawRoyalShard(ctx, x, y) {
