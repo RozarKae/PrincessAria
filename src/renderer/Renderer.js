@@ -121,8 +121,10 @@ export class Renderer {
     const dH = this.canvas.height;
     ctx.save();
     // Scale from logical 1920×1080 HUD coordinate space to actual display resolution
+    // Disable smoothing for pixel-perfect HUD text/icons when scaling
+    ctx.imageSmoothingEnabled = false;
     ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
-    hud.draw(ctx, gameState);
+    hud.draw(ctx, gameState, { player });
     if (boss && hud.drawBossBar) {
       hud.drawBossBar(ctx, boss);
     }

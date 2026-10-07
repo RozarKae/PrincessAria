@@ -142,63 +142,98 @@ export class HUD {
     const shardsVal = (gameState.coins || 0).toString().padStart(2, '0');
     ctx.fillText('x ' + shardsVal, shardCenterX + 28, 52);
 
-    // 5. Right-side compact status bars: HP / SUPER / SLIZE / SHIELD
-    const rightX = CANVAS_WIDTH - 330;
-    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillStyle = '#fbbf24';
-    ctx.fillText('STATUS', rightX, 26);
+    // 5. Right-side Status Bars: Balanced 2-Column High-Definition Grid
+    const player = options.player || null;
+    const statusBoxW = 420;
+    const statusBoxH = 64;
+    const statusX = CANVAS_WIDTH - statusBoxW - 48;
+    const statusY = 9;
 
-    // compact symbol + bar layout that uses available top bar space
-    const barY = 34;
-    const rowH = 16;
-    const symW = 22; // symbol area width
-    const totalW = 260; // total width per row
-    const barW = totalW - symW - 8;
+    // Elegant status backdrop panel with golden border
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(statusX, statusY, statusBoxW, statusBoxH, 6);
+    ctx.fill();
+    ctx.stroke();
 
-    const drawBar = (symbol, cur, max, color, yOffset) => {
-      // symbol box
-      const sx = CANVAS_WIDTH - totalW;
-      const sy = barY + yOffset;
-      ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.textAlign = 'center';
+    // Safe fallbacks from player or gameState
+    const hpCur = (gameState.lives !== undefined ? gameState.lives : (gameState.hp || 5));
+    const hpMax = (gameState.maxLives !== undefined ? gameState.maxLives : (gameState.maxHp || 5));
+
+    const superCur = player?.superCharge !== undefined ? player.superCharge : (gameState.superCharge || gameState.super || 0);
+    const superMax = player?.superMax !== undefined ? player.superMax : (gameState.superMax || 100);
+
+    const slizeCur = player?.slize !== undefined ? player.slize : (gameState.slize || 0);
+    const slizeMax = player?.slizeMax !== undefined ? player.slizeMax : (gameState.slizeMax || 100);
+
+    const shieldCur = player?.shieldStamina !== undefined ? player.shieldStamina : (gameState.shieldStamina || gameState.shield || 100);
+    const shieldMax = player?.shieldMaxStamina !== undefined ? player.shieldMaxStamina : (gameState.shieldMaxStamina || gameState.shieldMax || 100);
+
+    // 2-Column Grid Layout: Column 0 (Left: HP, SLIZE), Column 1 (Right: SUPER, SHIELD)
+    const colW = (statusBoxW - 32) / 2; // ~194px each column
+    const barW = colW - 48; // bar width (~146px)
+    const col0X = statusX + 16;
+    const col1X = statusX + 24 + colW;
+    const row0Y = statusY + 12;
+    const row1Y = statusY + 38;
+
+    const renderBar = (bx, by, icon, label, cur, max, color, isHp = false) => {
+      // Icon and Label
+      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      // circle behind symbol
-      ctx.fillStyle = 'rgba(255,255,255,0.04)';
-      ctx.beginPath();
-      ctx.arc(sx + symW / 2, sy + 6, 10, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillText(symbol, sx + symW / 2, sy + 6);
+      ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = color;
+      ctx.fillText(icon, bx, by + 9);
 
-      // bar area
-      const bx = sx + symW + 8;
-      ctx.fillStyle = 'rgba(15,23,42,0.9)';
-      ctx.fillRect(bx, sy, barW, 10);
+      ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillText(label, bx + 16, by + 9);
+
+      // Metric value text
+      ctx.textAlign = 'right';
+      ctx.font = '700 11px "Outfit", monospace';
+      ctx.fillStyle = '#f8fafc';
+      const valStr = isHp ? `${cur}/${max}` : `${Math.round(cur)}%`;
+      ctx.fillText(valStr, bx + colW - 6, by + 9);
+
+      // Bar container
+      const trackX = bx + 48;
+      const trackY = by + 4;
+      const trackW = colW - 54 - 38; // 102px track width
+      const trackH = 10;
+
+      // Track background
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.9)';
+      ctx.fillRect(trackX, trackY, trackW, trackH);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(trackX + 0.5, trackY + 0.5, trackW - 1, trackH - 1);
+
+      // Fill with subtle gradient
       const ratio = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
       if (ratio > 0) {
-        ctx.fillStyle = color;
-        ctx.fillRect(bx, sy, barW * ratio, 10);
+        const fillW = Math.max(2, (trackW - 2) * ratio);
+        const grad = ctx.createLinearGradient(trackX, 0, trackX + trackW, 0);
+        grad.addColorStop(0, color);
+        grad.addColorStop(1, '#ffffff');
+        ctx.fillStyle = grad;
+        ctx.fillRect(trackX + 1, trackY + 1, fillW, trackH - 2);
+
+        // Gloss glint on top half of the bar
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.fillRect(trackX + 1, trackY + 1, fillW, (trackH - 2) / 2);
       }
-      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(bx + 0.5, sy + 0.5, barW - 1, 9);
-      ctx.textAlign = 'left';
     };
 
-    // Safe fallbacks from gameState
-    const hpCur = (gameState.hp !== undefined) ? gameState.hp : (gameState.lives !== undefined ? gameState.lives : 5);
-    const hpMax = (gameState.maxHp !== undefined) ? gameState.maxHp : (gameState.maxLives !== undefined ? gameState.maxLives : 5);
-    const superCur = gameState.super !== undefined ? gameState.super : (gameState.superCharge !== undefined ? gameState.superCharge : 0);
-    const superMax = gameState.superMax !== undefined ? gameState.superMax : 100;
-    const slizeCur = gameState.slize !== undefined ? gameState.slize : 0;
-    const slizeMax = gameState.slizeMax !== undefined ? gameState.slizeMax : 100;
-    const shieldCur = gameState.shield !== undefined ? gameState.shield : (gameState.shieldStamina !== undefined ? gameState.shieldStamina : 100);
-    const shieldMax = gameState.shieldMax !== undefined ? gameState.shieldMax : (gameState.shieldMaxStamina !== undefined ? gameState.shieldMaxStamina : 100);
+    // Draw Column 1: LIFE and SLIZE
+    renderBar(col0X, row0Y, '❤', 'LIFE', hpCur, hpMax, '#ef4444', true);
+    renderBar(col0X, row1Y, '✂', 'SLIZE', slizeCur, slizeMax, '#a855f7', false);
 
-    drawBar('❤', hpCur, hpMax, '#ef4444', 0);
-    drawBar('⚡', superCur, superMax, '#f59e0b', rowH);
-    drawBar('✂', slizeCur, slizeMax, '#a78bfa', rowH * 2);
-    drawBar('🛡', shieldCur, shieldMax, '#38bdf8', rowH * 3);
+    // Draw Column 2: SUPER and SHIELD
+    renderBar(col1X, row0Y, '⚡', 'SUPER', superCur, superMax, '#f59e0b', false);
+    renderBar(col1X, row1Y, '🛡', 'SHIELD', shieldCur, shieldMax, '#38bdf8', false);
 
     ctx.restore();
   }
