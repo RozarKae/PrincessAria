@@ -78,6 +78,14 @@ function drawBitmapText(ctx, text, startX, startY, color) {
 export class PixelHUD {
   constructor() {
     this.shardPulse = 0;
+    this.theme = {
+      1: { bg: '#0b1220', accent: '#f59e0b', deco: '#fbbf24' }, // Honeywood
+      2: { bg: '#071316', accent: '#60a5fa', deco: '#38bdf8' }, // Forest / example
+      3: { bg: '#1f1238', accent: '#a78bfa', deco: '#c084fc' }, // Castle
+      4: { bg: '#2b0b05', accent: '#f97316', deco: '#fb923c' }, // Volcano
+      5: { bg: '#241e10', accent: '#f59e0b', deco: '#fde68a' }, // Sandwich
+      6: { bg: '#071018', accent: '#fef08a', deco: '#f59e0b' }  // Clockwork
+    };
   }
 
   update(dt) {
@@ -185,23 +193,26 @@ export class PixelHUD {
     ctx.save();
     const width = ctx.canvas.width || 320;
 
-    // 1. Sleek glassmorphism neo-pixel top bar background (11px high)
-    ctx.fillStyle = 'rgba(7, 11, 20, 0.94)';
-    ctx.fillRect(0, 0, width, 11);
-    
-    // Top specular edge
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
-    ctx.fillRect(0, 0, width, 1);
-    
-    // Bottom border with glowing amber divider
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(0, 11, width, 1);
-    ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
-    ctx.fillRect(0, 11, 48, 1);
-    ctx.fillRect(width - 56, 11, 56, 1);
+    // Thematic Tabs: choose palette per world
+    const worldId = gameState?.world || 1;
+    const skin = this.theme[worldId] || this.theme[1];
 
-    // 2. ARIA + FOUR MINI-BARS (HP / SUPER / SLIZE / SPECIAL)
-    drawBitmapText(ctx, 'ARIA', 6, 1, P.UI_TEXT_GOLD);
+    // background strip
+    ctx.fillStyle = skin.bg;
+    ctx.fillRect(0, 0, width, 28);
+
+    // thin top hairline for separation
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.fillRect(0, 0, width, 1);
+
+    // Decorative center deco (subtle)
+    ctx.globalAlpha = 0.06;
+    ctx.fillStyle = skin.deco;
+    ctx.beginPath(); ctx.arc(width / 2, 14, 18, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Title / Left group
+    drawBitmapText(ctx, 'ARIA', 6, 4, skin.accent);
 
     // Bar drawing helper (x, y, width, ratio, color)
     const drawMiniBar = (bx, by, bw, ratio, color, bgColor = '#0b1220') => {
@@ -229,74 +240,60 @@ export class PixelHUD {
     const slizeMax = (gameState.slizeMax !== undefined) ? gameState.slizeMax : 100;
     const specialCur = (gameState.special !== undefined) ? gameState.special : (player && player.specialCharge !== undefined ? player.specialCharge : 0);
     const specialMax = (gameState.specialMax !== undefined) ? gameState.specialMax : 100;
-
-    // layout
-    const baseX = 30;
-    const baseY = 2;
-    const barW = 42;
-    const spacing = 6;
-
-    // HP (red/gold)
-    drawBitmapText(ctx, 'HP', baseX - 18, baseY, '#f87171');
-    drawMiniBar(baseX, baseY, barW, hpMax > 0 ? hpCur / hpMax : 0, '#ef4444');
-
-    // SUPER (amber)
-    drawBitmapText(ctx, 'SP', baseX + barW + spacing - 18, baseY, '#f59e0b');
-    drawMiniBar(baseX + barW + spacing, baseY, barW, superMax > 0 ? superCur / superMax : 0, '#f59e0b');
-
-    // SLIZE (purple)
-    drawBitmapText(ctx, 'SZ', baseX + (barW + spacing) * 2 - 18, baseY, '#a78bfa');
-    drawMiniBar(baseX + (barW + spacing) * 2, baseY, barW, slizeMax > 0 ? slizeCur / slizeMax : 0, '#a78bfa');
-
-    // SHIELD (cyan) - stamina bar shown when player has shield fields
+    // Shield values must be available for the vertical pill bars
     const shieldCur = (player && player.shieldStamina !== undefined) ? player.shieldStamina : (gameState.shield !== undefined ? gameState.shield : 0);
     const shieldMax = (player && player.shieldMaxStamina !== undefined) ? player.shieldMaxStamina : (gameState.shieldMax !== undefined ? gameState.shieldMax : 100);
-    drawBitmapText(ctx, 'SHD', baseX + (barW + spacing) * 3 - 18, baseY, '#38bdf8');
-    drawMiniBar(baseX + (barW + spacing) * 3, baseY, barW, shieldMax > 0 ? shieldCur / shieldMax : 0, '#38bdf8');
 
-    // 3. THREE POWERS INDICATOR: [Z] Melee  [X] Dash  [C] Starbeam
-    this.drawAbilityIcons(ctx, 60, 2, player);
+    // Compact layout tokens
+    const leftGroupX = 8;
+    const centerX = Math.floor(width / 2);
+    const rightGroupX = width - 110;
 
-    // 4. ROYAL SHARDS (Center)
-    const midX = Math.floor(width / 2);
-    this.drawShardIcon(ctx, midX - 22, 2);
-    const shards = (gameState.coins || gameState.shards || 0).toString().padStart(2, '0');
-    drawBitmapText(ctx, `x${shards}`, midX - 14, 3, P.UI_TEXT_WHITE);
+    // LEFT: World & Stage
+    const worldLabel = `W${gameState.world || 1}-${gameState.level || 1}`;
+    drawBitmapText(ctx, worldLabel, leftGroupX + 6, 8, P.UI_TEXT_WHITE);
 
-    // WORLD STAGE BADGE (e.g. W1-1 or W2-1)
-    const worldNum = gameState.world || 1;
-    const stageNum = gameState.level || 1;
-    drawBitmapText(ctx, `W${worldNum}-${stageNum}`, midX + 16, 3, '#38bdf8');
-
-    // 5. SCORE (Right)
-    const rightMargin = width - 74;
-    drawBitmapText(ctx, 'SCORE', rightMargin, 3, P.UI_TEXT_GOLD);
-    const scoreStr = (gameState.score || 0).toString().padStart(6, '0');
-    drawBitmapText(ctx, scoreStr, rightMargin + 26, 3, P.UI_TEXT_WHITE);
-
-    // 6. Active pickups / effect timers (right of score)
-    const effectsX = rightMargin + 72;
-    const effectsY = 2;
-    const drawEffect = (label, seconds, color) => {
-      if (seconds <= 0) return 0;
-      // icon
-      ctx.fillStyle = color;
-      ctx.fillRect(effectsX, effectsY, 4, 4);
-      // label and time (integer seconds)
-      const timeStr = Math.ceil(seconds).toString();
-      drawBitmapText(ctx, label, effectsX + 6, effectsY, P.UI_TEXT_WHITE);
-      drawBitmapText(ctx, timeStr, effectsX + 12, effectsY + 1, P.UI_TEXT_WHITE);
-      return 1; // consumed slot
-    };
-
-    let slotOffset = 0;
-    if (player && player.invincibilityTimer > 0) {
-      drawEffect('I', player.invincibilityTimer, '#fb7185');
-      slotOffset += 1;
+    // CENTER: Lives (heart icon) + Shards
+    const livesCount = (gameState.lives !== undefined) ? gameState.lives : 0;
+    // hearts: draw up to 5 small hearts then numeric if more
+    const heartsToDraw = Math.min(5, livesCount);
+    let hx = centerX - 24;
+    for (let i = 0; i < heartsToDraw; i++) {
+      this.drawHeart(ctx, hx + i * 5, 6, true);
     }
-    if (player && player.flightTimer > 0) {
-      drawEffect('F', player.flightTimer, '#60a5fa');
-      slotOffset += 1;
+    if (livesCount > 5) {
+      drawBitmapText(ctx, `x${livesCount}`, centerX - 24 + heartsToDraw * 5 + 4, 10, P.UI_TEXT_WHITE);
+    }
+
+    // Shards (coins) next to hearts
+    this.drawShardIcon(ctx, centerX + 8, 6);
+    const shards = (gameState.coins || gameState.shards || 0).toString().padStart(2, '0');
+    drawBitmapText(ctx, `x${shards}`, centerX + 22, 8, P.UI_TEXT_WHITE);
+
+    // RIGHT: Score + Treasure
+    drawBitmapText(ctx, 'SCORE', rightGroupX + 6, 2, P.UI_TEXT_GOLD);
+    const scoreStr = (gameState.score || 0).toString().padStart(6, '0');
+    drawBitmapText(ctx, scoreStr, rightGroupX + 6, 10, P.UI_TEXT_WHITE);
+    // Treasure chest
+    const treasureCount = (gameState.treasureBoxes || 0);
+    const tx = rightGroupX + 2;
+    const ty = 18;
+    ctx.fillStyle = '#8b5cf6'; ctx.fillRect(tx, ty, 6, 4);
+    ctx.fillStyle = '#fde68a'; ctx.fillRect(tx + 1, ty + 1, 4, 2);
+    drawBitmapText(ctx, `x${treasureCount.toString().padStart(2,'0')}`, tx + 10, 18, P.UI_TEXT_WHITE);
+
+    // Minimal ability hints (only icons, small)
+    const abilitiesX = centerX - 36;
+    this.drawAbilityIcons(ctx, abilitiesX, 14, player);
+
+    // 7. Continue prompt (pixel HUD minimal)
+    if (gameState.awaitingContinue) {
+      const cpX = Math.floor(width / 2) - 36;
+      const cpY = 20;
+      ctx.fillStyle = '#fde047';
+      drawBitmapText(ctx, 'CONTINUE?', cpX, cpY - 6, P.UI_TEXT_GOLD);
+      const hint = 'A:START';
+      drawBitmapText(ctx, hint, cpX + 2, cpY + 4, P.UI_TEXT_WHITE);
     }
 
     ctx.restore();

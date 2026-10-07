@@ -42,6 +42,8 @@ export class Player {
     this.isHurt = false;
     this.isDead = false;
     this.isVictorious = false;
+    this.maxHp = 100;
+    this.hp = 100;
     this.groundDistance = 0;
 
     // Production Hierarchical 2D Character Rig (Method A)
@@ -366,6 +368,7 @@ export class Player {
     this.isHurt = false;
     this.isDead = false;
     this.isVictorious = false;
+    this.hp = this.maxHp;
     this.coyoteTimer = 0;
     this.jumpBufferTimer = 0;
     this.dashTimer = 0;
@@ -899,26 +902,38 @@ export class Player {
     }
   }
 
-  hurt() {
-    if (this.invincibilityTimer > 0) return false;
+  /**
+   * Apply authoritative damage (LIGHT = 5, HEAVY = 10) to the player.
+   * Clamps HP between 0 and 100.
+   * Prevents damage if dead or invincible.
+   * @param {number} rawDamage - Raw amount or tier
+   * @param {number} knockDir - Knockback direction (-1, 0, 1)
+   * @returns {boolean} Whether damage was accepted and applied
+   */
+  hurt(rawDamage = 5, knockDir = 0) {
+    if (this.isDead || this.invincibilityTimer > 0) return false;
 
     // If shielding and have stamina, reduce or negate damage
     if (this.isShielding && this.shieldStamina > 0) {
-      // Successful block: short window of reduced knockback and no hurt state
       this.shieldStamina = Math.max(0, this.shieldStamina - 12);
       if (this.inputRef && this.inputRef.rumbleAttack) this.inputRef.rumbleAttack();
-      // play block sound if available
       if (this.inputRef && this.inputRef.gamepad && this.inputRef.gamepad.playBlock) {
         try { this.inputRef.gamepad.playBlock(); } catch (e) {}
       }
-      return false; // did not enter hurt state
+      return false; // did not enter hurt state / blocked
     }
+
+    // Normalize damage to exactly LIGHT (5) or HEAVY (10)
+    const damageAmount = (rawDamage >= 10 || rawDamage === 2) ? 10 : 5;
+
+    // Apply clamped damage
+    this.hp = Math.max(0, Math.min(this.maxHp, this.hp - damageAmount));
 
     this.invincibilityTimer = PHYSICS.INVINCIBILITY_TIME;
     this.isHurt = true;
     this.isDashing = false;
     this.vy = -560;
-    this.vx = -this.facing * 320;
+    this.vx = (knockDir !== 0 ? knockDir : -this.facing) * 320;
     this.anim.triggerHitReaction();
     if (this.inputRef && this.inputRef.rumbleDamage) {
       this.inputRef.rumbleDamage();
@@ -926,12 +941,8 @@ export class Player {
     return true;
   }
 
-  takeDamage(amount = 1, knockDir = 0) {
-    const wasHurt = this.hurt();
-    if (wasHurt && knockDir !== 0) {
-      this.vx = knockDir * 320;
-    }
-    return wasHurt;
+  takeDamage(amount = 5, knockDir = 0) {
+    return this.hurt(amount, knockDir);
   }
 
   setVictory() {

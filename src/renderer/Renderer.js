@@ -315,11 +315,11 @@ export class Renderer {
   }
 
   /**
-   * Draw the Game Over / Level Clear screen at native display canvas resolution.
+   * Draw the Game Over / Defeated / Level Clear screen at native display canvas resolution.
    * Must be called AFTER endFrame(). Uses GameOverScreen.js at 1920×1080 coordinates,
    * scaled to fit the actual display — sharp text, buttons, and panels.
    */
-  drawGameOverOverlay(gameOverScreen, gameState, isClear, levelInfo = {}) {
+  drawGameOverOverlay(gameOverScreen, gameState, mode = 'DEFEATED', levelInfo = {}) {
     if (!gameOverScreen) return;
     const ctx = this.ctx;
     const dW = this.canvas.width;
@@ -327,7 +327,7 @@ export class Renderer {
     ctx.save();
     // Scale from logical 1920×1080 GameOverScreen coordinate space to display resolution
     ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
-    gameOverScreen.draw(ctx, gameState, isClear, levelInfo);
+    gameOverScreen.draw(ctx, gameState, mode, levelInfo);
     ctx.restore();
   }
 

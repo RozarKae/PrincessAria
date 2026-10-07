@@ -35,6 +35,7 @@ export const PHYSICS = {
 export const GAME_STATES = {
   TITLE: 'TITLE',
   PLAYING: 'PLAYING',
+  DEFEATED: 'DEFEATED',
   GAME_OVER: 'GAME_OVER',
   LEVEL_CLEAR: 'LEVEL_CLEAR',
 };

@@ -84,6 +84,16 @@ export class Level {
     this.movingPlatforms = [];
     this.particles = [];
     this.pickups = [];
+    // If the authored level data contains deterministic pickups, spawn them now
+    if (this.data && Array.isArray(this.data.pickups)) {
+      this.data.pickups.forEach(p => {
+        try {
+          this.spawnPickup(p.x, p.y, p.type || 'herb', p.options || {});
+        } catch (e) {
+          // ignore malformed pickup entries
+        }
+      });
+    }
     this.ambientButterflies = [];
 
     this.batboy = new Batboy(this.goal.x + 10, this.goal.y + 40);
@@ -471,14 +481,17 @@ export class Level {
             }
             if (camera) camera.shake(7, 0.12);
           } else {
-            // Player takes damage on side/bottom collision
-            const wasHurt = player.hurt();
+            // Player takes damage on side/bottom collision:
+            // Standard enemy collision applies LIGHT (5 HP) or HEAVY (10 HP if threatLevel >= 4 or boss)
+            const dmgTier = (enemy.threatLevel >= 4 || enemy.isBoss) ? 10 : 5;
+            const knockDir = player.x < enemy.x ? -1 : 1;
+            const wasHurt = player.hurt(dmgTier, knockDir);
             if (wasHurt) {
+              if (gameState) gameState.hp = player.hp;
               if (camera) camera.shake(11, 0.2);
               if (audio && audio.playDamage) audio.playDamage();
               else if (audio && audio.playHurt) audio.playHurt();
-              gameState.loseLife();
-              if (this.director) this.director.telemetry.recordDamage(1, 'enemy', player.x, player.y);
+              if (this.director) this.director.telemetry.recordDamage(dmgTier, 'enemy', player.x, player.y);
             }
           }
         }
@@ -1072,11 +1085,11 @@ export class Level {
           mimic.activeTimer = (mimic.activeTimer || 0) + dt;
           mimic.isAwake = true;
           if (mimic.activeTimer > 0.45 && Math.abs(dx) < 65 && !player.isDashing && player.y + player.height > mimic.y - 35) {
-            const wasHurt = player.hurt();
+            const wasHurt = player.hurt(10, dx > 0 ? 1 : -1);
             if (wasHurt) {
+              if (gameState) gameState.hp = player.hp;
               if (camera) camera.shake(10, 0.2);
               if (audio && audio.playDamage) audio.playDamage();
-              gameState.loseLife();
             }
           }
         } else {

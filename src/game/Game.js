@@ -10,6 +10,7 @@ import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
 import { HUD } from '../ui/HUD.js';
 import { DialogueBox } from '../ui/DialogueBox.js';
+import { ContinueDialog } from '../ui/ContinueDialog.js';
 import { TitleScreen } from '../ui/TitleScreen.js';
 import { TitleScreen3D } from '../ui/TitleScreen3D.js';
 import { CinematicTitleScreen } from '../ui/CinematicTitleScreen.js';
@@ -36,6 +37,7 @@ export class Game {
 
     this.hud = new HUD();
     this.dialogue = new DialogueBox();
+    this.continueDialog = new ContinueDialog();
     this.titleScreen = new CinematicTitleScreen(this.container, () => {
       this.restartGame();
     }, this.audio);
@@ -63,6 +65,8 @@ export class Game {
     }
 
     this.respawnTimer = 0;
+    this.awaitingContinue = false;
+    this.deathRemainingLives = 0;
     this.lastTime = performance.now();
     this.accumulator = 0;
     this.fixedStep = 1 / 60;
@@ -93,14 +97,20 @@ export class Game {
         return;
       }
 
-      // Check level clear continue button click
-      if (this.state === GAME_STATES.LEVEL_CLEAR || this.state === GAME_STATES.GAME_OVER) {
-        this.gameOverScreen.handleClick(canvasX, canvasY, () => {
-          if (this.state === GAME_STATES.LEVEL_CLEAR) {
-            this.advanceToNextWorld();
-          } else {
-            this.restartGame();
-          }
+      // Check level clear, defeated, or game over button clicks
+      if (this.state === GAME_STATES.LEVEL_CLEAR) {
+        this.gameOverScreen.handleClick(canvasX, canvasY, 'VICTORY', () => {
+          this.advanceToNextWorld();
+        });
+      } else if (this.state === GAME_STATES.DEFEATED) {
+        this.gameOverScreen.handleClick(canvasX, canvasY, 'DEFEATED', () => {
+          this.continueFromCheckpoint();
+        }, () => {
+          this.goToMainMenu();
+        });
+      } else if (this.state === GAME_STATES.GAME_OVER) {
+        this.gameOverScreen.handleClick(canvasX, canvasY, 'GAME_OVER', null, () => {
+          this.goToMainMenu();
         });
       }
     });
@@ -208,6 +218,91 @@ export class Game {
       this.camera.x = this.player.x - CANVAS_WIDTH / 2;
       this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
     }
+    this.state = GAME_STATES.PLAYING;
+  }
+
+  /**
+   * End current run and return to Main Menu / Title Screen.
+   * Clears temporary run state, resets death state, and restores starting parameters.
+   */
+  goToMainMenu() {
+    this.currentLevelData = LEVEL_1_1;
+    this.gameState.resetForNewGame(1, 1);
+    this.level = new Level(this.currentLevelData);
+    this.director = this.level.director;
+    this.player.respawn(this.level.spawnPoint.x, this.level.spawnPoint.y);
+    if (this.camera) {
+      this.camera.x = this.player.x - CANVAS_WIDTH / 2;
+      this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
+    }
+    this.state = GAME_STATES.TITLE;
+    if (this.titleScreen) {
+      this.titleScreen.start();
+    }
+  }
+
+  /**
+   * Centralized Player Death Handler.
+   * Guarantees:
+   * 1. Exactly one death removes only ONE life.
+   * 2. Prevents duplicate death events across frames.
+   * 3. Lives > 1 before death -> loses 1 life, HP resets to 100, pause gameplay, enter DEFEATED state.
+   * 4. Lives == 1 before death -> loses final life (lives = 0), HP stays 0, no checkpoint respawn, enter GAME_OVER state.
+   */
+  handlePlayerDeath() {
+    if (this.player.isDead || this.state === GAME_STATES.DEFEATED || this.state === GAME_STATES.GAME_OVER) {
+      return;
+    }
+
+    this.player.isDead = true;
+    this.player.anim.play('DEATH', true);
+    if (this.audio && this.audio.playDeath) this.audio.playDeath();
+    if (this.camera) this.camera.shake(14, 0.3);
+
+    if (this.gameState.lives > 1) {
+      // Normal Death: remove 1 life, reset HP to 100, keep latest checkpoint
+      this.gameState.loseLife();
+      this.player.hp = this.player.maxHp;
+      this.gameState.hp = this.player.hp;
+      this.respawnTimer = 0.8; // Brief delay to let death animation register before showing screen
+    } else {
+      // Final Life Death: lives becomes 0, HP stays 0, no checkpoint continue allowed
+      this.gameState.lives = 0;
+      this.player.hp = 0;
+      this.gameState.hp = 0;
+      this.respawnTimer = 0.8;
+    }
+  }
+
+  /**
+   * Continue from the most recently activated checkpoint after Normal Defeat.
+   * Preserves current lives, restores HP = 100, sets player to ALIVE, and resumes gameplay.
+   */
+  continueFromCheckpoint() {
+    if (this.gameState.lives <= 0) {
+      this.state = GAME_STATES.GAME_OVER;
+      return;
+    }
+
+    // Keep current life count and restore HP = 100
+    this.player.hp = this.player.maxHp;
+    this.gameState.hp = this.player.hp;
+
+    // Respawn player at latest checkpoint / spawn point
+    const spawnX = this.level?.spawnPoint?.x ?? this.player.startX;
+    const spawnY = this.level?.spawnPoint?.y ?? this.player.startY;
+    this.player.respawn(spawnX, spawnY);
+
+    if (this.camera) {
+      this.camera.x = this.player.x - CANVAS_WIDTH / 2;
+      this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
+    }
+
+    if (this.level && this.level.spawnDust) {
+      this.level.spawnDust(this.player.x + this.player.width / 2, this.player.y + this.player.height, 10);
+    }
+
+    // Clear temporary death state, re-enable player controls, resume gameplay
     this.state = GAME_STATES.PLAYING;
   }
 
@@ -339,6 +434,26 @@ export class Game {
       return;
     }
 
+    if (this.state === GAME_STATES.DEFEATED) {
+      this.gameOverScreen.update(dt);
+      if (this.player) {
+        this.player.anim.update(dt);
+      }
+      // Menu navigation between [ CONTINUE FROM CHECKPOINT ] (0) and [ MAIN MENU ] (1)
+      if (this.input.justPressed('UP') || this.input.justPressed('DOWN')) {
+        this.gameOverScreen.selectedOption = this.gameOverScreen.selectedOption === 0 ? 1 : 0;
+        if (this.audio && this.audio.playSelect) this.audio.playSelect();
+      }
+      if (this.input.justPressed('START') || this.input.justPressed('JUMP') || this.input.justPressed('ATTACK')) {
+        if (this.gameOverScreen.selectedOption === 0) {
+          this.continueFromCheckpoint();
+        } else {
+          this.goToMainMenu();
+        }
+      }
+      return;
+    }
+
     if (this.state === GAME_STATES.GAME_OVER || this.state === GAME_STATES.LEVEL_CLEAR) {
       this.gameOverScreen.update(dt);
       if (this.player) {
@@ -348,7 +463,7 @@ export class Game {
         if (this.state === GAME_STATES.LEVEL_CLEAR) {
           this.advanceToNextWorld();
         } else {
-          this.restartGame();
+          this.goToMainMenu();
         }
       }
       return;
@@ -357,13 +472,19 @@ export class Game {
     // --- PLAYING STATE ---
     this.hud.update(dt);
 
+    // HP Zero Death Trigger check during active play
+    if (this.player.hp <= 0 && !this.player.isDead) {
+      this.handlePlayerDeath();
+      return;
+    }
+
     if (this.player.isDead) {
       this.player.anim.update(dt);
       this.respawnTimer -= dt;
       if (this.respawnTimer <= 0) {
         if (this.gameState.lives > 0) {
-          this.player.respawn(this.level.spawnPoint.x, this.level.spawnPoint.y);
-          this.level.spawnDust(this.player.x + this.player.width / 2, this.player.y + this.player.height, 8);
+          this.state = GAME_STATES.DEFEATED;
+          this.gameOverScreen.selectedOption = 0;
         } else {
           this.state = GAME_STATES.GAME_OVER;
         }
@@ -394,11 +515,15 @@ export class Game {
     allPlatforms.forEach(plat => {
       const res = Collision.resolveSolidPlatform(this.player, plat);
       if (res.hazard) {
-        const wasHurt = this.player.hurt();
+        // Platform hazards deal HEAVY damage = 10 HP
+        const wasHurt = this.player.hurt(10);
         if (wasHurt) {
+          this.gameState.hp = this.player.hp;
           if (this.camera) this.camera.shake(11, 0.2);
           if (this.audio && this.audio.playDamage) this.audio.playDamage();
-          this.gameState.loseLife();
+          if (this.player.hp <= 0) {
+            this.handlePlayerDeath();
+          }
         }
       } else if (res.shroomBounce) {
         if (this.audio && this.audio.playBounce) {
@@ -448,17 +573,11 @@ export class Game {
       this.player.groundDistance = closestDist < 1000 ? closestDist : 400;
     }
 
-    // 4. Fall Death Check
+    // 4. Fall Death Check (Instant Lethal -> HP 0 -> Death Event)
     if (this.player.y > PHYSICS.DEATH_Y) {
-      this.player.isDead = true;
-      this.player.anim.play('DEATH', true);
-      if (this.audio) this.audio.playDeath();
-      this.camera.shake(12, 0.25);
-      const remainingLives = this.gameState.loseLife();
-      this.respawnTimer = PHYSICS.RESPAWN_DELAY;
-      if (remainingLives <= 0) {
-        this.respawnTimer = 1.2;
-      }
+      this.player.hp = 0;
+      this.gameState.hp = 0;
+      this.handlePlayerDeath();
       return;
     }
 
@@ -620,11 +739,19 @@ export class Game {
       return;
     }
 
+    if (this.state === GAME_STATES.DEFEATED) {
+      // Draw world in background, then blit pixel art, then draw HD Defeated overlay
+      this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
+      this.renderer.endFrame();
+      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, 'DEFEATED');
+      return;
+    }
+
     if (this.state === GAME_STATES.GAME_OVER) {
       // Draw world in background, then blit pixel art, then draw HD Game Over overlay
       this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
       this.renderer.endFrame();
-      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, false);
+      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, 'GAME_OVER');
       return;
     }
 
@@ -632,7 +759,7 @@ export class Game {
       // Draw world in background, then blit pixel art, then draw HD Level Clear overlay
       this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
       this.renderer.endFrame();
-      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, true, { totalShards: this.level.shards.length });
+      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, 'VICTORY', { totalShards: this.level.shards.length });
       return;
     }
 
@@ -660,5 +787,18 @@ export class Game {
 
     // Draw HUD at native display resolution (sharp text, icons, and boss bar)
     this.renderer.drawHUDOverlay(this.hud, this.gameState, this.player, activeBoss);
+
+    // Draw ContinueDialog modal on top of everything when active
+    if (this.continueDialog && this.continueDialog.active) {
+      // Draw at display resolution using the HUD canvas context
+      const ctx = this.renderer.ctx;
+      ctx.save();
+      // scale to HUD coordinate space
+      const dW = this.renderer.canvas.width;
+      const dH = this.renderer.canvas.height;
+      ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
+      this.continueDialog.draw(ctx);
+      ctx.restore();
+    }
   }
 }

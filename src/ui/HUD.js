@@ -166,9 +166,10 @@ export class HUD {
     ctx.roundRect(statusX + 2, statusY + 2, statusBoxW - 4, statusBoxH - 4, 6);
     ctx.stroke();
 
-    // Safe fallbacks from player or gameState
-    const hpCur = (gameState.lives !== undefined ? gameState.lives : (gameState.hp || 5));
-    const hpMax = (gameState.maxLives !== undefined ? gameState.maxLives : (gameState.maxHp || 5));
+    // Authoritative HP & Lives
+    const hpCur = (player && player.hp !== undefined) ? player.hp : (gameState.hp !== undefined ? gameState.hp : 100);
+    const hpMax = (player && player.maxHp !== undefined) ? player.maxHp : (gameState.maxHp !== undefined ? gameState.maxHp : 100);
+    const livesCur = (gameState.lives !== undefined) ? gameState.lives : 5;
 
     const superCur = player?.superCharge !== undefined ? player.superCharge : (gameState.superCharge || gameState.super || 0);
     const superMax = player?.superMax !== undefined ? player.superMax : (gameState.superMax || 100);
@@ -179,7 +180,7 @@ export class HUD {
     const shieldCur = player?.shieldStamina !== undefined ? player.shieldStamina : (gameState.shieldStamina || gameState.shield || 100);
     const shieldMax = player?.shieldMaxStamina !== undefined ? player.shieldMaxStamina : (gameState.shieldMaxStamina || gameState.shieldMax || 100);
 
-    // 2-Column Grid Layout: Column 0 (Left: LIFE, SLIZE), Column 1 (Right: SUPER, SHIELD)
+    // 2-Column Grid Layout: Column 0 (Left: HP, LIVES/SLIZE), Column 1 (Right: SUPER, SHIELD)
     const colPad = 16;
     const colW = (statusBoxW - colPad * 3) / 2; // ~211px per column
     const col0X = statusX + colPad;
@@ -187,7 +188,7 @@ export class HUD {
     const row0Y = statusY + 9;
     const row1Y = statusY + 36;
 
-    const renderBar = (bx, by, icon, label, cur, max, color, isHp = false) => {
+    const renderBar = (bx, by, icon, label, cur, max, color, isHp = false, customValStr = null) => {
       const centerY = by + 12;
 
       // Icon
@@ -206,7 +207,7 @@ export class HUD {
       ctx.textAlign = 'right';
       ctx.font = 'bold 11px monospace';
       ctx.fillStyle = '#f8fafc';
-      const valStr = isHp ? `${cur}/${max}` : `${Math.round(cur)}%`;
+      const valStr = customValStr !== null ? customValStr : (isHp ? `${cur}/${max}` : `${Math.round(cur)}%`);
       ctx.fillText(valStr, bx + colW, centerY);
 
       // Bar Track between label and value
@@ -238,9 +239,9 @@ export class HUD {
       }
     };
 
-    // Draw Column 1: LIFE and SLIZE
-    renderBar(col0X, row0Y, '❤', 'LIFE', hpCur, hpMax, '#ef4444', true);
-    renderBar(col0X, row1Y, '✂', 'SLIZE', slizeCur, slizeMax, '#c084fc', false);
+    // Draw Column 1: HP (0-100) and LIVES (♥ x 5)
+    renderBar(col0X, row0Y, '❤', 'HP', hpCur, hpMax, '#ef4444', true);
+    renderBar(col0X, row1Y, '👑', 'LIVES', livesCur, 5, '#ec4899', false, `♥ × ${livesCur}`);
 
     // Draw Column 2: SUPER and SHIELD
     renderBar(col1X, row0Y, '⚡', 'SUPER', superCur, superMax, '#f59e0b', false);

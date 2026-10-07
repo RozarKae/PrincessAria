@@ -6,28 +6,32 @@ export class GameState {
     this.defaultLives = 5;
     this.maxLives = 5;
     this.lives = this.defaultLives;
+    this.maxHp = 100;
+    this.hp = 100;
     this.coins = 0;
     this.score = 0;
     this.world = 1;
     this.level = 1;
     this.highScore = this.loadHighScore();
+    // Inventory counts
+    this.treasureBoxes = 0;
+    // UI state helpers
+    this.awaitingContinue = false;
   }
 
   resetForNewGame(world = 1, level = 1) {
     this.lives = this.defaultLives;
+    this.hp = this.maxHp;
     this.coins = 0;
     this.score = 0;
     this.world = world;
     this.level = level;
+    this.awaitingContinue = false;
   }
 
   addCoins(amount = 1) {
     this.coins += amount;
-    // Every 50 coins grants an extra life
-    if (this.coins >= 50) {
-      this.coins -= 50;
-      this.lives += 1;
-    }
+    // Coins grant score/shards without adding unrequested extra lives
   }
 
   gainLife(amount = 1) {
@@ -60,5 +64,10 @@ export class GameState {
     try {
       localStorage.setItem('hd_platformer_highscore', this.highScore.toString());
     } catch {}
+  }
+
+  addTreasure(amount = 1) {
+    this.treasureBoxes = (this.treasureBoxes || 0) + amount;
+    return this.treasureBoxes;
   }
 }

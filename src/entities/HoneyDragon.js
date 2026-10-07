@@ -381,7 +381,7 @@ export class HoneyDragon extends Enemy {
         height: 75,
       };
       if (Collision.intersects(player.getBounds(), breathRect)) {
-        player.hurt(1, this.facing);
+        player.hurt(10, this.facing);
       }
 
       if (this.breathTimer <= 0) {

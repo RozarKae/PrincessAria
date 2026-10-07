@@ -277,10 +277,10 @@ export class SirSlamALot extends Enemy {
       });
     }
 
-    // Shockwave damage: hurts player if on ground near impact
+    // Shockwave damage: hurts player if on ground near impact (HEAVY = 10 HP)
     if (player && !player.isDead) {
       if (player.isGrounded && Math.abs((player.x + player.width / 2) - slamX) < 240) {
-        player.hurt();
+        player.hurt(10, player.x < slamX ? -1 : 1);
         player.vy = -380;
       }
     }

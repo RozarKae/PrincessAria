@@ -323,6 +323,14 @@ export const WORLDS = {
           { x: 10500, y: 550 },
         ],
 
+        // Deterministic pickups placed by level designers
+        pickups: [
+          { x: 1320, y: 400, type: 'herb' },
+          { x: 3840, y: 520, type: 'elixir', options: { subtype: 'invincibility', duration: 8 } },
+          { x: 4460, y: 240, type: 'star' },
+          { x: 9320, y: 260, type: 'treasure' }
+        ],
+
         // Coordinated Enemy Encounter Ecosystem:
         // 8 Distinct Authored Encounters across the 10,800px Journey
         enemies: [
@@ -635,6 +643,14 @@ export const WORLDS = {
           { x: 10520, y: 780 },
         ],
 
+        // Deterministic pickups placed by level designers
+        pickups: [
+          { x: 2720, y: 760, type: 'herb' },
+          { x: 2950, y: 600, type: 'elixir', options: { subtype: 'flight', duration: 10 } },
+          { x: 3840, y: 520, type: 'star' },
+          { x: 4860, y: 700, type: 'treasure' }
+        ],
+
         // Coordinated Enemy Encounters across the 10,800px Journey
         enemies: [
           // --- SECTION 1 ENCOUNTERS ---
@@ -916,6 +932,14 @@ export const WORLDS = {
           { x: 10520, y: 780 },
         ],
 
+        // Deterministic pickups placed by level designers
+        pickups: [
+          { x: 1140, y: 520, type: 'herb' },
+          { x: 4400, y: 360, type: 'elixir', options: { subtype: 'invincibility', duration: 7 } },
+          { x: 6280, y: 300, type: 'star' },
+          { x: 6260, y: 320, type: 'treasure' }
+        ],
+
         // Coordinated Enemy Encounters across the 10,800px Journey
         enemies: [
           // --- SECTION 1 ENCOUNTERS ---
@@ -1162,6 +1186,22 @@ export const WORLDS = {
           { x: 10200, y: 440 },
           { x: 10460, y: 500 },
           { x: 10540, y: 820 },
+        ],
+
+        // Deterministic pickups placed by level designers
+        pickups: [
+          { x: 380, y: 800, type: 'herb' },
+          { x: 3580, y: 320, type: 'elixir', options: { subtype: 'invincibility', duration: 6 } },
+          { x: 6300, y: 660, type: 'star' },
+          { x: 6880, y: 300, type: 'treasure' }
+        ],
+
+        // Deterministic pickups placed by level designers
+        pickups: [
+          { x: 960, y: 760, type: 'herb' },
+          { x: 6200, y: 380, type: 'elixir', options: { subtype: 'invincibility', duration: 6 } },
+          { x: 6320, y: 260, type: 'star' },
+          { x: 6260, y: 320, type: 'treasure' }
         ],
 
         // Coordinated Volcanic Encounters

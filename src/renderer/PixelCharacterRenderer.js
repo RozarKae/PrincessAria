@@ -511,6 +511,7 @@ export class PixelCharacterRenderer {
    * Pre-render all ASCII frames into offscreen canvases for blazingly fast pixel blitting.
    */
   initSpriteBuffers() {
+    if (typeof document === 'undefined') return;
     Object.keys(RAW_FRAMES).forEach(frameKey => {
       const asciiLines = RAW_FRAMES[frameKey];
       const canvas = document.createElement('canvas');

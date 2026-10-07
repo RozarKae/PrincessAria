@@ -15,6 +15,9 @@ export class TreasureBox extends PickupBase {
     this.opened = true;
     level.spawnBurst(this.x + this.width / 2, this.y + this.height / 2, 18, '#fce7f3');
     if (audio && audio.playCollect) audio.playCollect();
+    // Play a UI confirm + treasure open combo
+    if (audio && audio.playMenuSelect) audio.playMenuSelect();
+    if (audio && audio.playTreasureOpen) audio.playTreasureOpen();
 
     // Random loot table
     const roll = Math.random();
@@ -38,6 +41,11 @@ export class TreasureBox extends PickupBase {
       if (level && typeof level.triggerSuperBomb === 'function') {
         level.triggerSuperBomb(this.x, this.y, player, audio);
       }
+    }
+
+    // Track that player opened a treasure box
+    if (gameState && typeof gameState.addTreasure === 'function') {
+      gameState.addTreasure(1);
     }
   }
 

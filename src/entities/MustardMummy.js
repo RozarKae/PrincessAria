@@ -69,11 +69,8 @@ export class MustardMummy extends Enemy {
           p.y < player.y + player.height
         ) {
           const wasHurt = typeof player.takeDamage === 'function'
-            ? player.takeDamage(1, p.vx > 0 ? 1 : -1)
-            : (typeof player.hurt === 'function' ? player.hurt() : false);
-          if (wasHurt && level && level.gameState && typeof level.gameState.loseLife === 'function') {
-            level.gameState.loseLife();
-          }
+            ? player.takeDamage(5, p.vx > 0 ? 1 : -1)
+            : (typeof player.hurt === 'function' ? player.hurt(5) : false);
           if (camera && wasHurt) camera.shake(10, 0.2);
           p.life = 0;
         }

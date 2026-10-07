@@ -687,6 +687,47 @@ export class AudioManager {
     } catch (e) {}
   }
 
+  // ========================================================
+  // 5b. TREASURE BOX OPEN SFX (Distinct chime + coin rattle)
+  // ========================================================
+  playTreasureOpen() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    try {
+      // Short bright chime cluster (snappier, lower overall gain)
+      const chimeNotes = [1100, 1460, 1840];
+      chimeNotes.forEach((f, i) => {
+        const t = now + i * 0.02;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, t);
+        // slightly decreasing amplitude per partial
+        g.gain.setValueAtTime(0.14 * Math.pow(0.85, i), t);
+        g.gain.exponentialRampToValueAtTime(0.002, t + 0.18);
+        osc.connect(g);
+        g.connect(this.sfxGain);
+        osc.start(t);
+        osc.stop(t + 0.20);
+      });
+
+      // quick coin rattle (soft, to sit under chime)
+      for (let i = 0; i < 3; i++) {
+        const t = now + 0.04 + i * 0.04;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(220 + i * 30, t);
+        g.gain.setValueAtTime(0.05 * Math.pow(0.9, i), t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
+        osc.connect(g);
+        g.connect(this.sfxGain);
+        osc.start(t);
+        osc.stop(t + 0.12);
+      }
+    } catch (e) {}
+  }
+
   playCoin() {
     this.playCollect();
   }
