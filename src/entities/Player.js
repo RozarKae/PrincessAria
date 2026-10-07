@@ -51,6 +51,8 @@ export class Player {
     this.coyoteTimer = 0;
     this.jumpBufferTimer = 0;
     this.invincibilityTimer = 0;
+    this.flightTimer = 0;
+    this.canFly = false;
     this.dashTimer = 0;
     this.dashCooldownTimer = 0;
     this.dashParticles = [];
@@ -436,6 +438,13 @@ export class Player {
       this.invincibilityTimer -= dt;
       if (this.invincibilityTimer <= 0) {
         this.isHurt = false;
+      }
+    }
+
+    if (this.flightTimer > 0) {
+      this.flightTimer -= dt;
+      if (this.flightTimer <= 0) {
+        this.canFly = false;
       }
     }
 
@@ -1011,6 +1020,19 @@ export class Player {
       ctx.fillStyle = '#ffffff88';
       ctx.fillRect(0, -4, 2, 2);
 
+      ctx.restore();
+    }
+
+    // 7. Draw invincibility / flight HUD hint near player
+    if (this.invincibilityTimer > 0 || this.canFly) {
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      const iconX = this.x + (this.facing > 0 ? this.width + 6 : -18);
+      const iconY = this.y - 12;
+      ctx.fillStyle = this.invincibilityTimer > 0 ? '#f97316' : '#60a5fa';
+      ctx.beginPath();
+      ctx.arc(iconX, iconY, 6, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
 

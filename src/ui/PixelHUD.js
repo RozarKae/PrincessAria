@@ -274,6 +274,31 @@ export class PixelHUD {
     const scoreStr = (gameState.score || 0).toString().padStart(6, '0');
     drawBitmapText(ctx, scoreStr, rightMargin + 26, 3, P.UI_TEXT_WHITE);
 
+    // 6. Active pickups / effect timers (right of score)
+    const effectsX = rightMargin + 72;
+    const effectsY = 2;
+    const drawEffect = (label, seconds, color) => {
+      if (seconds <= 0) return 0;
+      // icon
+      ctx.fillStyle = color;
+      ctx.fillRect(effectsX, effectsY, 4, 4);
+      // label and time (integer seconds)
+      const timeStr = Math.ceil(seconds).toString();
+      drawBitmapText(ctx, label, effectsX + 6, effectsY, P.UI_TEXT_WHITE);
+      drawBitmapText(ctx, timeStr, effectsX + 12, effectsY + 1, P.UI_TEXT_WHITE);
+      return 1; // consumed slot
+    };
+
+    let slotOffset = 0;
+    if (player && player.invincibilityTimer > 0) {
+      drawEffect('I', player.invincibilityTimer, '#fb7185');
+      slotOffset += 1;
+    }
+    if (player && player.flightTimer > 0) {
+      drawEffect('F', player.flightTimer, '#60a5fa');
+      slotOffset += 1;
+    }
+
     ctx.restore();
   }
 }

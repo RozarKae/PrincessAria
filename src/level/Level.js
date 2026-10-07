@@ -28,6 +28,10 @@ import { MechanicalSpider } from '../entities/MechanicalSpider.js';
 import { TimeTinker } from '../entities/TimeTinker.js';
 import { MovingPlatform } from '../entities/MovingPlatform.js';
 import { Particle } from '../entities/Particle.js';
+import { Herb } from '../entities/Herb.js';
+import { Elixir } from '../entities/Elixir.js';
+import { Star } from '../entities/Star.js';
+import { TreasureBox } from '../entities/TreasureBox.js';
 import { Batboy } from '../entities/Batboy.js';
 import { QueenBeePresence } from '../systems/QueenBeePresence.js';
 import { Collision } from '../physics/Collision.js';
@@ -79,6 +83,7 @@ export class Level {
     this.enemies = [];
     this.movingPlatforms = [];
     this.particles = [];
+    this.pickups = [];
     this.ambientButterflies = [];
 
     this.batboy = new Batboy(this.goal.x + 10, this.goal.y + 40);
@@ -120,6 +125,42 @@ export class Level {
 
     this.initButterflies();
     this.reset();
+  }
+
+  spawnPickup(x, y, type = 'herb', options = {}) {
+    let p = null;
+    switch (type) {
+      case 'herb':
+        p = new Herb(x, y);
+        break;
+      case 'elixir':
+        p = new Elixir(x, y, options.subtype || 'invincibility', options.duration || 6);
+        break;
+      case 'star':
+        p = new Star(x, y);
+        break;
+      case 'treasure':
+        p = new TreasureBox(x, y);
+        break;
+      default:
+        p = new Herb(x, y);
+    }
+    if (!this.pickups) this.pickups = [];
+    this.pickups.push(p);
+    return p;
+  }
+
+  scatterPickups(count = 6) {
+    // scatter across level width avoiding very top/bottom
+    for (let i = 0; i < count; i++) {
+      const x = 200 + Math.random() * Math.max(0, (this.width || 2000) - 400);
+      const y = 140 + Math.random() * Math.max(0, (this.height || 900) - 300);
+      const r = Math.random();
+      if (r < 0.4) this.spawnPickup(x, y, 'herb');
+      else if (r < 0.7) this.spawnPickup(x, y, 'elixir', { subtype: Math.random() < 0.6 ? 'invincibility' : 'flight', duration: 6 });
+      else if (r < 0.9) this.spawnPickup(x, y, 'star');
+      else this.spawnPickup(x, y, 'treasure');
+    }
   }
 
   toggleDebugAI() {
@@ -268,6 +309,9 @@ export class Level {
     this.batboy.x = this.goal.x + 10;
     this.batboy.y = this.goal.y + 40;
 
+    // pickups list
+    this.pickups = [];
+
     // Reset crumble blocks
     if (this.platforms) {
       this.platforms.forEach(p => {
@@ -343,6 +387,19 @@ export class Level {
     this.gameState = gameState;
     this.audioRef = audio;
     this.batboy.update(dt);
+
+    // Update pickups
+    if (this.pickups) {
+      this.pickups.forEach((p, idx) => {
+        if (p.update) p.update(dt, this);
+        if (!p.collected && player && p.getBounds && Collision.intersects(player.getBounds(), p.getBounds())) {
+          p.onCollect(player, this, gameState, audio);
+          p.collected = true;
+        }
+      });
+      // remove collected
+      this.pickups = this.pickups.filter(p => !p.collected);
+    }
 
     // 1. Update Moving Platforms
     this.movingPlatforms.forEach(mp => mp.update(dt, player));
@@ -1091,6 +1148,23 @@ export class Level {
     if (this.encounterCoordinator) {
       this.encounterCoordinator.update(dt, this, player);
     }
+  }
+
+  triggerSuperBomb(cx, cy, player, audio) {
+    // Damage or kill all enemies within radius
+    const radius = 420;
+    this.enemies.forEach(e => {
+      const dx = (e.x + e.width / 2) - cx;
+      const dy = (e.y + e.height / 2) - cy;
+      const d2 = dx * dx + dy * dy;
+      if (d2 <= radius * radius) {
+        if (typeof e.takeDamage === 'function') {
+          e.takeDamage(999, 0, -200, audio);
+        }
+      }
+    });
+    if (audio && audio.playExplosion) audio.playExplosion();
+    this.spawnBurst(cx, cy, 36, '#fb7185');
   }
 
   /**

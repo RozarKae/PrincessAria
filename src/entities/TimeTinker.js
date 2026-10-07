@@ -1,19 +1,27 @@
 import { Enemy } from './Enemy.js';
 import { ENCOUNTER_ROLES } from '../ai/EncounterCoordinator.js';
+import { Collision } from '../physics/Collision.js';
 
 /**
  * THE TIME TINKER
  * Canonical World 6 Climax Boss: Master Horologist of the Clockwork Kingdom.
  * 
- * 8 Canonical Attributes:
- * 1. ROLE: TITAN WORLD CLIMAX BOSS
- * 2. THREAT: Rating 5/5 (Master of chrono-dilation, rolling escapement wheels, sweeping clock hands)
- * 3. COUNTER: Navigate moving escapement tiers, dodge time dilation waves, and strike the exposed Sunstone Heart!
- * 4. TELEGRAPH: Grand Astrolabe back-wheel spins wildly, clock face chest rings chime, ruby monocle flashes (0.8s)
- * 5. MOVEMENT STYLE: Stepped mechanical gliding, chronometer hover, and instant chrono-shift repositioning
- * 6. ATTACK STYLE: Spinning escapement cog throws, falling gear rain, chrono shockwaves, sweeping clock hands
- * 7. RECOVERY: Mainspring unwinds with a loud chime, exposing the Sunstone Heart for 2.8s
- * 8. ENVIRONMENTAL PREFERENCE: The Grand Chronometer Citadel Arena (x: 9,800 - 10,700)
+ * Production-Grade 3-Phase Climax Boss:
+ * - Phase 1 (HP 12-9): Stepped mechanical glides, rolling escapement wheels,
+ *                      and ground chrono shockwaves. Stomping or striking the chassis
+ *                      induces escapement desync, unwinding the mainspring and staggering
+ *                      the boss (2.5s) to expose the glowing Sunstone Heart!
+ * - Phase 2 (HP 8-5):  Time Dilation & Falling Gear Rain! Rotating chronometer pulses,
+ *                      twin ground shockwaves, and falling gears across the battle tiers.
+ * - Phase 3 (HP 4-1):  The Grand Astrolabe Overdrive! Temporal acceleration, radial
+ *                      Sunstone bullet hell bursts, rapid chrono-shifts, and sweeping clock hands.
+ * 
+ * Features:
+ * - Clockwork Citadel Portcullis Gates (x: 9740 - 10660) with player arena clamping
+ * - Native HD Boss Bar integration with Chrono Amethyst & Polished Brass theme
+ * - Vulnerable Sunstone Heart exposed during Mainspring Unwind / Stagger for Stardust Slash & Star Projectiles
+ * - Rotating giant Astrolabe back-wheel & active rotating clock hands
+ * - Grand Finale: The horologist releases temporal gears into radiant stardust, unsealing the Portal to World 7!
  */
 export class TimeTinker extends Enemy {
   constructor(x, y) {
@@ -29,29 +37,50 @@ export class TimeTinker extends Enemy {
       recoveryDesc: 'Clockwork mainspring unspools, exposed Sunstone Heart vulnerable for 2.8s',
       environmentalPreference: 'The Grand Chronometer Citadel Arena',
       health: 12,
+      maxHealth: 12,
       damage: 1,
       speed: 85,
-      gravity: 2100,
-      detectionRange: 850,
-      scoreValue: 6000,
+      gravity: 2200,
+      detectionRange: 900,
+      scoreValue: 10000,
     });
 
+    this.baseX = x;
     this.baseY = y;
+    this.arenaMinX = 9760;
+    this.arenaMaxX = 10640;
+    this.maxHealth = 12;
+    this.health = 12;
+    this.phase = 1; // Phase 1 (12-9), Phase 2 (8-5), Phase 3 (4-1)
+
+    // Arena lock & encounter state
+    this.isArenaActive = false;
+    this.introTimer = 0;
+    this.introDuration = 2.4;
+    this.introComplete = false;
     this.isDefeated = false;
-    this.phase = 1; // 1: Escapement Wheels (12-9), 2: Time Dilation & Gear Rain (8-5), 3: Grand Astrolabe Overload (4-1)
-    this.attackTimer = 0;
-    this.attackInterval = 3.4;
+    this.hitFlashTimer = 0;
+
+    // Clockwork & Desync Physics
+    this.clockRotation = 0;
+    this.clockHandsAngle = 0;
+    this.wobbleAngle = 0;
+    this.desyncHits = 0;
+    this.desyncHitsRequired = 3;
     this.isStaggered = false;
     this.staggerTimer = 0;
+
+    // Attack Scheduling
+    this.attackTimer = 0;
+    this.attackInterval = 3.4;
     this.isTelegraphing = false;
     this.telegraphTimer = 0;
-    this.clockRotation = 0;
-    this.wobbleAngle = 0;
-    this.projectiles = []; // Spinning cogs & falling gear rain
-    this.shockwaves = []; // Chrono ground shockwaves
-    this.clockHandsAngle = 0;
 
-    // Arena Astrolabe Tiers / Clock Platform Stations
+    // Projectiles & Hazards
+    this.projectiles = []; // Rolling cogs & gear rain
+    this.shockwaves = [];  // Chrono ground shockwaves
+
+    // Escapement Platforms (Boss Battle Tiers)
     this.escapementPlatforms = [
       { id: 'left_escapement', x: 9940, y: 720, width: 140, height: 26 },
       { id: 'center_dial', x: 10220, y: 620, width: 160, height: 26 },
@@ -66,225 +95,329 @@ export class TimeTinker extends Enemy {
       height: 50,
       vulnerable: false,
     };
+
+    // Clockwork Citadel Portcullis Gates (West & East)
+    this.gateWest = { x: 9740, y: 440, width: 32, height: 460, alpha: 0 };
+    this.gateEast = { x: 10660, y: 440, width: 32, height: 460, alpha: 0 };
   }
 
   hurt(damage = 1, attackDirection = 1, attackSource = 'projectile') {
     if (this.isDead || this.isDefeated) return false;
 
-    // Full damage when staggered, or damage from jump stomp on exposed heart
+    // Direct damage when staggered / sunstone heart exposed
     if (this.isStaggered) {
-      this.health -= damage;
-      if (this.health <= 0) {
-        this.triggerDefeat();
-      } else {
-        this.checkPhaseTransition();
-      }
+      this.damageHeart(damage, null, null);
       return true;
-    } else if (attackSource === 'stomp' || attackSource === 'jump') {
-      // Stomp on the clockwork chassis triggers an escapement desync!
-      this.health -= 1;
-      this.checkPhaseTransition();
-      if (this.health <= 0) {
-        this.triggerDefeat();
-      } else {
-        if (Math.random() < 0.6) {
-          this.triggerStagger();
-        }
-      }
-      return true;
+    }
+
+    // Attacks on brass chassis increment desync meter
+    this.desyncHits += 1;
+    this.hitFlashTimer = 0.18;
+    this.wobbleAngle = (this.facing > 0 ? 1 : -1) * 0.15;
+
+    if (this.desyncHits >= this.desyncHitsRequired) {
+      this.triggerStagger();
+    }
+
+    return false; // Polished brass deflects direct damage until staggered!
+  }
+
+  damageHeart(amount = 1, level, camera) {
+    if (this.isDead || this.isDefeated) return;
+
+    this.health -= amount;
+    this.hitFlashTimer = 0.22;
+
+    const lvl = level || this.levelRef;
+    if (lvl && lvl.spawnBurst) {
+      lvl.spawnBurst(this.sunstoneHeart.x + 25, this.sunstoneHeart.y + 25, 24, '#f59e0b');
+      lvl.spawnBurst(this.sunstoneHeart.x + 25, this.sunstoneHeart.y + 25, 16, '#fde047');
+      lvl.spawnSparkles(this.sunstoneHeart.x + 25, this.sunstoneHeart.y + 25, 20);
+    }
+    if (camera && camera.shake) camera.shake(12, 0.3);
+
+    if (this.health <= 0) {
+      this.triggerDefeat(lvl, camera);
     } else {
-      // Frontal heavy brass armor deflects weak attacks
-      this.wobbleAngle = Math.sin(Date.now() * 0.02) * 0.08;
-      return false;
+      this.checkPhaseTransition(lvl, camera);
+      // Break out of stagger on hit
+      this.isStaggered = false;
+      this.isVulnerable = false;
+      this.sunstoneHeart.vulnerable = false;
+      this.desyncHits = 0;
+      this.attackTimer = 0;
+      this.wobbleAngle = 0;
     }
   }
 
-  checkPhaseTransition() {
+  checkPhaseTransition(level, camera) {
     if (this.health <= 4 && this.phase < 3) {
-      this.phase = 3;
-      this.attackInterval = 2.2;
-      this.triggerStagger();
+      this.triggerPhase(3, level, camera);
     } else if (this.health <= 8 && this.phase < 2) {
-      this.phase = 2;
-      this.attackInterval = 2.8;
+      this.triggerPhase(2, level, camera);
+    }
+  }
+
+  triggerPhase(newPhase, level, camera) {
+    this.phase = newPhase;
+    this.desyncHitsRequired = newPhase === 3 ? 2 : (newPhase === 2 ? 3 : 4);
+    if (camera && camera.shake) camera.shake(18, 0.65);
+    const lvl = level || this.levelRef;
+    if (lvl && lvl.spawnBurst) {
+      lvl.spawnBurst(this.x + this.width / 2, this.y + 40, 40, newPhase === 3 ? '#a855f7' : '#f59e0b');
+      lvl.spawnSparkles(this.x + this.width / 2, this.y + 40, 25);
     }
   }
 
   triggerStagger() {
     this.isStaggered = true;
-    this.staggerTimer = 2.8;
+    this.staggerTimer = this.phase === 3 ? 2.0 : 2.8; // Ample window for player to strike
     this.vx = 0;
+    this.wobbleAngle = 0.28;
+    this.isVulnerable = true;
     this.sunstoneHeart.vulnerable = true;
-    this.wobbleAngle = 0.22;
+
+    if (this.levelRef && this.levelRef.spawnBurst) {
+      this.levelRef.spawnBurst(this.x + this.width / 2, this.y + 50, 20, '#fbbf24');
+    }
   }
 
-  triggerDefeat() {
+  triggerDefeat(level, camera) {
+    if (this.isDefeated) return;
     this.isDefeated = true;
     this.isDead = true;
+    this.health = 0;
     this.vx = 0;
     this.vy = 40;
-    this.defeatDuration = 4.5;
+    this.defeatDuration = 4.0;
     this.defeatTimer = 0;
     this.wobbleAngle = 0.55;
 
+    const lvl = level || this.levelRef;
+    if (lvl && lvl.spawnSparkles) {
+      lvl.spawnSparkles(this.x + this.width / 2, this.y + this.height / 2, 80);
+      lvl.spawnBurst(this.x + this.width / 2, this.y + this.height / 2, 50, '#f59e0b');
+      lvl.spawnBurst(this.x + this.width / 2, this.y + this.height / 2, 40, '#a855f7');
+    }
+    if (camera && camera.shake) camera.shake(22, 1.0);
+
     // Unseal Ancient Ocean Gate to World 7 (The Kingdom Beneath the Sea)
-    if (this.levelRef && this.levelRef.goal) {
-      this.levelRef.goal.unlocked = true;
-      this.levelRef.goal.active = true;
+    if (lvl) {
+      lvl.shrineBannerText = '⚙️ THE TIME TINKER CHIMES IN DEFEAT! THE OCEAN GATE TO WORLD 7 IS UNSEALED!';
+      lvl.shrineBannerTimer = 6.5;
+      if (lvl.goal) {
+        lvl.goal.unlocked = true;
+        lvl.goal.active = true;
+      }
     }
   }
 
-  update(dt, level, player, camera) {
-    if (!this.levelRef && level) {
-      this.levelRef = level;
+  takeDamage(amount, knockX, knockY, audio) {
+    if (this.isStaggered) {
+      this.damageHeart(1, null, null);
+      if (audio && audio.playEnemyHit) audio.playEnemyHit();
+      return true;
+    }
+    this.hurt(amount, 1, 'melee');
+    if (audio && audio.playDeflect) audio.playDeflect();
+    return false;
+  }
+
+  stomp(player, audio) {
+    if (this.isStaggered) {
+      this.damageHeart(1, null, null);
+      player.bounceFromEnemy();
+      if (audio && audio.playEnemyHit) audio.playEnemyHit();
+      return true;
     }
 
-    this.clockRotation += dt * 3.5;
-    this.clockHandsAngle += dt * (this.phase === 3 ? 4.5 : 2.0);
+    // Stomping on the Top Hat / Clockwork Chassis induces heavy desync!
+    this.desyncHits += 2;
+    player.bounceFromEnemy();
 
-    // Synchronize Sunstone Heart position
-    this.sunstoneHeart.x = this.x + 45;
-    this.sunstoneHeart.y = this.y + 45;
+    if (this.desyncHits >= this.desyncHitsRequired) {
+      this.triggerStagger();
+    }
 
-    // Defeat death sequence
+    if (audio && audio.playEnemyHit) audio.playEnemyHit();
+    return false;
+  }
+
+  update(dt, level, player, camera) {
+    this.levelRef = level;
+
+    // Defeat sequence handling
     if (this.isDefeated) {
       this.defeatTimer += dt;
       this.clockRotation += dt * 15;
-      if (level && Math.random() < 0.5) {
-        level.spawnBurst(
+      this.gateWest.alpha = Math.max(0, this.gateWest.alpha - dt * 1.5);
+      this.gateEast.alpha = Math.max(0, this.gateEast.alpha - dt * 1.5);
+
+      if (level && Math.random() < 0.45) {
+        level.spawnSparkles(
           this.x + Math.random() * this.width,
           this.y + Math.random() * this.height,
-          6,
-          '#fbbf24'
+          4
         );
+        if (camera && camera.shake) camera.shake(6, 0.15);
+      }
+      super.update(dt, level, player, camera);
+      return;
+    }
+
+    if (this.hitFlashTimer > 0) {
+      this.hitFlashTimer -= dt;
+    }
+
+    // 1. Arena Lock-in Trigger (x: 9780 - 10640)
+    if (!this.isArenaActive && player && player.x >= 9780 && player.x <= 10640) {
+      this.isArenaActive = true;
+      this.introTimer = this.introDuration;
+      if (camera && camera.focus) camera.focus(this.x + this.width / 2, this.y + this.height / 2, 2.4);
+      if (camera && camera.shake) camera.shake(16, 0.8);
+      if (level && level.spawnBurst) {
+        level.spawnBurst(this.x + this.width / 2, this.y + this.height / 2, 36, '#f59e0b');
+      }
+    }
+
+    // Raise clockwork portcullis gates & clamp player within arena
+    if (this.isArenaActive && !this.isDefeated) {
+      this.gateWest.alpha = Math.min(1.0, this.gateWest.alpha + dt * 2.0);
+      this.gateEast.alpha = Math.min(1.0, this.gateEast.alpha + dt * 2.0);
+
+      if (player && player.x < 9760) {
+        player.x = 9760;
+        player.vx = Math.max(0, player.vx);
+      } else if (player && player.x > 10620) {
+        player.x = 10620;
+        player.vx = Math.min(0, player.vx);
+      }
+    }
+
+    if (this.introTimer > 0) {
+      this.introTimer -= dt;
+      if (this.introTimer <= 0) {
+        this.introComplete = true;
       }
       return;
     }
 
-    // Stagger / vulnerable recovery window
+    this.clockRotation += dt * 3.5;
+    this.clockHandsAngle += dt * (this.phase === 3 ? 5.0 : 2.5);
+
+    // 2. Update Weak Point Position
+    this.sunstoneHeart.x = this.x + 45;
+    this.sunstoneHeart.y = this.y + 45;
+    this.sunstoneHeart.vulnerable = this.isStaggered;
+
+    // 3. Stagger & Unwind Handling
     if (this.isStaggered) {
       this.staggerTimer -= dt;
-      this.wobbleAngle = Math.sin(Date.now() * 0.015) * 0.2;
+      this.vx = 0;
+      this.wobbleAngle = Math.sin(Date.now() * 0.015) * 0.22;
+
+      if (level && Math.random() < 0.35) {
+        level.spawnSparkles(this.sunstoneHeart.x + 25, this.sunstoneHeart.y + 25, 2);
+      }
+
       if (this.staggerTimer <= 0) {
         this.isStaggered = false;
+        this.isVulnerable = false;
         this.sunstoneHeart.vulnerable = false;
         this.wobbleAngle = 0;
+        this.desyncHits = 0;
+        this.attackTimer = 0;
+        if (level && level.spawnBurst) {
+          level.spawnBurst(this.x + this.width / 2, this.y + 50, 16, '#f59e0b');
+        }
       }
+
+      // Check player melee slash while staggered
+      if (player && player.isAttacking && player.getAttackBounds) {
+        const atk = player.getAttackBounds();
+        if (Collision.intersects(atk, this.sunstoneHeart)) {
+          this.damageHeart(1, level, camera);
+        }
+      }
+
+      super.update(dt, level, player, camera);
+      return;
+    } else {
+      this.wobbleAngle *= 0.90;
+    }
+
+    // 4. Update Hazards & Projectiles
+    this.updateProjectiles(dt, level, player);
+    this.updateShockwaves(dt, level, player);
+
+    if (!player) {
+      super.update(dt, level, player, camera);
       return;
     }
 
-    // Update active projectiles (rolling cogs & gear rain)
-    for (let i = this.projectiles.length - 1; i >= 0; i--) {
-      const p = this.projectiles[i];
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      p.life -= dt;
-      p.rotation = (p.rotation || 0) + dt * 10;
+    const dx = player.x - this.x;
+    this.facing = dx > 0 ? 1 : -1;
 
-      // Bounce on arena boundaries if rolling cog
-      if (p.isRolling && (p.x < 9840 || p.x > 10640)) {
-        p.vx = -p.vx;
+    // 5. Attack Telegraphing & Cycling
+    if (this.isTelegraphing) {
+      this.telegraphTimer -= dt;
+      this.vx = 0;
+      if (level && Math.random() < 0.4) {
+        level.spawnSparkles(this.x + this.width / 2, this.y + 40, 2);
       }
-
-      // Check collision with player
-      if (player && !player.isDead) {
-        const dx = p.x - (player.x + player.width / 2);
-        const dy = p.y - (player.y + player.height / 2);
-        if (Math.hypot(dx, dy) < 28) {
-          player.hurt();
-          if (level) level.spawnBurst(p.x, p.y, 8, '#f59e0b');
-          this.projectiles.splice(i, 1);
-          continue;
-        }
+      if (this.telegraphTimer <= 0) {
+        this.isTelegraphing = false;
+        this.attackTimer = 0;
+        this.executeAttack(player, level, camera);
       }
-
-      if (p.life <= 0) {
-        if (level) level.spawnSparkles(p.x, p.y, 6);
-        this.projectiles.splice(i, 1);
-      }
+      super.update(dt, level, player, camera);
+      return;
     }
 
-    // Update chrono shockwaves
-    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
-      const sw = this.shockwaves[i];
-      sw.x += sw.vx * dt;
-      sw.life -= dt;
-      sw.width = Math.min(60, sw.width + dt * 40);
+    this.attackTimer += dt;
+    const interval = this.phase === 3 ? 2.2 : (this.phase === 2 ? 2.8 : 3.4);
 
-      if (player && !player.isDead) {
-        if (
-          player.x + player.width > sw.x &&
-          player.x < sw.x + sw.width &&
-          player.y + player.height >= sw.y - 10 &&
-          player.y + player.height <= sw.y + 30
-        ) {
-          player.hurt();
-        }
-      }
+    if (this.attackTimer >= interval) {
+      this.isTelegraphing = true;
+      this.telegraphTimer = this.phase === 3 ? 0.45 : 0.7;
+      this.vx = 0;
+    } else {
+      // Stepped clockwork patrol
+      const moveSpeed = this.phase === 3 ? this.speed * 1.35 : (this.phase === 2 ? this.speed * 1.15 : this.speed);
+      this.vx = this.facing * moveSpeed;
 
-      if (sw.life <= 0) {
-        this.shockwaves.splice(i, 1);
-      }
-    }
-
-    if (player) {
-      const dist = Math.hypot(player.x - this.x, player.y - this.y);
-      this.facing = (player.x > this.x) ? 1 : -1;
-
-      // Arena patrol movement
-      this.x += this.facing * this.speed * dt * 0.4;
-      if (this.x < 9960) {
-        this.x = 9960;
+      if (this.x < 9820) {
+        this.x = 9820;
         this.facing = 1;
-      } else if (this.x > 10480) {
-        this.x = 10480;
+      } else if (this.x > 10580) {
+        this.x = 10580;
         this.facing = -1;
       }
-
-      // Attack cycle
-      this.attackTimer += dt;
-      if (this.attackTimer >= this.attackInterval && !this.isTelegraphing) {
-        this.isTelegraphing = true;
-        this.telegraphTimer = 0.8;
-      }
-
-      if (this.isTelegraphing) {
-        this.telegraphTimer -= dt;
-        if (level && Math.random() < 0.4) {
-          level.spawnSparkles(this.x + this.width / 2, this.y + 40, 2);
-        }
-
-        if (this.telegraphTimer <= 0) {
-          this.isTelegraphing = false;
-          this.attackTimer = 0;
-          this.executeAttack(player, level, camera);
-        }
-      }
     }
+
+    super.update(dt, level, player, camera);
   }
 
   executeAttack(player, level, camera) {
     if (!player) return;
-
-    if (camera) camera.shake(7, 0.18);
+    if (camera && camera.shake) camera.shake(12, 0.35);
 
     if (this.phase === 1) {
       // Phase 1: Rolling Escapement Wheel & Ground Chrono Shockwave
       const originX = this.x + (this.facing > 0 ? this.width : 0);
       const originY = this.y + this.height - 30;
 
-      // Rolling Cog
       this.projectiles.push({
         x: originX,
         y: originY,
         vx: this.facing * 340,
         vy: 0,
+        radius: 12,
         life: 4.0,
         isRolling: true,
         rotation: 0,
       });
 
-      // Ground Chrono Shockwave
       this.shockwaves.push({
         x: originX,
         y: originY + 10,
@@ -293,22 +426,27 @@ export class TimeTinker extends Enemy {
         height: 24,
         life: 2.2,
       });
+
+      if (level && level.spawnBurst) {
+        level.spawnBurst(originX, originY, 14, '#f59e0b');
+      }
     } else if (this.phase === 2) {
       // Phase 2: Time Dilation & Falling Gear Rain
-      for (let i = 0; i < 4; i++) {
-        const dropX = 9920 + i * 180 + Math.random() * 80;
+      for (let i = 0; i < 5; i++) {
+        const dropX = 9920 + i * 140 + Math.random() * 60;
         this.projectiles.push({
           x: dropX,
           y: this.y - 280,
           vx: (Math.random() - 0.5) * 60,
           vy: 360 + Math.random() * 80,
+          radius: 10,
           life: 2.5,
           isRolling: false,
           rotation: 0,
         });
       }
 
-      // Chrono pulse shockwave in both directions
+      // Twin pulse shockwaves
       this.shockwaves.push({
         x: this.x + this.width / 2,
         y: this.y + this.height - 20,
@@ -326,26 +464,156 @@ export class TimeTinker extends Enemy {
         life: 2.0,
       });
     } else {
-      // Phase 3: Grand Astrolabe Overload - Twin Rolling Cogs + Radial Sunstone Burst!
+      // Phase 3: Grand Astrolabe Overdrive - Radial Sunstone Bullet Burst
       const originX = this.x + this.width / 2;
       const originY = this.y + this.height / 2;
 
-      for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 3) {
+      for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
         this.projectiles.push({
           x: originX,
           y: originY,
-          vx: Math.cos(angle) * 320,
-          vy: Math.sin(angle) * 320,
+          vx: Math.cos(angle) * 330,
+          vy: Math.sin(angle) * 330,
+          radius: 8,
           life: 2.2,
           isRolling: false,
           rotation: 0,
         });
       }
 
-      // Brief stagger opportunity after massive overload
-      if (Math.random() < 0.4) {
-        this.triggerStagger();
+      if (level && level.spawnBurst) {
+        level.spawnBurst(originX, originY, 20, '#a855f7');
+        level.spawnBurst(originX, originY, 14, '#fde047');
       }
+    }
+  }
+
+  updateProjectiles(dt, level, player) {
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const p = this.projectiles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.life -= dt;
+      p.rotation = (p.rotation || 0) + dt * 10;
+
+      // Bounce on arena boundaries if rolling
+      if (p.isRolling && (p.x < 9840 || p.x > 10600)) {
+        p.vx = -p.vx;
+      }
+
+      if (player && !player.isDead) {
+        const pBounds = player.getBounds ? player.getBounds() : { x: player.x, y: player.y, width: player.width, height: player.height };
+        const dist = Math.hypot(p.x - (pBounds.x + pBounds.width / 2), p.y - (pBounds.y + pBounds.height / 2));
+        if (dist < (p.radius || 10) + 16) {
+          player.hurt();
+          p.life = 0;
+          if (level && level.spawnBurst) {
+            level.spawnBurst(p.x, p.y, 8, '#f59e0b');
+          }
+        }
+      }
+
+      if (p.life <= 0 || p.y > 1050) {
+        if (level && level.spawnSparkles) {
+          level.spawnSparkles(p.x, p.y, 4);
+        }
+        this.projectiles.splice(i, 1);
+      }
+    }
+  }
+
+  updateShockwaves(dt, level, player) {
+    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+      const sw = this.shockwaves[i];
+      sw.x += sw.vx * dt;
+      sw.life -= dt;
+      sw.width = Math.min(60, (sw.width || 30) + dt * 40);
+
+      if (player && !player.isDead) {
+        if (
+          player.x + player.width > sw.x &&
+          player.x < sw.x + sw.width &&
+          player.y + player.height >= sw.y - 12 &&
+          player.y + player.height <= sw.y + 30
+        ) {
+          player.hurt();
+          sw.life = 0;
+        }
+      }
+
+      if (sw.life <= 0) {
+        this.shockwaves.splice(i, 1);
+      }
+    }
+  }
+
+  getBounds() {
+    return {
+      x: this.x + 10,
+      y: this.y + 10,
+      width: this.width - 20,
+      height: this.height - 20,
+    };
+  }
+
+  render(ctx, camera) {
+    const camX = camera ? camera.x : 0;
+    const camY = camera ? camera.y : 0;
+
+    // 1. Draw Rolling Cogs & Gear Rain
+    if (this.projectiles.length > 0) {
+      ctx.save();
+      for (const p of this.projectiles) {
+        const px = Math.round(p.x - camX);
+        const py = Math.round(p.y - camY);
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(p.rotation || 0);
+        ctx.fillStyle = '#d97706';
+        ctx.fillRect(-6, -6, 12, 12);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(-8, -2, 16, 4);
+        ctx.fillRect(-2, -8, 4, 16);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(-3, -3, 6, 6);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    // 2. Draw Chrono Shockwaves
+    if (this.shockwaves.length > 0) {
+      ctx.save();
+      for (const sw of this.shockwaves) {
+        const sx = Math.round(sw.x - camX);
+        const sy = Math.round(sw.y - camY);
+        const swW = Math.round(sw.width || 30);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(sx, sy - 4, swW, 8);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(sx + 2, sy - 2, swW - 4, 4);
+      }
+      ctx.restore();
+    }
+
+    // 3. Draw Clockwork Citadel Portcullis Gates
+    if (this.gateWest.alpha > 0.05) {
+      ctx.save();
+      ctx.globalAlpha = this.gateWest.alpha;
+      const wGx = Math.round(this.gateWest.x - camX);
+      const wGy = Math.round(this.gateWest.y - camY);
+      ctx.fillStyle = '#311042';
+      ctx.fillRect(wGx, wGy, this.gateWest.width, this.gateWest.height);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(wGx + 4, wGy + 4, this.gateWest.width - 8, this.gateWest.height - 8);
+
+      const eGx = Math.round(this.gateEast.x - camX);
+      const eGy = Math.round(this.gateEast.y - camY);
+      ctx.fillStyle = '#311042';
+      ctx.fillRect(eGx, eGy, this.gateEast.width, this.gateEast.height);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(eGx + 4, eGy + 4, this.gateEast.width - 8, this.gateEast.height - 8);
+      ctx.restore();
     }
   }
 }

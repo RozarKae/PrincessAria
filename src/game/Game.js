@@ -57,6 +57,10 @@ export class Game {
     this.level = new Level(this.currentLevelData);
     this.player = new Player(this.level.spawnPoint.x, this.level.spawnPoint.y);
     this.director = this.level.director;
+    // Scatter pickups for this level (lightweight default distribution)
+    if (this.level && typeof this.level.scatterPickups === 'function') {
+      this.level.scatterPickups(8 + Math.floor(Math.random() * 6));
+    }
 
     this.respawnTimer = 0;
     this.lastTime = performance.now();

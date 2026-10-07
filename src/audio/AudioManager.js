@@ -1109,6 +1109,55 @@ export class AudioManager {
   }
 
   // ========================================================
+  // EXPLOSION / SUPER BOMB SFX (Wideband blast + low sub)
+  // ========================================================
+  playExplosion() {
+    if (!this.ensureReady() || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    try {
+      // Subsonic rumble
+      const sub = this.ctx.createOscillator();
+      const subGain = this.ctx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(60, now);
+      subGain.gain.setValueAtTime(0.5, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+      sub.connect(subGain);
+      subGain.connect(this.sfxGain);
+      sub.start(now);
+      sub.stop(now + 0.8);
+
+      // Sharp mid transient
+      const transient = this.ctx.createOscillator();
+      const tGain = this.ctx.createGain();
+      transient.type = 'triangle';
+      transient.frequency.setValueAtTime(420, now);
+      transient.frequency.exponentialRampToValueAtTime(120, now + 0.12);
+      tGain.gain.setValueAtTime(0.6, now);
+      tGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      transient.connect(tGain);
+      tGain.connect(this.sfxGain);
+      transient.start(now);
+      transient.stop(now + 0.18);
+
+      // High-frequency crackle overlay
+      for (let i = 0; i < 6; i++) {
+        const t = now + 0.02 + i * 0.02;
+        const crack = this.ctx.createOscillator();
+        const cg = this.ctx.createGain();
+        crack.type = 'square';
+        crack.frequency.setValueAtTime(1200 + Math.random() * 2400, t);
+        cg.gain.setValueAtTime(0.12, t);
+        cg.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+        crack.connect(cg);
+        cg.connect(this.sfxGain);
+        crack.start(t);
+        crack.stop(t + 0.12);
+      }
+    } catch (e) {}
+  }
+
+  // ========================================================
   // HONEY GEYSER UPDRAFT SFX (Rushing wind & golden chimes)
   // ========================================================
   playGeyser() {

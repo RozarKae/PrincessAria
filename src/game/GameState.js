@@ -30,6 +30,11 @@ export class GameState {
     }
   }
 
+  gainLife(amount = 1) {
+    this.lives = Math.min(this.maxLives || 9, (this.lives || 0) + amount);
+    return this.lives;
+  }
+
   addScore(pts) {
     this.score += pts;
     if (this.score > this.highScore) {

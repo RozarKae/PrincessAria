@@ -171,6 +171,20 @@ export class StarProjectile {
         }
       }
 
+      // Check collision with TimeTinker sunstone heart when staggered/exposed
+      const timeTinker = level && (level.timeTinker || (level.enemies ? level.enemies.find(e => e.constructor.name === 'TimeTinker' || e.name === 'The Time Tinker' || e.species === 'time_tinker') : null));
+      if (timeTinker && !timeTinker.isDead && !timeTinker.isDefeated && timeTinker.sunstoneHeart && (timeTinker.isStaggered || timeTinker.sunstoneHeart.vulnerable)) {
+        const bounds = this.getBounds();
+        if (Collision.intersects(bounds, timeTinker.sunstoneHeart)) {
+          this.isDead = true;
+          if (timeTinker.hurt) {
+            timeTinker.hurt(1, this.facing, 'projectile');
+          }
+          if (audio && audio.playStarHit) audio.playStarHit();
+          return;
+        }
+      }
+
       // Check collision with enemies
       if (level && level.enemies) {
         const bounds = this.getBounds();
