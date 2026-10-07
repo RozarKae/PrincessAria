@@ -220,4 +220,64 @@ export class HUD {
     ctx.bezierCurveTo(ox + s, oy - s * 0.3, ox, oy - s * 0.3, ox, oy + topCurve);
     ctx.closePath();
   }
+
+  /**
+   * Draw boss health bar at HD display resolution (centered under header bar).
+   */
+  drawBossBar(ctx, boss) {
+    if (!boss || boss.isDefeated || !boss.isArenaActive && !boss.isPurified) return;
+
+    ctx.save();
+    const barWidth = 640;
+    const barHeight = 20;
+    const barX = (CANVAS_WIDTH - barWidth) / 2;
+    const barY = 96;
+
+    // Background Frame
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    ctx.fillRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
+    ctx.strokeRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
+
+    // Health Fill
+    const ratio = Math.max(0, Math.min(1, boss.health / (boss.maxHealth || 6)));
+    const fillWidth = ratio * barWidth;
+    const hpGrad = ctx.createLinearGradient(barX, 0, barX + barWidth, 0);
+    if (boss.phase === 3) {
+      hpGrad.addColorStop(0, '#dc2626');
+      hpGrad.addColorStop(0.5, '#ef4444');
+      hpGrad.addColorStop(1, '#f87171');
+    } else {
+      hpGrad.addColorStop(0, '#d97706');
+      hpGrad.addColorStop(0.5, '#f59e0b');
+      hpGrad.addColorStop(1, '#fde047');
+    }
+    ctx.fillStyle = hpGrad;
+    ctx.fillRect(barX, barY, fillWidth, barHeight);
+
+    // Boss Name & Phase Badge
+    ctx.fillStyle = '#fef08a';
+    ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    const phaseLabel = boss.phase ? ` — PHASE ${boss.phase}` : '';
+    const bossName = (boss.name || 'HONEY BUMBLE').toUpperCase();
+    ctx.fillText(`👑 ${bossName}${phaseLabel} 👑`, CANVAS_WIDTH / 2, barY - 8);
+
+    // Health tick segments
+    const maxHp = boss.maxHealth || 6;
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.lineWidth = 1.5;
+    for (let i = 1; i < maxHp; i++) {
+      const tx = barX + (i / maxHp) * barWidth;
+      ctx.beginPath();
+      ctx.moveTo(tx, barY);
+      ctx.lineTo(tx, barY + barHeight);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
 }
+

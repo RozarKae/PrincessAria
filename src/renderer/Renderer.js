@@ -114,7 +114,7 @@ export class Renderer {
    * Must be called AFTER endFrame() so it overlays the upscaled pixel art crisply.
    * Uses HUD.js (1920×1080 coordinate space) scaled to fit the actual display.
    */
-  drawHUDOverlay(hud, gameState, player) {
+  drawHUDOverlay(hud, gameState, player, boss = null) {
     if (!hud || !gameState) return;
     const ctx = this.ctx;
     const dW = this.canvas.width;
@@ -123,6 +123,9 @@ export class Renderer {
     // Scale from logical 1920×1080 HUD coordinate space to actual display resolution
     ctx.scale(dW / CANVAS_WIDTH, dH / CANVAS_HEIGHT);
     hud.draw(ctx, gameState);
+    if (boss && hud.drawBossBar) {
+      hud.drawBossBar(ctx, boss);
+    }
     ctx.restore();
   }
 

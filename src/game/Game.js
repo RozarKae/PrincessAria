@@ -646,7 +646,15 @@ export class Game {
     // Blit pixel art world to display canvas
     this.renderer.endFrame();
 
-    // Draw HUD at native display resolution (sharp text and icons, no pixelation)
-    this.renderer.drawHUDOverlay(this.hud, this.gameState, this.player);
+    // Find any active boss in the current level for the boss health bar HUD
+    const activeBoss = this.level?.honeyBumble?.isArenaActive ? this.level.honeyBumble
+      : (this.level?.forestKing && !this.level.forestKing.isPurified ? this.level.forestKing
+      : (this.level?.sirSlamALot && !this.level.sirSlamALot.isDead ? this.level.sirSlamALot
+      : (this.level?.honeyDragon && !this.level.honeyDragon.isDead ? this.level.honeyDragon
+      : (this.level?.sandwichKing && !this.level.sandwichKing.isDead ? this.level.sandwichKing
+      : (this.level?.timeTinker && !this.level.timeTinker.isDead ? this.level.timeTinker : null)))));
+
+    // Draw HUD at native display resolution (sharp text, icons, and boss bar)
+    this.renderer.drawHUDOverlay(this.hud, this.gameState, this.player, activeBoss);
   }
 }
