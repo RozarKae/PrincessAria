@@ -40,8 +40,8 @@ export const GAME_STATES = {
   LEVEL_CLEAR: 'LEVEL_CLEAR',
 };
 
-// Keyboard mappings
-export const KEY_BINDINGS = {
+// --- KEYBOARD MAPPINGS (PC / Web Keyboard) ---
+export const KEYBOARD_BINDINGS = {
   LEFT: ['KeyA', 'ArrowLeft'],
   RIGHT: ['KeyD', 'ArrowRight'],
   UP: ['KeyW', 'ArrowUp'],
@@ -56,7 +56,7 @@ export const KEY_BINDINGS = {
   RESTART: ['KeyR', 'Enter'],
   DEBUG: ['F3', 'KeyO', 'Backquote'],
   DEBUG_AI: ['F1', 'KeyB'],
-  DEBUG_VISUAL: ['F2', 'KeyV'],
+  DEBUG_VISUAL: ['F2'],
   MUTE: ['KeyM'],
   WORLD_1: ['Digit1', 'Numpad1'],
   WORLD_2: ['Digit2', 'Numpad2'],
@@ -64,4 +64,39 @@ export const KEY_BINDINGS = {
   WORLD_4: ['Digit4', 'Numpad4'],
   WORLD_5: ['Digit5', 'Numpad5'],
   WORLD_6: ['Digit6', 'Numpad6'],
+};
+
+// Aliased for backward compatibility across existing calls
+export const KEY_BINDINGS = KEYBOARD_BINDINGS;
+
+// --- GAMEPAD MAPPINGS (Xbox / PlayStation / Nintendo Switch / USB Controllers) ---
+// Button Indices according to standard W3C Gamepad specification:
+// 0: Bottom face (A / Cross / B)
+// 1: Right face (B / Circle / A)
+// 2: Left face (X / Square / Y)
+// 3: Top face (Y / Triangle / X)
+// 4: Left Bumper / L1 / L
+// 5: Right Bumper / R1 / R
+// 6: Left Trigger / L2 / ZL (analog or digital)
+// 7: Right Trigger / R2 / ZR (analog or digital)
+// 8: Select / Share / Back / Minus
+// 9: Start / Options / Menu / Plus
+// 10: Left Stick Click (L3)
+// 11: Right Stick Click (R3)
+// 12: D-Pad Up, 13: D-Pad Down, 14: D-Pad Left, 15: D-Pad Right
+export const GAMEPAD_BINDINGS = {
+  JUMP: [0],                        // A / Cross / B
+  ATTACK: [2],                      // X / Square / Y (Dedicated primary attack / slash)
+  SHOOT: [3, 7],                    // Y / Triangle / X or Right Trigger (RT/R2)
+  DASH: [5, 1],                     // Right Bumper (RB/R1) or B / Circle
+  SHIELD: [4, 6],                   // Left Bumper (LB/L1) or Left Trigger (LT/L2) (Dedicated hold shield)
+  LEFT: ['dpad_left', 'stick_left'],
+  RIGHT: ['dpad_right', 'stick_right'],
+  UP: ['dpad_up', 'stick_up'],
+  DOWN: ['dpad_down', 'stick_down'],
+  CROUCH: ['dpad_down', 'stick_down'],
+  START: [9],                       // Start / Options / Menu / +
+  RESTART: [8],                     // Select / Back / Share / -
+  DEBUG: [10],                      // L3 click
+  MUTE: [11],                       // R3 click
 };

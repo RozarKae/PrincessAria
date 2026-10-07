@@ -19,6 +19,8 @@
  * - Up to 4 simultaneous gamepads with seamless multi-controller participation
  */
 
+import { GAMEPAD_BINDINGS } from '../game/Constants.js';
+
 export class GamepadManager {
   constructor() {
     this.controllers = new Map();
@@ -31,24 +33,8 @@ export class GamepadManager {
     this.prevButtons = new Map();
     this.currButtons = new Map();
 
-    // Action mappings for standard controllers
-    // Maps semantic action names to standard gamepad button indices or analog triggers
-    this.STANDARD_ACTION_MAP = {
-      JUMP: [0],                 // Bottom face button (Xbox A, PS Cross, Switch B)
-      DASH: [5, 4, 1, 7],        // Right bumper (RB/R1), Left bumper (LB/L1), Right face (B/Circle), RT
-      ATTACK: [2, 1],            // Left face button (Xbox X, PS Square, Switch Y), B/Circle
-      SHOOT: [3, 7, 6],          // Top face button (Xbox Y, PS Triangle, Switch X), RT, LT
-      SHIELD: [4, 5, 6],         // Map to bumpers / triggers as default hold shield (LB/RB/RT)
-      LEFT: ['dpad_left', 'stick_left'],
-      RIGHT: ['dpad_right', 'stick_right'],
-      UP: ['dpad_up', 'stick_up'],
-      DOWN: ['dpad_down', 'stick_down'],
-      CROUCH: ['dpad_down', 'stick_down'],
-      START: [9, 0],             // Start / Options / Menu / +, or A button
-      RESTART: [8, 9],           // Select / Back / Share / -, or Start
-      DEBUG: [10],               // Left stick click (L3)
-      MUTE: [11],                // Right stick click (R3)
-    };
+    // Action mappings for standard controllers imported from GAMEPAD_BINDINGS
+    this.STANDARD_ACTION_MAP = { ...GAMEPAD_BINDINGS };
 
     // Connection listeners
     this.onGamepadConnected = this.handleGamepadConnected.bind(this);
@@ -64,6 +50,31 @@ export class GamepadManager {
 
     // Check initially connected gamepads
     this.scanInitialGamepads();
+  }
+
+  /**
+   * Get current gamepad bindings
+   */
+  getGamepadBindings() {
+    return { ...this.STANDARD_ACTION_MAP };
+  }
+
+  /**
+   * Set bindings for a specific gamepad action
+   */
+  setGamepadBinding(action, buttons) {
+    if (Array.isArray(buttons)) {
+      this.STANDARD_ACTION_MAP[action] = [...buttons];
+    }
+  }
+
+  /**
+   * Replace all gamepad bindings
+   */
+  setAllGamepadBindings(mappings) {
+    if (mappings && typeof mappings === 'object') {
+      this.STANDARD_ACTION_MAP = { ...mappings };
+    }
   }
 
   scanInitialGamepads() {

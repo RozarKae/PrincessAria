@@ -1,9 +1,9 @@
-import { KEY_BINDINGS } from '../game/Constants.js';
+import { KEYBOARD_BINDINGS, GAMEPAD_BINDINGS, KEY_BINDINGS } from '../game/Constants.js';
 import { gamepadManager } from './GamepadManager.js';
 
 /**
  * Universal Input Manager for Project Aria.
- * Unifies Keyboard and Gaming Controllers (Xbox, PlayStation, Nintendo, 8BitDo, USB pads).
+ * Cleanly separates Keyboard and Gamepad mappings while providing unified or device-isolated queries.
  * Tracks key/button holding, single-frame presses, single-frame releases, and analog sticks.
  */
 export class Input {
@@ -11,6 +11,9 @@ export class Input {
     this.keys = new Set();
     this.pressed = new Set();
     this.released = new Set();
+
+    // Dedicated Keyboard key mappings dictionary
+    this.keyboardBindings = { ...KEYBOARD_BINDINGS };
 
     // Universal Gamepad Subsystem reference
     this.gamepad = gamepadManager;
@@ -53,33 +56,89 @@ export class Input {
   }
 
   /**
-   * Checks whether an action is sustained (held down) via keyboard or any controller.
+   * Checks whether an action is sustained (held down).
+   * @param {string} action - Semantic action name (e.g., 'JUMP', 'ATTACK')
+   * @param {'keyboard'|'gamepad'|null} device - Optional device filter. If null, checks both.
    */
-  isDown(action) {
-    const codes = KEY_BINDINGS[action] || [action];
-    const keyHit = codes.some(code => this.keys.has(code));
-    if (keyHit) return true;
-    return this.gamepad.isActionDown(action);
+  isDown(action, device = null) {
+    if (device === 'keyboard' || device === null) {
+      const codes = this.keyboardBindings[action] || [action];
+      if (codes.some(code => this.keys.has(code))) {
+        return true;
+      }
+    }
+    if (device === 'gamepad' || device === null) {
+      return this.gamepad.isActionDown(action);
+    }
+    return false;
   }
 
   /**
-   * Checks whether an action was triggered on this exact frame via keyboard or any controller.
+   * Checks whether an action was triggered on this exact frame.
+   * @param {string} action - Semantic action name (e.g., 'JUMP', 'ATTACK')
+   * @param {'keyboard'|'gamepad'|null} device - Optional device filter. If null, checks both.
    */
-  justPressed(action) {
-    const codes = KEY_BINDINGS[action] || [action];
-    const keyHit = codes.some(code => this.pressed.has(code));
-    if (keyHit) return true;
-    return this.gamepad.justActionPressed(action);
+  justPressed(action, device = null) {
+    if (device === 'keyboard' || device === null) {
+      const codes = this.keyboardBindings[action] || [action];
+      if (codes.some(code => this.pressed.has(code))) {
+        return true;
+      }
+    }
+    if (device === 'gamepad' || device === null) {
+      return this.gamepad.justActionPressed(action);
+    }
+    return false;
   }
 
   /**
-   * Checks whether an action was released on this exact frame via keyboard or any controller.
+   * Checks whether an action was released on this exact frame.
+   * @param {string} action - Semantic action name (e.g., 'JUMP', 'ATTACK')
+   * @param {'keyboard'|'gamepad'|null} device - Optional device filter. If null, checks both.
    */
-  justReleased(action) {
-    const codes = KEY_BINDINGS[action] || [action];
-    const keyHit = codes.some(code => this.released.has(code));
-    if (keyHit) return true;
-    return this.gamepad.justActionReleased(action);
+  justReleased(action, device = null) {
+    if (device === 'keyboard' || device === null) {
+      const codes = this.keyboardBindings[action] || [action];
+      if (codes.some(code => this.released.has(code))) {
+        return true;
+      }
+    }
+    if (device === 'gamepad' || device === null) {
+      return this.gamepad.justActionReleased(action);
+    }
+    return false;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* KEYBOARD & GAMEPAD SEPARATE KEYMAPPING CONFIGURATION APIs                   */
+  /* -------------------------------------------------------------------------- */
+
+  getKeyboardBindings() {
+    return { ...this.keyboardBindings };
+  }
+
+  setKeyboardBinding(action, keys) {
+    if (Array.isArray(keys)) {
+      this.keyboardBindings[action] = [...keys];
+    }
+  }
+
+  setAllKeyboardBindings(mappings) {
+    if (mappings && typeof mappings === 'object') {
+      this.keyboardBindings = { ...mappings };
+    }
+  }
+
+  getGamepadBindings() {
+    return this.gamepad.getGamepadBindings();
+  }
+
+  setGamepadBinding(action, buttons) {
+    this.gamepad.setGamepadBinding(action, buttons);
+  }
+
+  setAllGamepadBindings(mappings) {
+    this.gamepad.setAllGamepadBindings(mappings);
   }
 
   getLeftStickX() {
