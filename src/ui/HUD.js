@@ -291,6 +291,7 @@ export class HUD {
     const isForestKing = boss.species === 'forest_king' || boss.name === 'Forest King';
     const isSirSlamALot = boss.species === 'sir_slam_a_lot' || boss.name === 'Sir Slam-A-Lot';
     const isHoneyDragon = boss.species === 'honey_dragon' || boss.name === 'The Honey Dragon' || boss.name === 'Honey Dragon';
+    const isSandwichKing = boss.species === 'sandwich_king' || boss.name === 'The Sandwich King' || boss.name === 'Sandwich King';
 
     if (isForestKing) {
       if (boss.phase === 3) {
@@ -329,6 +330,23 @@ export class HUD {
         hpGrad.addColorStop(0.5, '#f59e0b');
         hpGrad.addColorStop(1, '#fef08a');
       }
+    } else if (isSandwichKing) {
+      if (boss.phase === 3) {
+        // Spicy Sriracha / Toppled layers frenzy
+        hpGrad.addColorStop(0, '#991b1b');
+        hpGrad.addColorStop(0.5, '#ea580c');
+        hpGrad.addColorStop(1, '#fef08a');
+      } else if (boss.phase === 2) {
+        // Sharp Dijon mustard & melted cheddar
+        hpGrad.addColorStop(0, '#a16207');
+        hpGrad.addColorStop(0.5, '#eab308');
+        hpGrad.addColorStop(1, '#fef9c3');
+      } else {
+        // Golden Brioche & Cheddar
+        hpGrad.addColorStop(0, '#78350f');
+        hpGrad.addColorStop(0.5, '#d97706');
+        hpGrad.addColorStop(1, '#fef08a');
+      }
     } else if (boss.phase === 3) {
       hpGrad.addColorStop(0, '#dc2626');
       hpGrad.addColorStop(0.5, '#ef4444');
@@ -342,7 +360,7 @@ export class HUD {
     ctx.fillRect(barX, barY, fillWidth, barHeight);
 
     // Boss Name & Phase Badge
-    ctx.fillStyle = isForestKing ? '#f0abfc' : (isSirSlamALot ? '#38bdf8' : (isHoneyDragon ? '#fdba74' : '#fef08a'));
+    ctx.fillStyle = isForestKing ? '#f0abfc' : (isSirSlamALot ? '#38bdf8' : (isHoneyDragon ? '#fdba74' : (isSandwichKing ? '#fef08a' : '#fef08a')));
     ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';

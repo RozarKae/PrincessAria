@@ -157,6 +157,20 @@ export class StarProjectile {
         }
       }
 
+      // Check collision with SandwichKing cheddar core when staggered
+      const sandwichKing = level && (level.sandwichKing || (level.enemies ? level.enemies.find(e => e.constructor.name === 'SandwichKing' || e.name === 'The Sandwich King' || e.species === 'sandwich_king') : null));
+      if (sandwichKing && !sandwichKing.isDead && !sandwichKing.isDefeated && sandwichKing.cheddarCore && (sandwichKing.isStaggered || sandwichKing.cheddarCore.vulnerable)) {
+        const bounds = this.getBounds();
+        if (Collision.intersects(bounds, sandwichKing.cheddarCore)) {
+          this.isDead = true;
+          if (sandwichKing.hurt) {
+            sandwichKing.hurt(1, this.facing, 'projectile');
+          }
+          if (audio && audio.playStarHit) audio.playStarHit();
+          return;
+        }
+      }
+
       // Check collision with enemies
       if (level && level.enemies) {
         const bounds = this.getBounds();
