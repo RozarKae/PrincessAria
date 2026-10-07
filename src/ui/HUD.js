@@ -8,7 +8,7 @@ import { CANVAS_WIDTH } from '../game/Constants.js';
  * - Left: Kingdom & Stage designation ("HONEYWOOD 1-1")
  * - Score counter ("SCORE 000000")
  * - Center: Floating multifaceted Royal Shard crystal with inner emerald droplet
- * - Right: Princess Aria's Royal Hearts (sculpted ruby gemstone hearts with gold bezels)
+ * - Right: Status bars (HP / SUPER / SLIZE / SHIELD)
  */
 export class HUD {
   constructor() {
@@ -142,94 +142,48 @@ export class HUD {
     const shardsVal = (gameState.coins || 0).toString().padStart(2, '0');
     ctx.fillText('x ' + shardsVal, shardCenterX + 28, 52);
 
-    // 5. Two-column themed status panels (top-right)
-    const panelW = 320;
-    const panelH = 88;
-    const panelX = CANVAS_WIDTH - panelW - 24;
-    const panelY = 18;
+    // 5. Right-side compact status bars: HP / SUPER / SLIZE / SHIELD
+    const rightX = CANVAS_WIDTH - 330;
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText('STATUS', rightX, 26);
 
-    // subtle panel background with gold trim
-    ctx.fillStyle = 'rgba(7, 11, 20, 0.64)';
-    ctx.fillRect(panelX, panelY, panelW, panelH);
-    const trim = ctx.createLinearGradient(panelX, 0, panelX + panelW, 0);
-    trim.addColorStop(0, '#d97706');
-    trim.addColorStop(0.5, '#fbbf24');
-    trim.addColorStop(1, '#d97706');
-    ctx.strokeStyle = trim;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(panelX + 0.5, panelY + 0.5, panelW - 1, panelH - 1);
+    // compact symbol + bar layout that uses available top bar space
+    const barY = 34;
+    const rowH = 16;
+    const symW = 22; // symbol area width
+    const totalW = 260; // total width per row
+    const barW = totalW - symW - 8;
 
-    // layout: 2 columns x 2 rows
-    const colW = Math.floor((panelW - 24) / 2);
-    const rowH = 34;
-    const startX = panelX + 12;
-    const startY = panelY + 10;
-
-    const drawStat = (symbol, cur, max, color, col, row) => {
-      const sx = startX + col * (colW + 8);
-      const sy = startY + row * rowH;
-
-      // symbol circle
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(255,255,255,0.04)';
-      ctx.arc(sx + 12, sy + 12, 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillStyle = '#f8fafc';
+    const drawBar = (symbol, cur, max, color, yOffset) => {
+      // symbol box
+      const sx = CANVAS_WIDTH - totalW;
+      const sy = barY + yOffset;
+      ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(symbol, sx + 12, sy + 12);
+      // circle behind symbol
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.beginPath();
+      ctx.arc(sx + symW / 2, sy + 6, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText(symbol, sx + symW / 2, sy + 6);
 
-      // bar background
-      const bx = sx + 32;
-      const by = sy + 6;
-      const bw = colW - 40;
-      ctx.fillStyle = 'rgba(12,18,28,0.9)';
-      // rounded rect
-      roundRect(ctx, bx, by, bw, 18, 6, true, false);
-
-      // fill
+      // bar area
+      const bx = sx + symW + 8;
+      ctx.fillStyle = 'rgba(15,23,42,0.9)';
+      ctx.fillRect(bx, sy, barW, 10);
       const ratio = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
       if (ratio > 0) {
-        const grad = ctx.createLinearGradient(bx, 0, bx + bw, 0);
-        grad.addColorStop(0, color);
-        grad.addColorStop(1, tinyDarken(color, 0.12));
-        ctx.fillStyle = grad;
-        roundRect(ctx, bx + 0.5, by + 0.5, Math.max(2, (bw - 1) * ratio), 16, 6, true, false);
+        ctx.fillStyle = color;
+        ctx.fillRect(bx, sy, barW * ratio, 10);
       }
-
-      // numeric percent
-      ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillStyle = '#f8fafc';
-      ctx.textAlign = 'right';
-      ctx.fillText(Math.round(ratio * 100) + '%', bx + bw - 6, by + 9);
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx + 0.5, sy + 0.5, barW - 1, 9);
       ctx.textAlign = 'left';
     };
-
-    // helpers: rounded rectangle and color adjust
-    function roundRect(ctx, x, y, w, h, r, fill, stroke) {
-      if (typeof r === 'undefined') r = 5;
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-      if (fill) ctx.fill();
-      if (stroke) ctx.stroke();
-    }
-
-    function tinyDarken(hex, amount) {
-      try {
-        const c = hex.replace('#', '');
-        const r = Math.max(0, parseInt(c.substring(0,2),16) - Math.round(255*amount));
-        const g = Math.max(0, parseInt(c.substring(2,4),16) - Math.round(255*amount));
-        const b = Math.max(0, parseInt(c.substring(4,6),16) - Math.round(255*amount));
-        return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
-      } catch (e) { return hex; }
-    }
 
     // Safe fallbacks from gameState
     const hpCur = (gameState.hp !== undefined) ? gameState.hp : (gameState.lives !== undefined ? gameState.lives : 5);
@@ -241,11 +195,10 @@ export class HUD {
     const shieldCur = gameState.shield !== undefined ? gameState.shield : (gameState.shieldStamina !== undefined ? gameState.shieldStamina : 100);
     const shieldMax = gameState.shieldMax !== undefined ? gameState.shieldMax : (gameState.shieldMaxStamina !== undefined ? gameState.shieldMaxStamina : 100);
 
-    // draw in two columns (col, row)
-    drawStat('❤', hpCur, hpMax, '#ef4444', 0, 0);
-    drawStat('⚡', superCur, superMax, '#f59e0b', 0, 1);
-    drawStat('✂', slizeCur, slizeMax, '#a78bfa', 1, 0);
-    drawStat('🛡', shieldCur, shieldMax, '#38bdf8', 1, 1);
+    drawBar('❤', hpCur, hpMax, '#ef4444', 0);
+    drawBar('⚡', superCur, superMax, '#f59e0b', rowH);
+    drawBar('✂', slizeCur, slizeMax, '#a78bfa', rowH * 2);
+    drawBar('🛡', shieldCur, shieldMax, '#38bdf8', rowH * 3);
 
     ctx.restore();
   }
@@ -448,4 +401,3 @@ export class HUD {
     ctx.restore();
   }
 }
-
