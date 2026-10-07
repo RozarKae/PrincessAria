@@ -142,20 +142,28 @@ export class HUD {
     const shardsVal = (gameState.coins || 0).toString().padStart(2, '0');
     ctx.fillText('x ' + shardsVal, shardCenterX + 28, 52);
 
-    // 5. Right-side Status Bars: Balanced 2-Column High-Definition Grid
+    // 5. Right-side Status Bars: Luxury Royal Panel with Perfect Spacing & Typography
     const player = options.player || null;
-    const statusBoxW = 420;
-    const statusBoxH = 64;
-    const statusX = CANVAS_WIDTH - statusBoxW - 48;
-    const statusY = 9;
+    const statusBoxW = 470;
+    const statusBoxH = 66;
+    const statusX = CANVAS_WIDTH - statusBoxW - 36;
+    const statusY = 8;
 
-    // Elegant status backdrop panel with golden border
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-    ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+    // Elegant status backdrop panel with royal gold border and inner glow
+    ctx.save();
+    ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
+    ctx.beginPath();
+    ctx.roundRect(statusX, statusY, statusBoxW, statusBoxH, 8);
+    ctx.fill();
+
+    // Dual-tone border
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(statusX, statusY, statusBoxW, statusBoxH, 6);
-    ctx.fill();
+    ctx.roundRect(statusX + 2, statusY + 2, statusBoxW - 4, statusBoxH - 4, 6);
     ctx.stroke();
 
     // Safe fallbacks from player or gameState
@@ -171,47 +179,50 @@ export class HUD {
     const shieldCur = player?.shieldStamina !== undefined ? player.shieldStamina : (gameState.shieldStamina || gameState.shield || 100);
     const shieldMax = player?.shieldMaxStamina !== undefined ? player.shieldMaxStamina : (gameState.shieldMaxStamina || gameState.shieldMax || 100);
 
-    // 2-Column Grid Layout: Column 0 (Left: HP, SLIZE), Column 1 (Right: SUPER, SHIELD)
-    const colW = (statusBoxW - 32) / 2; // ~194px each column
-    const barW = colW - 48; // bar width (~146px)
-    const col0X = statusX + 16;
-    const col1X = statusX + 24 + colW;
-    const row0Y = statusY + 12;
-    const row1Y = statusY + 38;
+    // 2-Column Grid Layout: Column 0 (Left: LIFE, SLIZE), Column 1 (Right: SUPER, SHIELD)
+    const colPad = 16;
+    const colW = (statusBoxW - colPad * 3) / 2; // ~211px per column
+    const col0X = statusX + colPad;
+    const col1X = statusX + colPad * 2 + colW;
+    const row0Y = statusY + 9;
+    const row1Y = statusY + 36;
 
     const renderBar = (bx, by, icon, label, cur, max, color, isHp = false) => {
-      // Icon and Label
+      const centerY = by + 12;
+
+      // Icon
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = color;
-      ctx.fillText(icon, bx, by + 9);
+      ctx.fillText(icon, bx, centerY);
 
-      ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillStyle = '#cbd5e1';
-      ctx.fillText(label, bx + 16, by + 9);
+      // Label (Clear, uppercase, high contrast)
+      ctx.font = '700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillText(label, bx + 16, centerY);
 
-      // Metric value text
+      // Value (right aligned, monospace styling for clean numbers)
       ctx.textAlign = 'right';
-      ctx.font = '700 11px "Outfit", monospace';
+      ctx.font = 'bold 11px monospace';
       ctx.fillStyle = '#f8fafc';
       const valStr = isHp ? `${cur}/${max}` : `${Math.round(cur)}%`;
-      ctx.fillText(valStr, bx + colW - 6, by + 9);
+      ctx.fillText(valStr, bx + colW, centerY);
 
-      // Bar container
-      const trackX = bx + 48;
-      const trackY = by + 4;
-      const trackW = colW - 54 - 38; // 102px track width
+      // Bar Track between label and value
+      const trackX = bx + 64;
+      const trackY = centerY - 5;
+      const trackW = colW - 64 - 40; // ~107px track width
       const trackH = 10;
 
-      // Track background
-      ctx.fillStyle = 'rgba(2, 6, 23, 0.9)';
+      // Dark sunken track background
+      ctx.fillStyle = '#020617';
       ctx.fillRect(trackX, trackY, trackW, trackH);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
       ctx.lineWidth = 1;
       ctx.strokeRect(trackX + 0.5, trackY + 0.5, trackW - 1, trackH - 1);
 
-      // Fill with subtle gradient
+      // Progress Fill with gradient & specular gloss glint
       const ratio = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
       if (ratio > 0) {
         const fillW = Math.max(2, (trackW - 2) * ratio);
@@ -221,20 +232,21 @@ export class HUD {
         ctx.fillStyle = grad;
         ctx.fillRect(trackX + 1, trackY + 1, fillW, trackH - 2);
 
-        // Gloss glint on top half of the bar
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
-        ctx.fillRect(trackX + 1, trackY + 1, fillW, (trackH - 2) / 2);
+        // Specular highlight on top edge
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.fillRect(trackX + 1, trackY + 1, fillW, 2);
       }
     };
 
     // Draw Column 1: LIFE and SLIZE
     renderBar(col0X, row0Y, '❤', 'LIFE', hpCur, hpMax, '#ef4444', true);
-    renderBar(col0X, row1Y, '✂', 'SLIZE', slizeCur, slizeMax, '#a855f7', false);
+    renderBar(col0X, row1Y, '✂', 'SLIZE', slizeCur, slizeMax, '#c084fc', false);
 
     // Draw Column 2: SUPER and SHIELD
     renderBar(col1X, row0Y, '⚡', 'SUPER', superCur, superMax, '#f59e0b', false);
     renderBar(col1X, row1Y, '🛡', 'SHIELD', shieldCur, shieldMax, '#38bdf8', false);
 
+    ctx.restore();
     ctx.restore();
   }
 
