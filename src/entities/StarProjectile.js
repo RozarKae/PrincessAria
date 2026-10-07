@@ -129,6 +129,20 @@ export class StarProjectile {
         }
       }
 
+      // Check collision with SirSlamALot power core when vulnerable
+      const slammer = level && (level.sirSlamALot || (level.enemies ? level.enemies.find(e => e.constructor.name === 'SirSlamALot' || e.name === 'Sir Slam-A-Lot') : null));
+      if (slammer && !slammer.isDead && !slammer.isDefeated && slammer.powerCore && slammer.isHammerStuck) {
+        const bounds = this.getBounds();
+        if (Collision.intersects(bounds, slammer.powerCore)) {
+          this.isDead = true;
+          if (slammer.damageCore) {
+            slammer.damageCore(1, level, camera);
+          }
+          if (audio && audio.playStarHit) audio.playStarHit();
+          return;
+        }
+      }
+
       // Check collision with enemies
       if (level && level.enemies) {
         const bounds = this.getBounds();

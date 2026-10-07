@@ -142,20 +142,63 @@ export class HUD {
     const shardsVal = (gameState.coins || 0).toString().padStart(2, '0');
     ctx.fillText('x ' + shardsVal, shardCenterX + 28, 52);
 
-    // 5. Princess Aria Royal Hearts (Right)
-    const livesX = CANVAS_WIDTH - 290;
+    // 5. Right-side compact status bars: HP / SUPER / SLIZE / SHIELD
+    const rightX = CANVAS_WIDTH - 330;
     ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = '#fbbf24';
-    ctx.fillText('ROYAL HEARTS', livesX, 26);
+    ctx.fillText('STATUS', rightX, 26);
 
-    const heartStartX = CANVAS_WIDTH - 290;
-    const maxHearts = gameState.maxLives || 5;
-    for (let i = 0; i < maxHearts; i++) {
-      const hx = heartStartX + i * 32 + 14;
-      const hy = 50;
-      const isAlive = i < gameState.lives;
-      this.drawRoyalHeart(ctx, hx, hy, isAlive, i === gameState.lives - 1);
-    }
+    // compact symbol + bar layout that uses available top bar space
+    const barY = 34;
+    const rowH = 16;
+    const symW = 22; // symbol area width
+    const totalW = 260; // total width per row
+    const barW = totalW - symW - 8;
+
+    const drawBar = (symbol, cur, max, color, yOffset) => {
+      // symbol box
+      const sx = CANVAS_WIDTH - totalW;
+      const sy = barY + yOffset;
+      ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // circle behind symbol
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.beginPath();
+      ctx.arc(sx + symW / 2, sy + 6, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText(symbol, sx + symW / 2, sy + 6);
+
+      // bar area
+      const bx = sx + symW + 8;
+      ctx.fillStyle = 'rgba(15,23,42,0.9)';
+      ctx.fillRect(bx, sy, barW, 10);
+      const ratio = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
+      if (ratio > 0) {
+        ctx.fillStyle = color;
+        ctx.fillRect(bx, sy, barW * ratio, 10);
+      }
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx + 0.5, sy + 0.5, barW - 1, 9);
+      ctx.textAlign = 'left';
+    };
+
+    // Safe fallbacks from gameState
+    const hpCur = (gameState.hp !== undefined) ? gameState.hp : (gameState.lives !== undefined ? gameState.lives : 5);
+    const hpMax = (gameState.maxHp !== undefined) ? gameState.maxHp : (gameState.maxLives !== undefined ? gameState.maxLives : 5);
+    const superCur = gameState.super !== undefined ? gameState.super : (gameState.superCharge !== undefined ? gameState.superCharge : 0);
+    const superMax = gameState.superMax !== undefined ? gameState.superMax : 100;
+    const slizeCur = gameState.slize !== undefined ? gameState.slize : 0;
+    const slizeMax = gameState.slizeMax !== undefined ? gameState.slizeMax : 100;
+    const shieldCur = gameState.shield !== undefined ? gameState.shield : (gameState.shieldStamina !== undefined ? gameState.shieldStamina : 100);
+    const shieldMax = gameState.shieldMax !== undefined ? gameState.shieldMax : (gameState.shieldMaxStamina !== undefined ? gameState.shieldMaxStamina : 100);
+
+    drawBar('❤', hpCur, hpMax, '#ef4444', 0);
+    drawBar('⚡', superCur, superMax, '#f59e0b', rowH);
+    drawBar('✂', slizeCur, slizeMax, '#a78bfa', rowH * 2);
+    drawBar('🛡', shieldCur, shieldMax, '#38bdf8', rowH * 3);
 
     ctx.restore();
   }
@@ -246,6 +289,7 @@ export class HUD {
     const hpGrad = ctx.createLinearGradient(barX, 0, barX + barWidth, 0);
 
     const isForestKing = boss.species === 'forest_king' || boss.name === 'Forest King';
+    const isSirSlamALot = boss.species === 'sir_slam_a_lot' || boss.name === 'Sir Slam-A-Lot';
 
     if (isForestKing) {
       if (boss.phase === 3) {
@@ -256,6 +300,16 @@ export class HUD {
         hpGrad.addColorStop(0, '#4c1d95');
         hpGrad.addColorStop(0.5, '#a855f7');
         hpGrad.addColorStop(1, '#e9d5ff');
+      }
+    } else if (isSirSlamALot) {
+      if (boss.phase === 3) {
+        hpGrad.addColorStop(0, '#c2410c');
+        hpGrad.addColorStop(0.5, '#ea580c');
+        hpGrad.addColorStop(1, '#fed7aa');
+      } else {
+        hpGrad.addColorStop(0, '#1e293b');
+        hpGrad.addColorStop(0.5, '#38bdf8');
+        hpGrad.addColorStop(1, '#bae6fd');
       }
     } else if (boss.phase === 3) {
       hpGrad.addColorStop(0, '#dc2626');
@@ -270,7 +324,7 @@ export class HUD {
     ctx.fillRect(barX, barY, fillWidth, barHeight);
 
     // Boss Name & Phase Badge
-    ctx.fillStyle = isForestKing ? '#f0abfc' : '#fef08a';
+    ctx.fillStyle = isForestKing ? '#f0abfc' : (isSirSlamALot ? '#38bdf8' : '#fef08a');
     ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
