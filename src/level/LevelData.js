@@ -367,10 +367,9 @@ export const WORLDS = {
           { type: 'honey_bumble', x: 10100, y: 640 },
         ],
 
-        // Checkpoints (6 Regional Checkpoints across the 10,800px Journey)
-        checkpoint: { x: 740, y: 840, width: 40, height: 40 },
+        // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
+        checkpoint: { x: 3540, y: 680, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 740, y: 840, width: 40, height: 40 },
           { id: 2, x: 3540, y: 680, width: 40, height: 40 },
           { id: 3, x: 5360, y: 740, width: 40, height: 40 },
           { id: 4, x: 6920, y: 700, width: 40, height: 40 },
@@ -677,10 +676,9 @@ export const WORLDS = {
           { type: 'shadow_squirrel', x: 10380, y: 836, patrolMinX: 10100, patrolMaxX: 10580 },
         ],
 
-        // Checkpoints (6 Regional Checkpoints across the 10,800px Journey)
-        checkpoint: { x: 700, y: 840, width: 40, height: 40 },
+        // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
+        checkpoint: { x: 2520, y: 740, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 700, y: 840, width: 40, height: 40 },
           { id: 2, x: 2520, y: 740, width: 40, height: 40 },
           { id: 3, x: 4200, y: 680, width: 40, height: 40 },
           { id: 4, x: 5600, y: 700, width: 40, height: 40 },
@@ -956,10 +954,9 @@ export const WORLDS = {
           { type: 'enchanted_broom', x: 10380, y: 824, patrolMinX: 10100, patrolMaxX: 10580 },
         ],
 
-        // Checkpoints (6 Regional Checkpoints across the 10,800px Journey)
-        checkpoint: { x: 700, y: 840, width: 40, height: 40 },
+        // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
+        checkpoint: { x: 2520, y: 740, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 700, y: 840, width: 40, height: 40 },
           { id: 2, x: 2520, y: 740, width: 40, height: 40 },
           { id: 3, x: 4200, y: 680, width: 40, height: 40 },
           { id: 4, x: 5600, y: 700, width: 40, height: 40 },
@@ -1210,10 +1207,9 @@ export const WORLDS = {
           { type: 'fire_bee', x: 10380, y: 380 },
         ],
 
-        // 6 Regional Checkpoints
-        checkpoint: { x: 600, y: 840, width: 40, height: 40 },
+        // 5 Regional Checkpoints
+        checkpoint: { x: 2400, y: 820, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 600, y: 840, width: 40, height: 40 },
           { id: 2, x: 2400, y: 820, width: 40, height: 40 },
           { id: 3, x: 4200, y: 640, width: 40, height: 40 },
           { id: 4, x: 5800, y: 820, width: 40, height: 40 },
@@ -1458,10 +1454,9 @@ export const WORLDS = {
           { type: 'pickle_bomber', x: 10380, y: 380 },
         ],
 
-        // 6 Regional Checkpoints
-        checkpoint: { x: 600, y: 840, width: 40, height: 40 },
+        // 5 Regional Checkpoints
+        checkpoint: { x: 2400, y: 820, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 600, y: 840, width: 40, height: 40 },
           { id: 2, x: 2400, y: 820, width: 40, height: 40 },
           { id: 3, x: 4200, y: 640, width: 40, height: 40 },
           { id: 4, x: 5800, y: 820, width: 40, height: 40 },
@@ -1713,10 +1708,9 @@ export const WORLDS = {
           { type: 'clockwork_bee', x: 10420, y: 440 },
         ],
 
-        // 6 Regional Checkpoints
-        checkpoint: { x: 600, y: 840, width: 40, height: 40 },
+        // 5 Regional Checkpoints
+        checkpoint: { x: 2400, y: 820, width: 40, height: 40 },
         checkpoints: [
-          { id: 1, x: 600, y: 840, width: 40, height: 40 },
           { id: 2, x: 2400, y: 820, width: 40, height: 40 },
           { id: 3, x: 4200, y: 820, width: 40, height: 40 },
           { id: 4, x: 5800, y: 820, width: 40, height: 40 },

@@ -61,7 +61,7 @@ export class Level {
     this.theme = levelData.theme;
     this.spawnPoint = { ...(levelData.spawn || levelData.spawnPoint || { x: 280, y: 790 }) };
     this.checkpoints = levelData.checkpoints ? levelData.checkpoints.map(c => ({ ...c, activated: false })) : (levelData.checkpoint ? [{ ...levelData.checkpoint, activated: false }] : []);
-    this.checkpoint = this.checkpoints[0] || { x: 740, y: 840, width: 40, height: 40, activated: false };
+    this.checkpoint = this.checkpoints[0] || (levelData.checkpoint ? { ...levelData.checkpoint, activated: false } : { x: 2400, y: 820, width: 40, height: 40, activated: false });
     this.goal = { ...levelData.goal };
     this.midgroundProps = levelData.midgroundProps || [];
     this.detailProps = levelData.detailProps || [];
