@@ -1051,25 +1051,32 @@ export class Player {
     // 4. Draw Active Starbeam Projectiles
     this.projectiles.forEach(p => p.draw(ctx));
 
-    // 5. Draw shield in hand when shielding (simple pixel shield)
-    if (this.isShielding) {
+    // 5. Draw shield in hand when shielding and stamina > 0 (vanishes once released or empty)
+    if (this.isShielding && this.shieldStamina > 0) {
       ctx.save();
       // shield position relative to facing and player
-      const sx = this.facing > 0 ? this.x + this.width - 6 : this.x - 10;
-      const sy = this.y + this.height * 0.42;
+      const sx = this.facing > 0 ? this.x + this.width - 4 : this.x - 14;
+      const sy = this.y + this.height * 0.38;
       ctx.translate(sx, sy);
       if (this.facing < 0) ctx.scale(-1, 1);
 
-      // shield body
-      ctx.fillStyle = '#0ea5a4';
-      ctx.fillRect(-2, -6, 10, 12);
-      // shield rim
-      ctx.strokeStyle = '#be185d';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(-2, -6, 10, 12);
-      // shimmer
-      ctx.fillStyle = '#ffffff88';
-      ctx.fillRect(0, -4, 2, 2);
+      // Outer gold rim
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(-2, -8, 14, 20);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(0, -7, 10, 2);
+
+      // Azure / Cyan gem center
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(0, -6, 10, 16);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(2, -4, 6, 12);
+
+      // Brilliant specular sheen and glint
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, -6, 3, 3);
+      ctx.fillRect(2, -2, 2, 2);
+      ctx.fillRect(4, 2, 2, 2);
 
       ctx.restore();
     }

@@ -3516,7 +3516,12 @@ export class PixelRenderer {
         this.drawSwordSlash(ctx, camX, camY, player);
       }
 
-      // 10. Royal Starbeam Projectiles (Ranged Power)
+      // 10. Shiny Aegis Shield (Active while holding shield and stamina > 0; vanishes once released or empty)
+      if (player.isShielding && player.shieldStamina > 0) {
+        this.drawShield(ctx, camX, camY, player);
+      }
+
+      // 11. Royal Starbeam Projectiles (Ranged Power)
       if (player.projectiles && player.projectiles.length > 0) {
         this.drawStarProjectiles(ctx, camX, camY, player.projectiles);
       }
@@ -3710,6 +3715,81 @@ export class PixelRenderer {
         }
       });
     }
+  }
+
+  /**
+   * Render Shiny Royal Aegis Shield in Aria's guard hand.
+   * Features:
+   * - Brilliant specular white-gold rim highlight
+   * - Radiant cyan/azure starlight crystal field
+   * - Animated pulsing starlight shimmer glints
+   * - Vanishes immediately once released or stamina runs out
+   */
+  drawShield(ctx, camX, camY, player) {
+    if (!player || !player.isShielding || (player.shieldStamina || 0) <= 0) return;
+
+    const ariaScrX = (player.x - camX) * WORLD_TO_PIXEL;
+    const ariaScrY = (player.y + player.height) * WORLD_TO_PIXEL - 22;
+    const facing = player.facing || 1;
+
+    // Shield position in front of Aria's chest/torso
+    const shieldX = Math.round(ariaScrX + (facing > 0 ? 12 : -5));
+    const shieldY = Math.round(ariaScrY + 5);
+
+    ctx.save();
+
+    // 1. Outer Ethereal Starlight Protective Glow (pulsing aura)
+    const auraPulse = Math.sin(this.timer * 8) * 0.15 + 0.35;
+    ctx.fillStyle = `rgba(56, 189, 248, ${auraPulse})`;
+    ctx.fillRect(shieldX - 2, shieldY - 2, 11, 17);
+    ctx.fillStyle = `rgba(254, 240, 138, ${auraPulse * 0.7})`;
+    ctx.fillRect(shieldX - 1, shieldY - 1, 9, 15);
+
+    // 2. Shiny Outer Beveled Gold Rim
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(shieldX, shieldY, 7, 13);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(shieldX + 1, shieldY, 5, 1);
+    ctx.fillRect(shieldX + 2, shieldY + 12, 3, 1);
+
+    // 3. Radiant Crystal Azure / Cyan Gem Core
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(shieldX + 1, shieldY + 1, 5, 11);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(shieldX + 2, shieldY + 2, 3, 9);
+    ctx.fillStyle = '#7dd3fc';
+    ctx.fillRect(shieldX + 2, shieldY + 3, 2, 6);
+
+    // 4. Brilliant White Specular Glint & Crest Shimmer
+    const glintPhase = Math.floor(this.timer * 6) % 3;
+    ctx.fillStyle = '#ffffff';
+    // Top-left glint highlight
+    ctx.fillRect(shieldX + 1, shieldY + 1, 2, 2);
+    ctx.fillRect(shieldX + 2, shieldY, 2, 1);
+
+    // Animated diagonal shimmer sweep across the face of the shield
+    if (glintPhase === 0) {
+      ctx.fillRect(shieldX + 2, shieldY + 3, 1, 1);
+      ctx.fillRect(shieldX + 3, shieldY + 4, 1, 1);
+    } else if (glintPhase === 1) {
+      ctx.fillRect(shieldX + 3, shieldY + 5, 1, 1);
+      ctx.fillRect(shieldX + 4, shieldY + 6, 1, 1);
+    } else {
+      ctx.fillRect(shieldX + 2, shieldY + 7, 1, 1);
+      ctx.fillRect(shieldX + 3, shieldY + 8, 1, 1);
+    }
+
+    // 5. Four-point sparkling star glint at top edge of the shield
+    const starTimer = (this.timer * 5) % 1;
+    if (starTimer < 0.5) {
+      const sx = shieldX + (facing > 0 ? 5 : 1);
+      const sy = shieldY - 1;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(sx, sy - 1, 1, 3);
+      ctx.fillRect(sx - 1, sy, 3, 1);
+    }
+
+    ctx.restore();
   }
 
   drawRoyalShard(ctx, x, y) {
