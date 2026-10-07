@@ -244,7 +244,20 @@ export class HUD {
     const ratio = Math.max(0, Math.min(1, boss.health / (boss.maxHealth || 6)));
     const fillWidth = ratio * barWidth;
     const hpGrad = ctx.createLinearGradient(barX, 0, barX + barWidth, 0);
-    if (boss.phase === 3) {
+
+    const isForestKing = boss.species === 'forest_king' || boss.name === 'Forest King';
+
+    if (isForestKing) {
+      if (boss.phase === 3) {
+        hpGrad.addColorStop(0, '#7e22ce');
+        hpGrad.addColorStop(0.5, '#c026d3');
+        hpGrad.addColorStop(1, '#f0abfc');
+      } else {
+        hpGrad.addColorStop(0, '#4c1d95');
+        hpGrad.addColorStop(0.5, '#a855f7');
+        hpGrad.addColorStop(1, '#e9d5ff');
+      }
+    } else if (boss.phase === 3) {
       hpGrad.addColorStop(0, '#dc2626');
       hpGrad.addColorStop(0.5, '#ef4444');
       hpGrad.addColorStop(1, '#f87171');
@@ -257,7 +270,7 @@ export class HUD {
     ctx.fillRect(barX, barY, fillWidth, barHeight);
 
     // Boss Name & Phase Badge
-    ctx.fillStyle = '#fef08a';
+    ctx.fillStyle = isForestKing ? '#f0abfc' : '#fef08a';
     ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';

@@ -200,14 +200,57 @@ export class PixelHUD {
     ctx.fillRect(0, 11, 48, 1);
     ctx.fillRect(width - 56, 11, 56, 1);
 
-    // 2. ARIA + HEARTS (Left)
-    drawBitmapText(ctx, 'ARIA', 6, 3, P.UI_TEXT_GOLD);
+    // 2. ARIA + FOUR MINI-BARS (HP / SUPER / SLIZE / SPECIAL)
+    drawBitmapText(ctx, 'ARIA', 6, 1, P.UI_TEXT_GOLD);
 
-    const lives = Math.max(0, gameState.lives !== undefined ? gameState.lives : 5);
-    const maxHearts = gameState.maxLives || 5;
-    for (let i = 0; i < maxHearts; i++) {
-      this.drawHeart(ctx, 30 + i * 7, 3, i < lives);
-    }
+    // Bar drawing helper (x, y, width, ratio, color)
+    const drawMiniBar = (bx, by, bw, ratio, color, bgColor = '#0b1220') => {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(bx, by, bw, 3);
+      ctx.fillStyle = '#00000055';
+      ctx.fillRect(bx, by, bw, 1);
+      const fillW = Math.max(0, Math.min(1, ratio)) * bw;
+      if (fillW > 0) {
+        ctx.fillStyle = color;
+        ctx.fillRect(bx, by, fillW, 3);
+      }
+      // thin border
+      ctx.strokeStyle = '#00000088';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(bx + 0.25, by + 0.25, bw - 0.5, 3 - 0.5);
+    };
+
+    // Safe getters from gameState / player
+    const hpCur = (gameState.hp !== undefined) ? gameState.hp : (gameState.lives !== undefined ? gameState.lives : 5);
+    const hpMax = (gameState.maxHp !== undefined) ? gameState.maxHp : (gameState.maxLives !== undefined ? gameState.maxLives : 5);
+    const superCur = (gameState.super !== undefined) ? gameState.super : (player && player.superCharge !== undefined ? player.superCharge : 0);
+    const superMax = (gameState.superMax !== undefined) ? gameState.superMax : 100;
+    const slizeCur = (gameState.slize !== undefined) ? gameState.slize : (player && player.slize !== undefined ? player.slize : 0);
+    const slizeMax = (gameState.slizeMax !== undefined) ? gameState.slizeMax : 100;
+    const specialCur = (gameState.special !== undefined) ? gameState.special : (player && player.specialCharge !== undefined ? player.specialCharge : 0);
+    const specialMax = (gameState.specialMax !== undefined) ? gameState.specialMax : 100;
+
+    // layout
+    const baseX = 30;
+    const baseY = 2;
+    const barW = 42;
+    const spacing = 6;
+
+    // HP (red/gold)
+    drawBitmapText(ctx, 'HP', baseX - 18, baseY, '#f87171');
+    drawMiniBar(baseX, baseY, barW, hpMax > 0 ? hpCur / hpMax : 0, '#ef4444');
+
+    // SUPER (amber)
+    drawBitmapText(ctx, 'SP', baseX + barW + spacing - 18, baseY, '#f59e0b');
+    drawMiniBar(baseX + barW + spacing, baseY, barW, superMax > 0 ? superCur / superMax : 0, '#f59e0b');
+
+    // SLIZE (purple)
+    drawBitmapText(ctx, 'SZ', baseX + (barW + spacing) * 2 - 18, baseY, '#a78bfa');
+    drawMiniBar(baseX + (barW + spacing) * 2, baseY, barW, slizeMax > 0 ? slizeCur / slizeMax : 0, '#a78bfa');
+
+    // SPECIAL (cyan)
+    drawBitmapText(ctx, 'SPC', baseX + (barW + spacing) * 3 - 18, baseY, '#38bdf8');
+    drawMiniBar(baseX + (barW + spacing) * 3, baseY, barW, specialMax > 0 ? specialCur / specialMax : 0, '#38bdf8');
 
     // 3. THREE POWERS INDICATOR: [Z] Melee  [X] Dash  [C] Starbeam
     this.drawAbilityIcons(ctx, 60, 2, player);

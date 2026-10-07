@@ -116,20 +116,13 @@ export class StarProjectile {
           if (!core.severed && !core.shielded) {
             if (Collision.intersects(bounds, core)) {
               this.isDead = true;
-              core.hp -= 1;
+              if (king.damageCore) {
+                king.damageCore(core, 1, level, camera);
+              } else {
+                core.hp -= 1;
+                if (core.hp <= 0) core.severed = true;
+              }
               if (audio && audio.playStarHit) audio.playStarHit();
-              if (level.spawnBurst) {
-                level.spawnBurst(core.x + core.width / 2, core.y + core.height / 2, 14, '#38bdf8');
-                level.spawnBurst(core.x + core.width / 2, core.y + core.height / 2, 8, '#d946ef');
-              }
-              if (camera && camera.shake) camera.shake(7, 0.15);
-
-              if (core.hp <= 0) {
-                core.severed = true;
-                if (level.spawnSparkles) {
-                  level.spawnSparkles(core.x + core.width / 2, core.y + core.height / 2, 28);
-                }
-              }
               return;
             }
           }
