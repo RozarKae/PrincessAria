@@ -66,14 +66,20 @@ export class PickleBomber extends Enemy {
       b.vy += 850 * dt;
       b.life -= dt;
 
-      if (player && !player.isInvulnerable) {
+      if (player && !player.isDead && !player.isInvulnerable) {
         if (
           b.x > player.x &&
           b.x < player.x + player.width &&
           b.y > player.y &&
           b.y < player.y + player.height
         ) {
-          player.takeDamage(1, 0);
+          const wasHurt = typeof player.takeDamage === 'function'
+            ? player.takeDamage(1, 0)
+            : (typeof player.hurt === 'function' ? player.hurt() : false);
+          if (wasHurt && level && level.gameState && typeof level.gameState.loseLife === 'function') {
+            level.gameState.loseLife();
+          }
+          if (camera && wasHurt) camera.shake(10, 0.2);
           b.life = 0;
         }
       }

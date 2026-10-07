@@ -110,6 +110,10 @@ export class Player {
     this.setupAnimations();
   }
 
+  get isInvulnerable() {
+    return this.invincibilityTimer > 0;
+  }
+
   /**
    * Bind all 12 HD Animation Clips to Princess Aria.
    */
@@ -920,6 +924,14 @@ export class Player {
       this.inputRef.rumbleDamage();
     }
     return true;
+  }
+
+  takeDamage(amount = 1, knockDir = 0) {
+    const wasHurt = this.hurt();
+    if (wasHurt && knockDir !== 0) {
+      this.vx = knockDir * 320;
+    }
+    return wasHurt;
   }
 
   setVictory() {

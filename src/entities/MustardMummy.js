@@ -61,14 +61,20 @@ export class MustardMummy extends Enemy {
       p.life -= dt;
 
       // Check collision with player
-      if (player && !player.isInvulnerable) {
+      if (player && !player.isDead && !player.isInvulnerable) {
         if (
           p.x > player.x &&
           p.x < player.x + player.width &&
           p.y > player.y &&
           p.y < player.y + player.height
         ) {
-          player.takeDamage(1, p.vx > 0 ? 1 : -1);
+          const wasHurt = typeof player.takeDamage === 'function'
+            ? player.takeDamage(1, p.vx > 0 ? 1 : -1)
+            : (typeof player.hurt === 'function' ? player.hurt() : false);
+          if (wasHurt && level && level.gameState && typeof level.gameState.loseLife === 'function') {
+            level.gameState.loseLife();
+          }
+          if (camera && wasHurt) camera.shake(10, 0.2);
           p.life = 0;
         }
       }
