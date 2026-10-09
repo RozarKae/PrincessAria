@@ -6,6 +6,7 @@ import { AudioManager } from '../audio/AudioManager.js';
 import { Level } from '../level/Level.js';
 import { LEVEL_1_1, LEVEL_2_1, LEVEL_3_1, LEVEL_4_1, LEVEL_5_1, LEVEL_6_1 } from '../level/LevelData.js';
 import { Player } from '../entities/Player.js';
+import { CinematicDirector } from '../systems/CinematicDirector.js';
 import { Renderer } from '../renderer/Renderer.js';
 import { assetManager } from '../renderer/AssetManager.js';
 import { HUD } from '../ui/HUD.js';
@@ -34,6 +35,7 @@ export class Game {
     this.camera = new Camera();
     this.audio = new AudioManager();
     this.gameState = new GameState();
+    this.cinematic = new CinematicDirector();
 
     this.hud = new HUD();
     this.dialogue = new DialogueBox();
@@ -218,7 +220,8 @@ export class Game {
       this.camera.x = this.player.x - CANVAS_WIDTH / 2;
       this.camera.y = this.player.y - CANVAS_HEIGHT / 2;
     }
-    this.state = GAME_STATES.PLAYING;
+    this.state = GAME_STATES.WORLD_INTRO;
+    this.cinematic.startIntro(this);
   }
 
   /**
@@ -303,7 +306,8 @@ export class Game {
     }
 
     // Clear temporary death state, re-enable player controls, resume gameplay
-    this.state = GAME_STATES.PLAYING;
+    this.state = GAME_STATES.WORLD_INTRO;
+    this.cinematic.startIntro(this);
   }
 
   loadLevel(levelData) {
@@ -328,7 +332,8 @@ export class Game {
       this.audio.setBiome(initialBiome);
       this.audio.startProceduralMusic(initialBiome);
     }
-    this.state = GAME_STATES.PLAYING;
+    this.state = GAME_STATES.WORLD_INTRO;
+    this.cinematic.startIntro(this);
   }
 
   advanceToNextWorld() {
@@ -468,6 +473,10 @@ export class Game {
       }
       return;
     }
+    if (this.state === GAME_STATES.WORLD_INTRO || this.state === GAME_STATES.WORLD_OUTRO) {
+      this.cinematic.update(dt, this.input, this);
+      return;
+    }
 
     // --- PLAYING STATE ---
     this.hud.update(dt);
@@ -585,14 +594,14 @@ export class Game {
     this.level.update(this.player, this.gameState, this.audio, this.camera, dt);
 
     // 6. Check Goal / Batboy Rescue / Forest King Portal Victory Condition
-    if (Collision.intersects(this.player.getBounds(), this.level.goal)) {
+    const bossAlive = this.level.enemies && this.level.enemies.some(e => e.isBoss && !e.isDead);
+    if (!bossAlive && Collision.intersects(this.player.getBounds(), this.level.goal)) {
       if (this.level.batboy) {
         this.level.batboy.isRescued = true;
       }
-      if (this.audio) this.audio.playLevelComplete();
       this.gameState.addScore(1000);
-      this.player.setVictory();
-      this.state = GAME_STATES.LEVEL_CLEAR;
+      this.state = GAME_STATES.WORLD_OUTRO;
+      this.cinematic.startOutro(this);
       return;
     }
 
@@ -755,11 +764,10 @@ export class Game {
       return;
     }
 
-    if (this.state === GAME_STATES.LEVEL_CLEAR) {
-      // Draw world in background, then blit pixel art, then draw HD Level Clear overlay
+    if (this.state === GAME_STATES.WORLD_INTRO || this.state === GAME_STATES.WORLD_OUTRO) {
       this.renderer.drawWorld(this.camera, this.level, this.player, this.gameState);
+      this.cinematic.draw(this.renderer.internalCtx, this);
       this.renderer.endFrame();
-      this.renderer.drawGameOverOverlay(this.gameOverScreen, this.gameState, 'VICTORY', { totalShards: this.level.shards.length });
       return;
     }
 

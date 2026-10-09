@@ -48,6 +48,38 @@ export class Camera {
   }
 
   /**
+   * Instantly snap camera center to target world coordinates without lerp.
+   */
+  focusInstantly(targetX, targetY) {
+    this.x = Math.max(0, targetX - this.width / 2);
+    this.y = Math.max(0, targetY - this.height / 2);
+    this.targetX = this.x;
+    this.targetY = this.y;
+    this.isCinematic = true;
+    this.cinematicTarget = { x: targetX, y: targetY };
+    this.panTarget = null;
+  }
+
+  /**
+   * Reset cinematic overrides and restore normal camera tracking.
+   */
+  resetCinematic(player = null) {
+    this.isCinematic = false;
+    this.cinematicTarget = null;
+    this.panTarget = null;
+    this.onPanComplete = null;
+    this.targetZoom = 1.0;
+    this.zoomLevel = 1.0;
+    if (player) {
+      const facingOffset = (player.facing || 1) * this.lookaheadDist;
+      this.targetX = player.x + player.width / 2 - this.width / 2 + facingOffset;
+      this.targetY = player.y + player.height / 2 - this.height / 2;
+      this.x = this.targetX;
+      this.y = this.targetY;
+    }
+  }
+
+  /**
    * Set temporary cinematic focus on a specific world point.
    */
   focus(targetX, targetY, duration = 2.0) {

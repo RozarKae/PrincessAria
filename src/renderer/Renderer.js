@@ -41,7 +41,6 @@ export class Renderer {
     // Internal 256x240 Pixel Platformer Renderer
     this.pixelRenderer = new PixelRenderer(this.canvas);
     this.internalCanvas = this.pixelRenderer.internalCanvas;
-    this.internalCtx = this.pixelRenderer.internalCtx;
 
     // Preserved subsystems (dormant during retro gameplay)
     this.lighting = new LightingSystem();
@@ -58,6 +57,10 @@ export class Renderer {
     this.debugVisual = false;
     this.setupViewport();
     window.addEventListener('resize', () => this.setupViewport());
+  }
+
+  get internalCtx() {
+    return this.pixelRenderer ? this.pixelRenderer.internalCtx : this.ctx;
   }
 
   setupViewport() {
@@ -93,6 +96,7 @@ export class Renderer {
   drawWorld(camera, level, player, gameState) {
     // 1. Draw 2-Layer Minimal Background (Sky + Distant Silhouette Hills)
     this.pixelRenderer.drawBackground(camera, level);
+    this.pixelRenderer.drawAmbientPixelPolish(camera, level);
 
     // 2. Draw Midground Simple Trees & Rare Landmarks
     this.pixelRenderer.drawMidground(camera, level.midgroundProps);

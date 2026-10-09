@@ -34,10 +34,12 @@ export const PHYSICS = {
 // Game States
 export const GAME_STATES = {
   TITLE: 'TITLE',
+  WORLD_INTRO: 'WORLD_INTRO',
   PLAYING: 'PLAYING',
   DEFEATED: 'DEFEATED',
   GAME_OVER: 'GAME_OVER',
   LEVEL_CLEAR: 'LEVEL_CLEAR',
+  WORLD_OUTRO: 'WORLD_OUTRO',
 };
 
 // --- KEYBOARD MAPPINGS (PC / Web Keyboard) ---

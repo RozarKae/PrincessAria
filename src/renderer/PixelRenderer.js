@@ -40,25 +40,24 @@ export class PixelRenderer {
   }
 
   setupViewport() {
-    // Internal pixel art buffer: 320×240 for retro gameplay rendering
-    this.internalCanvas.width = INTERNAL_WIDTH;
-    this.internalCanvas.height = INTERNAL_HEIGHT;
-    this.internalCtx.imageSmoothingEnabled = false;
-
-    // Display canvas: set to container CSS size × devicePixelRatio so that the
-    // HUD and Game Over screen can be rendered at native display resolution
-    // (sharp text and icons). The pixel art world is upscaled from 320×240
-    // in endFrame() via drawImage() with nearest-neighbor sampling.
     const container = this.canvas.parentElement;
     const dpr = window.devicePixelRatio || 1;
     const cssW = (container && container.clientWidth) || window.innerWidth || 1280;
     const cssH = (container && container.clientHeight) || window.innerHeight || 720;
-    this.canvas.width = Math.round(cssW * dpr);
-    this.canvas.height = Math.round(cssH * dpr);
-    // Prevent any browser CSS upscale; the canvas buffer matches the display exactly.
+    // Set display canvas size in device pixels
+    this.canvas.width = Number(cssW * dpr);
+    this.canvas.height = Number(cssH * dpr);
+    // Prevent CSS scaling; match CSS size to viewport
     this.canvas.style.width = cssW + 'px';
     this.canvas.style.height = cssH + 'px';
     this.ctx.imageSmoothingEnabled = false;
+
+    // Configure internal high‑DPI buffer
+    this.internalCanvas.width = INTERNAL_WIDTH * dpr;
+    this.internalCanvas.height = INTERNAL_HEIGHT * dpr;
+    this.internalCtx.imageSmoothingEnabled = false;
+    // Scale logical drawing to high‑DPI buffer
+    this.internalCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   update(dt) {
@@ -68,38 +67,32 @@ export class PixelRenderer {
   }
 
   clear() {
-    this.internalCtx.clearRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  beginFrame() {
+    beginFrame() {
+    const dW = this.canvas.width;
+    const dH = this.canvas.height;
+    this.internalCtx = this.ctx;
+    this.internalCtx.save();
+    this.internalCtx.scale(dW / 320, dH / 240);
     this.internalCtx.imageSmoothingEnabled = false;
   }
 
-  endFrame() {
+    endFrame() {
+    this.internalCtx.restore();
     const dW = this.canvas.width;
     const dH = this.canvas.height;
-
-    // 1. Blit 320×240 internal pixel art buffer to full display canvas (nearest-neighbor)
-    this.ctx.imageSmoothingEnabled = false;
-    this.ctx.drawImage(this.internalCanvas, 0, 0, dW, dH);
-
-    // 2. Futuristic Neo-Pixel Post-Processing at display resolution:
-    // A. Subtle neo scanlines scaled proportionally to display height
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    const scanlineStep = Math.max(2, Math.round(dH / INTERNAL_HEIGHT));
-    for (let y = 0; y < dH; y += scanlineStep) {
-      this.ctx.fillRect(0, y, dW, 1);
-    }
-
-    // B. Subtle cybernetic vignette (premium arcade monitor depth)
-    const vigGrad = this.ctx.createRadialGradient(
-      dW / 2, dH / 2, dH * 0.45,
-      dW / 2, dH / 2, dW * 0.65
+    const ctx = this.ctx;
+    const vigGrad = ctx.createRadialGradient(
+      dW / 2, dH / 2, dH * 0.5,
+      dW / 2, dH / 2, dW * 0.75
     );
     vigGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vigGrad.addColorStop(1, 'rgba(3, 7, 18, 0.28)');
-    this.ctx.fillStyle = vigGrad;
-    this.ctx.fillRect(0, 0, dW, dH);
+    vigGrad.addColorStop(0.7, 'rgba(2, 6, 23, 0.1)');
+    vigGrad.addColorStop(1, 'rgba(2, 6, 23, 0.4)');
+    ctx.fillStyle = vigGrad;
+    ctx.fillRect(0, 0, dW, dH);
   }
 
   // ========================================================
@@ -127,7 +120,7 @@ export class PixelRenderer {
       ctx.fillRect(0, 175, INTERNAL_WIDTH, 65);
 
       // Colossal Rotating Celestial Astrolabe Ring in Sky (Distant)
-      const astroX = Math.round((180 - (camX * 0.02)) % (INTERNAL_WIDTH + 140)) - 70;
+      const astroX = Number((180 - (camX * 0.02)) % (INTERNAL_WIDTH + 140)) - 70;
       const astroY = 65;
       ctx.save();
       ctx.translate(astroX, astroY);
@@ -145,7 +138,7 @@ export class PixelRenderer {
 
       // Drifting golden sparks & steam motes
       for (let i = 0; i < 24; i++) {
-        const sx = Math.round((i * 37 + Math.sin(this.timer * 2.2 + i) * 12 - (camX * 0.05)) % (INTERNAL_WIDTH + 20));
+        const sx = Number((i * 37 + Math.sin(this.timer * 2.2 + i) * 12 - (camX * 0.05)) % (INTERNAL_WIDTH + 20));
         const sy = (i * 19 + Math.floor(this.timer * 20)) % INTERNAL_HEIGHT;
         const pulse = Math.floor(this.timer * 6 + i) % 2 === 0;
         ctx.fillStyle = pulse ? P.BRASS_HIGHLIGHT : P.SUNSTONE_AMBER_BRIGHT;
@@ -171,7 +164,7 @@ export class PixelRenderer {
       ctx.fillRect(0, 175, INTERNAL_WIDTH, 65);
 
       // Colossal Sunny-Side-Up Fried Egg Sun on Horizon
-      const sunX = Math.round((210 - (camX * 0.03)) % (INTERNAL_WIDTH + 100)) - 50;
+      const sunX = Number((210 - (camX * 0.03)) % (INTERNAL_WIDTH + 100)) - 50;
       const sunY = 70;
       ctx.fillStyle = '#ffffff'; // Egg white
       ctx.fillRect(sunX, sunY, 32, 20);
@@ -183,7 +176,7 @@ export class PixelRenderer {
 
       // Drifting golden sesame seeds & toasted breadcrumb dust
       for (let i = 0; i < 24; i++) {
-        const sx = Math.round((i * 37 + Math.sin(this.timer * 2 + i) * 10 - (camX * 0.06)) % (INTERNAL_WIDTH + 20));
+        const sx = Number((i * 37 + Math.sin(this.timer * 2 + i) * 10 - (camX * 0.06)) % (INTERNAL_WIDTH + 20));
         const sy = (i * 21 + Math.floor(this.timer * 15)) % INTERNAL_HEIGHT;
         ctx.fillStyle = (i % 2 === 0) ? P.DUNE_SESAME : P.DUNE_CRUMB_LIGHT;
         ctx.fillRect(sx, sy, 2, 1);
@@ -210,7 +203,7 @@ export class PixelRenderer {
       // Billowing volcanic ash smoke clouds
       ctx.fillStyle = P.VOLCANO_ASH_CLOUD;
       for (let i = 0; i < 6; i++) {
-        const cx = Math.round((i * 64 + Math.sin(this.timer * 0.8 + i) * 12 - (camX * 0.04)) % (INTERNAL_WIDTH + 80)) - 40;
+        const cx = Number((i * 64 + Math.sin(this.timer * 0.8 + i) * 12 - (camX * 0.04)) % (INTERNAL_WIDTH + 80)) - 40;
         const cy = 20 + (i * 12) % 60;
         ctx.fillRect(cx, cy, 54, 20);
         ctx.fillRect(cx + 6, cy - 6, 42, 8);
@@ -218,7 +211,7 @@ export class PixelRenderer {
 
       // Rising hot embers & spark particles
       for (let i = 0; i < 28; i++) {
-        const ex = Math.round((i * 29 + Math.sin(this.timer * 3 + i) * 8 - (camX * 0.08)) % (INTERNAL_WIDTH + 20));
+        const ex = Number((i * 29 + Math.sin(this.timer * 3 + i) * 8 - (camX * 0.08)) % (INTERNAL_WIDTH + 20));
         const ey = ((INTERNAL_HEIGHT - Math.floor(this.timer * 40 + i * 27)) % INTERNAL_HEIGHT + INTERNAL_HEIGHT) % INTERNAL_HEIGHT;
         const pulse = (Math.floor(this.timer * 8 + i) % 2 === 0);
         ctx.fillStyle = (i % 3 === 0) ? '#ffffff' : (pulse ? P.VOLCANO_EMBER_YELLOW : P.VOLCANO_EMBER_ORANGE);
@@ -261,8 +254,8 @@ export class PixelRenderer {
 
       // Floating mystical embers / portal motes
       for (let i = 0; i < 18; i++) {
-        const fx = Math.round((i * 47 + Math.sin(this.timer * 2 + i) * 10 - (camX * 0.05)) % (INTERNAL_WIDTH + 40));
-        const fy = 40 + ((i * 23) % 140) + Math.round(Math.cos(this.timer * 1.8 + i) * 8);
+        const fx = Number((i * 47 + Math.sin(this.timer * 2 + i) * 10 - (camX * 0.05)) % (INTERNAL_WIDTH + 40));
+        const fy = 40 + ((i * 23) % 140) + Number(Math.cos(this.timer * 1.8 + i) * 8);
         const pulse = Math.floor(this.timer * 5 + i) % 2 === 0;
         ctx.fillStyle = (i % 2 === 0) ? (pulse ? P.DOOR_PORTAL_CYAN : P.DOOR_PORTAL_MAGENTA) : (pulse ? P.STAINED_GLASS_AMBER : '#ffffff');
         ctx.fillRect(fx, fy, 1, 1);
@@ -291,8 +284,8 @@ export class PixelRenderer {
 
       // Drifting bioluminescent fireflies / spores
       for (let i = 0; i < 16; i++) {
-        const fx = Math.round((i * 41 + Math.sin(this.timer * 2 + i) * 12 - (camX * 0.06)) % (INTERNAL_WIDTH + 40));
-        const fy = 20 + ((i * 29) % 130) + Math.round(Math.cos(this.timer * 1.5 + i) * 6);
+        const fx = Number((i * 41 + Math.sin(this.timer * 2 + i) * 12 - (camX * 0.06)) % (INTERNAL_WIDTH + 40));
+        const fy = 20 + ((i * 29) % 130) + Number(Math.cos(this.timer * 1.5 + i) * 6);
         const pulse = Math.floor(this.timer * 4 + i) % 2 === 0;
         ctx.fillStyle = (i % 2 === 0) ? (pulse ? P.FUNGUS_CYAN_GLOW : P.FUNGUS_CYAN_LIGHT) : (pulse ? P.FUNGUS_SPORE_GOLD : '#ffffff');
         ctx.fillRect(fx, fy, 1, 1);
@@ -304,7 +297,7 @@ export class PixelRenderer {
       return;
     }
 
-    // --- WORLD 1: Neo-Retro Sky (Multi-tone cyber-aurora horizon) ---
+    // --- WORLD 1: Neo-Retro Sky (Multi-tone cyber-aurora horizon with dithering) ---
     ctx.fillStyle = P.SKY_DEEP;
     ctx.fillRect(0, 0, INTERNAL_WIDTH, 50);
     ctx.fillStyle = P.SKY_MID;
@@ -314,11 +307,38 @@ export class PixelRenderer {
     ctx.fillStyle = P.SKY_HORIZON;
     ctx.fillRect(0, 155, INTERNAL_WIDTH, 85);
 
-    // Dynamic Futuristic Clouds with subtle dual-tone shading
-    const cloud1X = Math.round((240 - (camX * 0.04) + this.timer * 4) % (INTERNAL_WIDTH + 90)) - 45;
+    // Dithered Aurora Transition Bands
+    ctx.fillStyle = P.SKY_MID;
+    for (let x = 0; x < INTERNAL_WIDTH; x += 2) {
+      ctx.fillRect(x + (x % 4 === 0 ? 1 : 0), 48, 1, 2);
+      ctx.fillRect(x, 46, 1, 1);
+    }
+    ctx.fillStyle = P.SKY_LIGHT;
+    for (let x = 0; x < INTERNAL_WIDTH; x += 2) {
+      ctx.fillRect(x + (x % 4 === 0 ? 1 : 0), 108, 1, 2);
+      ctx.fillRect(x, 106, 1, 1);
+    }
+    ctx.fillStyle = P.SKY_HORIZON;
+    for (let x = 0; x < INTERNAL_WIDTH; x += 2) {
+      ctx.fillRect(x + (x % 4 === 0 ? 1 : 0), 153, 1, 2);
+      ctx.fillRect(x, 151, 1, 1);
+    }
+    ctx.fillStyle = P.SKY_DEEP;
+    ctx.fillRect(0, 0, INTERNAL_WIDTH, 50);
+    ctx.fillStyle = P.SKY_MID;
+    ctx.fillRect(0, 50, INTERNAL_WIDTH, 60);
+    ctx.fillStyle = P.SKY_LIGHT;
+    ctx.fillRect(0, 110, INTERNAL_WIDTH, 45);
+    ctx.fillStyle = P.SKY_HORIZON;
+    ctx.fillRect(0, 155, INTERNAL_WIDTH, 85);
+
+    // Dynamic Futuristic Volumetric Clouds
+    const cloud1X = Number((240 - (camX * 0.04) + this.timer * 4) % (INTERNAL_WIDTH + 90)) - 45;
     this.drawPixelCloud(ctx, cloud1X, 26, 32);
-    const cloud2X = Math.round((460 - (camX * 0.06) + this.timer * 3) % (INTERNAL_WIDTH + 90)) - 45;
+    const cloud2X = Number((460 - (camX * 0.06) + this.timer * 3) % (INTERNAL_WIDTH + 90)) - 45;
     this.drawPixelCloud(ctx, cloud2X, 58, 24);
+    const cloud3X = Number((120 - (camX * 0.03) + this.timer * 2.5) % (INTERNAL_WIDTH + 90)) - 45;
+    this.drawPixelCloud(ctx, cloud3X, 85, 40);
 
     // --- Layer 1: Distant Forest & Mountain Silhouettes (Parallax: 0.15) ---
     const layer1Offset = (camX * 0.15) * WORLD_TO_PIXEL;
@@ -375,6 +395,76 @@ export class PixelRenderer {
     // Cloud underside ambient shade
     ctx.fillStyle = '#c7d2fe';
     ctx.fillRect(x + 2, y + 10, width - 4, 2);
+  }
+
+  drawAmbientPixelPolish(camera, level) {
+    const ctx = this.internalCtx;
+    const camX = camera ? camera.x : 0;
+    const isWorld2 = (level && level.world === 2) || (level && level.theme && level.theme.isForest2);
+    const isWorld3 = (level && level.world === 3) || (level && level.theme && level.theme.isCastle3);
+    const isWorld4 = (level && level.world === 4) || (level && level.theme && level.theme.isVolcano4);
+    const isWorld5 = (level && level.world === 5) || (level && level.theme && level.theme.isSandwich5);
+    const isWorld6 = (level && level.world === 6) || (level && level.theme && level.theme.isClockwork6);
+
+    ctx.save();
+
+    // Pixel sunshafts: sparse enough to preserve clean platform readability.
+    if (!isWorld4 && !isWorld6) {
+      const beamColor = isWorld2
+        ? 'rgba(125, 211, 252, 0.11)'
+        : isWorld3
+          ? 'rgba(192, 132, 252, 0.10)'
+          : isWorld5
+            ? 'rgba(254, 240, 138, 0.13)'
+            : 'rgba(254, 240, 138, 0.12)';
+      ctx.fillStyle = beamColor;
+      for (let i = 0; i < 3; i++) {
+        const bx = Number(((i * 118 + 28) - camX * 0.035 + Math.sin(this.timer * 0.55 + i) * 5) % (INTERNAL_WIDTH + 80)) - 40;
+        ctx.beginPath();
+        ctx.moveTo(bx, 0);
+        ctx.lineTo(bx + 18, 0);
+        ctx.lineTo(bx + 66, 188);
+        ctx.lineTo(bx + 48, 188);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // Slow drifting motes sell depth without adding gameplay clutter.
+    const moteA = isWorld4 ? P.VOLCANO_EMBER_ORANGE : isWorld6 ? P.BRASS_HIGHLIGHT : isWorld2 ? P.FUNGUS_CYAN_GLOW : P.HONEY_CORE;
+    const moteB = isWorld3 ? P.DOOR_PORTAL_MAGENTA : isWorld5 ? P.DUNE_SESAME : '#ffffff';
+    for (let i = 0; i < 18; i++) {
+      const mx = Number((i * 43 + Math.sin(this.timer * 1.7 + i) * 7 - camX * 0.045) % (INTERNAL_WIDTH + 24)) - 12;
+      const my = 20 + ((i * 31 + Math.floor(this.timer * (isWorld4 ? -18 : 10))) % 146);
+      const twinkle = Math.floor(this.timer * 5 + i) % 3 === 0;
+      ctx.fillStyle = twinkle ? moteB : moteA;
+      ctx.fillRect(mx, my, 1, 1);
+    }
+
+    // Low horizon mist separates playfield silhouettes from distant scenery.
+    // Low horizon volumetric mist (Rich multi-tier parallax)
+    const mistColorBase = isWorld4
+      ? [249, 115, 22]
+      : isWorld2
+        ? [56, 189, 248]
+        : isWorld3
+          ? [148, 163, 184]
+          : [240, 249, 255]; // Soft blue-white mist for default
+    
+    // 4 layers of drifting parallax mist
+    for (let band = 0; band < 4; band++) {
+      const y = 140 + band * 12;
+      const alpha = 0.08 + band * 0.03;
+      ctx.fillStyle = `rgba(${mistColorBase[0]}, ${mistColorBase[1]}, ${mistColorBase[2]}, ${alpha})`;
+      const drift = Number((this.timer * (2 + band * 1.5) - camX * (0.015 + band * 0.012)) % 64);
+      for (let x = -64; x < INTERNAL_WIDTH + 64; x += 64) {
+        ctx.fillRect(x + drift, y, 42, 2);
+        ctx.fillRect(x + drift + 4, y - 2, 34, 2);
+        ctx.fillRect(x + drift + 12, y - 4, 18, 2);
+      }
+    }
+
+    ctx.restore();
   }
 
   drawDistantHills(ctx, offset) {
@@ -647,8 +737,8 @@ export class PixelRenderer {
 
     // Rare Authoritative Landmarks (Rare beats: ~2100px Oak, ~3900px Redwood, ~7150px Watchtower, ~8100px Gateway, ~10400px Throne)
     midgroundProps.forEach(p => {
-      const scrX = Math.round((p.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round(p.y * WORLD_TO_PIXEL);
+      const scrX = Number((p.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number(p.y * WORLD_TO_PIXEL);
 
       if (scrX < -80 || scrX > INTERNAL_WIDTH + 80) return;
 
@@ -1384,13 +1474,17 @@ export class PixelRenderer {
 
     // Draw static platforms
     platforms.forEach(plat => {
-      const scrX = Math.round((plat.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((plat.y - camY) * WORLD_TO_PIXEL);
-      const scrW = Math.round(plat.width * WORLD_TO_PIXEL);
-      const scrH = Math.round(plat.height * WORLD_TO_PIXEL);
+      const scrX = Number((plat.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((plat.y - camY) * WORLD_TO_PIXEL);
+      const scrW = Number(plat.width * WORLD_TO_PIXEL);
+      const scrH = Number(plat.height * WORLD_TO_PIXEL);
 
       // Frustum culling
       if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
+
+      if (!this.isAirOrHazardPlatform(plat.type)) {
+        this.renderPlatformDropShadow(ctx, scrX, scrY, scrW, scrH);
+      }
 
       if (plat.type === 'ground') {
         this.renderPixelGround(ctx, scrX, scrY, scrW, scrH);
@@ -1509,10 +1603,10 @@ export class PixelRenderer {
     // Draw Shifting Dimensional Portal Doors (World 3)
     if (level && level.portalDoors) {
       level.portalDoors.forEach(door => {
-        const scrX = Math.round((door.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((door.y - camY) * WORLD_TO_PIXEL);
-        const scrW = Math.round(door.width * WORLD_TO_PIXEL);
-        const scrH = Math.round(door.height * WORLD_TO_PIXEL);
+        const scrX = Number((door.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((door.y - camY) * WORLD_TO_PIXEL);
+        const scrW = Number(door.width * WORLD_TO_PIXEL);
+        const scrH = Number(door.height * WORLD_TO_PIXEL);
         if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
         this.renderPixelPortalDoor(ctx, scrX, scrY, scrW, scrH);
       });
@@ -1521,10 +1615,10 @@ export class PixelRenderer {
     // Draw Honey Bumble Arena Canyon Honeycomb Pillars (World 1)
     if (level && level.honeyBumble && level.honeyBumble.pillars) {
       level.honeyBumble.pillars.forEach(pillar => {
-        const scrX = Math.round((pillar.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((pillar.y - camY) * WORLD_TO_PIXEL);
-        const scrW = Math.round(pillar.width * WORLD_TO_PIXEL);
-        const scrH = Math.round(pillar.height * WORLD_TO_PIXEL);
+        const scrX = Number((pillar.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((pillar.y - camY) * WORLD_TO_PIXEL);
+        const scrW = Number(pillar.width * WORLD_TO_PIXEL);
+        const scrH = Number(pillar.height * WORLD_TO_PIXEL);
         if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
         this.renderPixelHoneycombPillar(ctx, scrX, scrY, scrW, scrH, pillar.shattered);
       });
@@ -1533,8 +1627,8 @@ export class PixelRenderer {
     // Draw Sleeping Spore Puffballs (World 2)
     if (level && level.sporePuffballs) {
       level.sporePuffballs.forEach(puff => {
-        const scrX = Math.round((puff.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((puff.y - camY) * WORLD_TO_PIXEL);
+        const scrX = Number((puff.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((puff.y - camY) * WORLD_TO_PIXEL);
         if (scrX < -20 || scrX > INTERNAL_WIDTH + 20) return;
         this.renderPixelSporePuffball(ctx, scrX, scrY, puff.isEmitting);
       });
@@ -1543,8 +1637,8 @@ export class PixelRenderer {
     // Draw Mimic Trees (World 2)
     if (level && level.mimicTrees) {
       level.mimicTrees.forEach(mimic => {
-        const scrX = Math.round((mimic.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((mimic.y - camY) * WORLD_TO_PIXEL);
+        const scrX = Number((mimic.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((mimic.y - camY) * WORLD_TO_PIXEL);
         if (scrX < -30 || scrX > INTERNAL_WIDTH + 30) return;
         this.renderPixelMimicTree(ctx, scrX, scrY, mimic.isAwake);
       });
@@ -1552,8 +1646,8 @@ export class PixelRenderer {
 
     // Draw Khan's Torn Cloak Story Clue (World 1)
     if (level && level.world === 1 && !level.khanCloakDiscovered) {
-      const scrX = Math.round((4260 - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((680 - camY) * WORLD_TO_PIXEL);
+      const scrX = Number((4260 - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((680 - camY) * WORLD_TO_PIXEL);
       if (scrX >= -10 && scrX <= INTERNAL_WIDTH + 10) {
         this.renderPixelKhanCloakClue(ctx, scrX, scrY);
       }
@@ -1562,10 +1656,10 @@ export class PixelRenderer {
     // Draw Sir Slam-A-Lot Arena Destructible Pillars (World 3)
     if (level && level.sirSlamALot && level.sirSlamALot.pillars) {
       level.sirSlamALot.pillars.forEach(pillar => {
-        const scrX = Math.round((pillar.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((pillar.y - camY) * WORLD_TO_PIXEL);
-        const scrW = Math.round(pillar.width * WORLD_TO_PIXEL);
-        const scrH = Math.round(pillar.height * WORLD_TO_PIXEL);
+        const scrX = Number((pillar.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((pillar.y - camY) * WORLD_TO_PIXEL);
+        const scrW = Number(pillar.width * WORLD_TO_PIXEL);
+        const scrH = Number(pillar.height * WORLD_TO_PIXEL);
         if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
         this.renderPixelCrestPillar(ctx, scrX, scrY, scrW, scrH, pillar.shattered);
       });
@@ -1574,10 +1668,10 @@ export class PixelRenderer {
     // Draw Honey Dragon Arena Destructible Basalt Pillars (World 4)
     if (level && level.honeyDragon && level.honeyDragon.pillars) {
       level.honeyDragon.pillars.forEach(pillar => {
-        const scrX = Math.round((pillar.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((pillar.y - camY) * WORLD_TO_PIXEL);
-        const scrW = Math.round(pillar.width * WORLD_TO_PIXEL);
-        const scrH = Math.round(pillar.height * WORLD_TO_PIXEL);
+        const scrX = Number((pillar.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((pillar.y - camY) * WORLD_TO_PIXEL);
+        const scrW = Number(pillar.width * WORLD_TO_PIXEL);
+        const scrH = Number(pillar.height * WORLD_TO_PIXEL);
         if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
         this.renderPixelBasaltPillar(ctx, scrX, scrY, scrW, scrH, pillar.shattered);
       });
@@ -1585,10 +1679,10 @@ export class PixelRenderer {
 
     // Draw moving platforms
     movingPlatforms.forEach(mp => {
-      const scrX = Math.round((mp.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((mp.y - camY) * WORLD_TO_PIXEL);
-      const scrW = Math.round(mp.width * WORLD_TO_PIXEL);
-      const scrH = Math.round(mp.height * WORLD_TO_PIXEL);
+      const scrX = Number((mp.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((mp.y - camY) * WORLD_TO_PIXEL);
+      const scrW = Number(mp.width * WORLD_TO_PIXEL);
+      const scrH = Number(mp.height * WORLD_TO_PIXEL);
 
       if (scrX + scrW < -10 || scrX > INTERNAL_WIDTH + 10) return;
 
@@ -1606,6 +1700,33 @@ export class PixelRenderer {
         this.renderPixelHoneyPlatform(ctx, scrX, scrY, scrW, scrH, true);
       }
     });
+  }
+
+  isAirOrHazardPlatform(type) {
+    return type === 'vine' ||
+      type === 'climbable_vine' ||
+      type === 'climbable_chain' ||
+      type === 'chain' ||
+      type === 'climbable_gear_chain' ||
+      type === 'climbable_toothpick' ||
+      type === 'olive_spear' ||
+      type === 'hazard' ||
+      type === 'spikes' ||
+      type === 'iron_spikes' ||
+      type === 'castle_hazard' ||
+      type === 'steam_vent' ||
+      type === 'thermal_updraft' ||
+      type === 'updraft' ||
+      type === 'honey_geyser' ||
+      type === 'geyser';
+  }
+
+  renderPlatformDropShadow(ctx, x, y, w, h) {
+    if (w <= 0 || h <= 0) return;
+    ctx.fillStyle = 'rgba(3, 7, 18, 0.24)';
+    ctx.fillRect(x + 1, y + h, Math.max(0, w - 1), 2);
+    ctx.fillStyle = 'rgba(3, 7, 18, 0.12)';
+    ctx.fillRect(x + 3, y + h + 2, Math.max(0, w - 6), 1);
   }
 
   /**
@@ -2367,7 +2488,7 @@ export class PixelRenderer {
     ctx.fillRect(x + Math.floor(w / 2) + 2, y + 10, 3, 2);
 
     // Snapdragon Flower Jaws
-    const mouthGap = Math.round(openFactor * 5);
+    const mouthGap = Number(openFactor * 5);
     // Upper Jaw
     ctx.fillStyle = isSnapping ? '#ef4444' : '#f43f5e';
     ctx.fillRect(x + 2, y - mouthGap, w - 4, 5);
@@ -2681,7 +2802,7 @@ export class PixelRenderer {
       // Small dripping ember
       const dropX = x + Math.floor(w / 2) + Math.sin(this.timer * 3) * 6;
       ctx.fillStyle = P.VOLCANO_EMBER_YELLOW;
-      ctx.fillRect(Math.round(dropX), y + h + 2, 1, 2);
+      ctx.fillRect(Number(dropX), y + h + 2, 1, 2);
     }
   }
 
@@ -2747,9 +2868,9 @@ export class PixelRenderer {
       const streamY = y + h - 6 - offset;
       if (streamY > y) {
         ctx.fillStyle = P.UPDRAFT_STREAM;
-        ctx.fillRect(px, Math.round(streamY), 2, 6);
+        ctx.fillRect(px, Number(streamY), 2, 6);
         ctx.fillStyle = P.UPDRAFT_CORE;
-        ctx.fillRect(px + 1, Math.round(streamY) + 1, 1, 4);
+        ctx.fillRect(px + 1, Number(streamY) + 1, 1, 4);
       }
     }
 
@@ -2758,11 +2879,11 @@ export class PixelRenderer {
       const arrowY = y + ((h - ((this.timer * 50 + arrow * (h / 3)) % h)) % h);
       const cx = x + Math.floor(w / 2);
       ctx.fillStyle = P.VOLCANO_EMBER_YELLOW;
-      ctx.fillRect(cx - 3, Math.round(arrowY), 6, 1);
-      ctx.fillRect(cx - 2, Math.round(arrowY) - 1, 4, 1);
-      ctx.fillRect(cx - 1, Math.round(arrowY) - 2, 2, 1);
+      ctx.fillRect(cx - 3, Number(arrowY), 6, 1);
+      ctx.fillRect(cx - 2, Number(arrowY) - 1, 4, 1);
+      ctx.fillRect(cx - 1, Number(arrowY) - 2, 2, 1);
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(cx - 1, Math.round(arrowY) - 1, 2, 1);
+      ctx.fillRect(cx - 1, Number(arrowY) - 1, 2, 1);
     }
   }
 
@@ -3220,7 +3341,7 @@ export class PixelRenderer {
     }
 
     // Chrono Tick Progress Indicator Bar
-    const progressW = Math.round(w * (1 - phase));
+    const progressW = Number(w * (1 - phase));
     ctx.fillStyle = '#22c55e'; // Green ticks down to warning
     ctx.fillRect(x + 2, y + h - 2, Math.max(0, progressW - 4), 1);
   }
@@ -3388,8 +3509,8 @@ export class PixelRenderer {
     // 1. Checkpoints
     if (level.checkpoints) {
       level.checkpoints.forEach(cp => {
-        const scrX = Math.round((cp.x - camX) * WORLD_TO_PIXEL);
-        const scrY = Math.round((cp.y + cp.height - 16 - camY) * WORLD_TO_PIXEL);
+        const scrX = Number((cp.x - camX) * WORLD_TO_PIXEL);
+        const scrY = Number((cp.y + cp.height - 16 - camY) * WORLD_TO_PIXEL);
         if (scrX > -20 && scrX < INTERNAL_WIDTH + 20) {
           this.drawCheckpoint(ctx, scrX, scrY, cp.activated);
         }
@@ -3398,8 +3519,8 @@ export class PixelRenderer {
 
     // 2. Goal & Batboy / Ancient Portal
     if (level.goal) {
-      const scrX = Math.round((level.goal.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((level.goal.y + level.goal.height - 20 - camY) * WORLD_TO_PIXEL);
+      const scrX = Number((level.goal.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((level.goal.y + level.goal.height - 20 - camY) * WORLD_TO_PIXEL);
       if (scrX > -40 && scrX < INTERNAL_WIDTH + 40) {
         if (level.goal.type === 'portal') {
           this.drawAncientPortal(ctx, scrX, scrY);
@@ -3412,8 +3533,8 @@ export class PixelRenderer {
     // 3. Royal Shard Collectibles
     level.shards.forEach(s => {
       if (s.collected) return;
-      const scrX = Math.round((s.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((s.y - camY) * WORLD_TO_PIXEL);
+      const scrX = Number((s.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((s.y - camY) * WORLD_TO_PIXEL);
       if (scrX > -10 && scrX < INTERNAL_WIDTH + 10) {
         this.drawRoyalShard(ctx, scrX, scrY);
       }
@@ -3426,15 +3547,17 @@ export class PixelRenderer {
 
     // 5. Enemies (World 1, World 2, World 3 & World 4 Bestiary)
     level.enemies.forEach(e => {
-      const scrX = Math.round((e.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((e.y - camY) * WORLD_TO_PIXEL);
-      const scrW = Math.round(e.width * WORLD_TO_PIXEL);
-      const scrH = Math.round(e.height * WORLD_TO_PIXEL);
+      const scrX = Number((e.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((e.y - camY) * WORLD_TO_PIXEL);
+      const scrW = Number(e.width * WORLD_TO_PIXEL);
+      const scrH = Number(e.height * WORLD_TO_PIXEL);
 
       if (scrX + scrW < -20 || scrX > INTERNAL_WIDTH + 20) return;
 
       const type = e.type || e.constructor.name;
-      if (type === 'HoneyBeetle' || e.name === 'Honey Beetle') {
+      if (type === 'HoneyBumble' || e.name === 'Honey Bumble') {
+        pixelEnemyRenderer.drawHoneyBumble(ctx, scrX, scrY, scrW, scrH, e);
+      } else if (type === 'HoneyBeetle' || e.name === 'Honey Beetle') {
         pixelEnemyRenderer.drawHoneyBeetle(ctx, scrX, scrY, scrW, scrH, e);
       } else if (type === 'HiveGrub' || e.name === 'Hive Grub') {
         pixelEnemyRenderer.drawHiveGrub(ctx, scrX, scrY, scrW, scrH, e);
@@ -3491,8 +3614,8 @@ export class PixelRenderer {
 
     // 6. Gameplay-Important Particles (Jump dust, landing dust, hit sparks, shard glints)
     level.particles.forEach(p => {
-      const scrX = Math.round((p.x - camX) * WORLD_TO_PIXEL);
-      const scrY = Math.round((p.y - camY) * WORLD_TO_PIXEL);
+      const scrX = Number((p.x - camX) * WORLD_TO_PIXEL);
+      const scrY = Number((p.y - camY) * WORLD_TO_PIXEL);
       if (scrX > -4 && scrX < INTERNAL_WIDTH + 4 && scrY > -4 && scrY < INTERNAL_HEIGHT + 4) {
         ctx.fillStyle = p.color || '#ffffff';
         ctx.fillRect(scrX, scrY, 2, 2);
@@ -3500,7 +3623,7 @@ export class PixelRenderer {
     });
 
     // 7. Princess Aria (Small, recognizable pixel silhouette with expressive animation)
-    if (player) {
+    if (player && player.visible !== false) {
       const scrX = (player.x - camX) * WORLD_TO_PIXEL;
       // Align bottom of 22px sprite to physical bottom of collider (player.y + player.height)
       const scrY = (player.y + player.height) * WORLD_TO_PIXEL - 22;
@@ -3533,8 +3656,8 @@ export class PixelRenderer {
    */
   drawDoubleJumpRings(ctx, camX, camY, rings) {
     rings.forEach(ring => {
-      const rx = Math.round((ring.x - camX) * WORLD_TO_PIXEL);
-      const ry = Math.round((ring.y - camY) * WORLD_TO_PIXEL);
+      const rx = Number((ring.x - camX) * WORLD_TO_PIXEL);
+      const ry = Number((ring.y - camY) * WORLD_TO_PIXEL);
       if (rx < -10 || rx > INTERNAL_WIDTH + 10 || ry < -10 || ry > INTERNAL_HEIGHT + 10) return;
 
       const progress = Math.min(1.0, ring.timer / 0.28);
@@ -3570,8 +3693,8 @@ export class PixelRenderer {
       // 1. Draw Stardust Trail Particles
       if (proj.particles) {
         proj.particles.forEach(p => {
-          const px = Math.round((p.x - camX) * WORLD_TO_PIXEL);
-          const py = Math.round(p.y * WORLD_TO_PIXEL);
+          const px = Number((p.x - camX) * WORLD_TO_PIXEL);
+          const py = Number(p.y * WORLD_TO_PIXEL);
           if (px >= -2 && px < INTERNAL_WIDTH + 2 && py >= -2 && py < INTERNAL_HEIGHT + 2) {
             ctx.fillStyle = p.color || '#38bdf8';
             ctx.fillRect(px, py, p.size > 2 ? 2 : 1, p.size > 2 ? 2 : 1);
@@ -3580,8 +3703,8 @@ export class PixelRenderer {
       }
 
       // 2. Draw Radiant Rotating Star Crystal
-      const cx = Math.round((proj.x + proj.width * 0.5 - camX) * WORLD_TO_PIXEL);
-      const cy = Math.round((proj.y + proj.height * 0.5 - camY) * WORLD_TO_PIXEL);
+      const cx = Number((proj.x + proj.width * 0.5 - camX) * WORLD_TO_PIXEL);
+      const cy = Number((proj.y + proj.height * 0.5 - camY) * WORLD_TO_PIXEL);
 
       if (cx < -10 || cx > INTERNAL_WIDTH + 10 || cy < -10 || cy > INTERNAL_HEIGHT + 10) return;
 
@@ -3670,8 +3793,8 @@ export class PixelRenderer {
       for (let s = 0; s <= steps; s++) {
         const t = s / steps;
         const ang = baseAngle + t * sweepAngle;
-        const px = Math.round(arcCenterX + Math.cos(ang) * radius);
-        const py = Math.round(arcCenterY + Math.sin(ang) * radius);
+        const px = Number(arcCenterX + Math.cos(ang) * radius);
+        const py = Number(arcCenterY + Math.sin(ang) * radius);
         if (px >= 0 && px < INTERNAL_WIDTH && py >= 0 && py < INTERNAL_HEIGHT) {
           ctx.fillRect(px, py, 2, 2);
         }
@@ -3682,8 +3805,8 @@ export class PixelRenderer {
       for (let s = 1; s <= steps - 1; s++) {
         const t = s / steps;
         const ang = baseAngle + t * sweepAngle;
-        const px = Math.round(arcCenterX + Math.cos(ang) * (radius - 1));
-        const py = Math.round(arcCenterY + Math.sin(ang) * (radius - 1));
+        const px = Number(arcCenterX + Math.cos(ang) * (radius - 1));
+        const py = Number(arcCenterY + Math.sin(ang) * (radius - 1));
         if (px >= 0 && px < INTERNAL_WIDTH && py >= 0 && py < INTERNAL_HEIGHT) {
           ctx.fillRect(px, py, 1, 1);
         }
@@ -3691,8 +3814,8 @@ export class PixelRenderer {
 
       // Tip sparkle / flash on leading edge
       const tipAngle = baseAngle + sweepAngle;
-      const tipX = Math.round(arcCenterX + Math.cos(tipAngle) * radius);
-      const tipY = Math.round(arcCenterY + Math.sin(tipAngle) * radius);
+      const tipX = Number(arcCenterX + Math.cos(tipAngle) * radius);
+      const tipY = Number(arcCenterY + Math.sin(tipAngle) * radius);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(tipX - 1, tipY, 3, 1);
       ctx.fillRect(tipX, tipY - 1, 1, 3);
@@ -3703,8 +3826,8 @@ export class PixelRenderer {
     // 2. Draw Slash Splash Particles (sparks, radiant embers, stardust droplets)
     if (player.slashParticles && player.slashParticles.length > 0) {
       player.slashParticles.forEach(p => {
-        const px = Math.round((p.x - camX) * WORLD_TO_PIXEL);
-        const py = Math.round((p.y - camY) * WORLD_TO_PIXEL);
+        const px = Number((p.x - camX) * WORLD_TO_PIXEL);
+        const py = Number((p.y - camY) * WORLD_TO_PIXEL);
         if (px >= -2 && px < INTERNAL_WIDTH + 2 && py >= -2 && py < INTERNAL_HEIGHT + 2) {
           const sz = p.size || 1;
           ctx.save();
@@ -3733,8 +3856,8 @@ export class PixelRenderer {
     const facing = player.facing || 1;
 
     // Shield position in front of Aria's chest/torso
-    const shieldX = Math.round(ariaScrX + (facing > 0 ? 12 : -5));
-    const shieldY = Math.round(ariaScrY + 5);
+    const shieldX = Number(ariaScrX + (facing > 0 ? 12 : -5));
+    const shieldY = Number(ariaScrY + 5);
 
     ctx.save();
 
@@ -3933,8 +4056,8 @@ export class PixelRenderer {
 
   drawQueenBeePresence(ctx, presence, camX) {
     // 1. Distant silhouette in sky (rare, ominous silhouette)
-    const qScreenX = Math.round((presence.queenX - camX) * WORLD_TO_PIXEL);
-    const qScreenY = Math.round(presence.queenY * WORLD_TO_PIXEL);
+    const qScreenX = Number((presence.queenX - camX) * WORLD_TO_PIXEL);
+    const qScreenY = Number(presence.queenY * WORLD_TO_PIXEL);
 
     if (qScreenX > -40 && qScreenX < INTERNAL_WIDTH + 40) {
       ctx.fillStyle = P.QUEEN_SILHOUETTE;
@@ -3955,7 +4078,7 @@ export class PixelRenderer {
     }
 
     // 2. Ground Shadow passing overhead
-    const shScreenX = Math.round((presence.shadowX - camX) * WORLD_TO_PIXEL);
+    const shScreenX = Number((presence.shadowX - camX) * WORLD_TO_PIXEL);
     if (shScreenX > -40 && shScreenX < INTERNAL_WIDTH + 40) {
       ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
       ctx.fillRect(shScreenX, 196, 32, 2);

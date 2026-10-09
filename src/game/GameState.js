@@ -12,6 +12,7 @@ export class GameState {
     this.score = 0;
     this.world = 1;
     this.level = 1;
+    this.stars = 5;
     this.highScore = this.loadHighScore();
     // Inventory counts
     this.treasureBoxes = 0;
@@ -26,6 +27,7 @@ export class GameState {
     this.score = 0;
     this.world = world;
     this.level = level;
+    this.stars = 5;
     this.awaitingContinue = false;
   }
 

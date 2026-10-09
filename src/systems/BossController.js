@@ -168,8 +168,9 @@ export class BossController {
   executeCurrentAttack(audio) {
     this.state = BOSS_STATES.ATTACKING;
     this.stateTimer = 0;
-    if (audio && audio.playQueenBeeAttack) {
-      audio.playQueenBeeAttack();
+    if (audio) {
+      if (audio.playBossAttack) audio.playBossAttack();
+      else if (audio.playQueenBeeAttack) audio.playQueenBeeAttack();
     }
   }
 
@@ -223,7 +224,10 @@ export class BossController {
     this.stateTimer = 0;
     this.isInvulnerable = true;
     if (camera) camera.shake(20, 3.0);
-    if (audio && audio.playEnemyDefeat) audio.playEnemyDefeat();
+    if (audio) {
+      if (audio.playBossDefeat) audio.playBossDefeat();
+      else if (audio.playEnemyDefeat) audio.playEnemyDefeat();
+    }
   }
 
   /**

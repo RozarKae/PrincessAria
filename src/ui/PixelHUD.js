@@ -282,6 +282,12 @@ export class PixelHUD {
     ctx.fillStyle = '#fde68a'; ctx.fillRect(tx + 1, ty + 1, 4, 2);
     drawBitmapText(ctx, `x${treasureCount.toString().padStart(2,'0')}`, tx + 10, 18, P.UI_TEXT_WHITE);
 
+    const starCount = (gameState.stars !== undefined) ? gameState.stars : 0;
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(tx + 30, ty + 1, 3, 1);
+    ctx.fillRect(tx + 31, ty, 1, 3);
+    drawBitmapText(ctx, `x${starCount.toString().padStart(2,'0')}`, tx + 35, 18, P.UI_TEXT_WHITE);
+
     // Minimal ability hints (only icons, small)
     const abilitiesX = centerX - 36;
     this.drawAbilityIcons(ctx, abilitiesX, 14, player);

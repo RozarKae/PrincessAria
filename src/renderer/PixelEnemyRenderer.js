@@ -26,12 +26,142 @@ export class PixelEnemyRenderer {
   /**
    * Draw Honey Beetle in 256x240 pixel space.
    */
+  
+  /**
+   * Draw Honey Bumble (UNIQUE Climax Boss)
+   * Crowned giant queen bee with amber cannon stinger and detailed multi-layered wings
+   */
+  drawHoneyBumble(ctx, screenX, screenY, width, height, enemy) {
+    if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
+
+    ctx.save();
+    ctx.translate(screenX + width / 2, screenY + height / 2);
+
+    // Subtle hover bobbing
+    const hoverOffset = Math.sin(this.tick * 3) * 8;
+    ctx.translate(0, hoverOffset);
+
+    // If hurting, flash white
+    if (enemy.isHurt) {
+      ctx.globalCompositeOperation = 'source-atop';
+      ctx.fillStyle = '#ffffff';
+    }
+
+    // Directional facing
+    if (enemy.vx > 0) ctx.scale(-1, 1);
+
+    // --- 1. Stinger Cannon ---
+    ctx.fillStyle = '#78350f'; // Dark stinger base
+    ctx.beginPath();
+    ctx.moveTo(120, -10);
+    ctx.lineTo(200, 0);
+    ctx.lineTo(120, 10);
+    ctx.fill();
+
+    // Stinger glow
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(160, -2, 20, 4);
+
+    // --- 2. Giant Armored Abdomen ---
+    // Yellow/Black stripes with high contrast
+    const abW = 160;
+    const abH = 140;
+    ctx.fillStyle = P.ENEMY_YELLOW;
+    ctx.beginPath();
+    ctx.ellipse(40, 10, abW/2, abH/2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Stripes
+    ctx.fillStyle = '#1e1b4b'; // Deep dark purple/black
+    ctx.beginPath(); ctx.ellipse(40, 10, abW/2, abH/2, 0, Math.PI*1.5, Math.PI*2.5); ctx.fill();
+    ctx.fillStyle = P.ENEMY_YELLOW;
+    ctx.beginPath(); ctx.ellipse(40, 10, abW/2 - 20, abH/2 - 5, 0, Math.PI*1.5, Math.PI*2.5); ctx.fill();
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath(); ctx.ellipse(40, 10, abW/2 - 40, abH/2 - 10, 0, Math.PI*1.5, Math.PI*2.5); ctx.fill();
+    ctx.fillStyle = P.ENEMY_YELLOW;
+    ctx.beginPath(); ctx.ellipse(40, 10, abW/2 - 60, abH/2 - 15, 0, Math.PI*1.5, Math.PI*2.5); ctx.fill();
+
+    // --- 3. Thorax & Fur ---
+    ctx.fillStyle = '#b45309'; // Fluffy orange fur
+    ctx.beginPath();
+    ctx.arc(-40, -10, 60, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.arc(-40, -20, 45, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- 4. Armored Head ---
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    ctx.arc(-110, 0, 50, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Mandibles
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath(); ctx.moveTo(-150, 10); ctx.lineTo(-190, 30); ctx.lineTo(-140, 40); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-150, 10); ctx.lineTo(-180, -10); ctx.lineTo(-140, 0); ctx.fill();
+
+    // Giant Red Angry Eye
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.ellipse(-120, -10, 15, 25, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fca5a5';
+    ctx.beginPath();
+    ctx.ellipse(-125, -15, 4, 8, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- 5. Royal Crown ---
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.moveTo(-130, -40);
+    ctx.lineTo(-160, -90);
+    ctx.lineTo(-110, -70);
+    ctx.lineTo(-90, -100);
+    ctx.lineTo(-70, -70);
+    ctx.lineTo(-20, -80);
+    ctx.lineTo(-60, -40);
+    ctx.fill();
+    // Crown Jewels
+    ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(-130, -70, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#3b82f6'; ctx.beginPath(); ctx.arc(-90, -80, 8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(-50, -65, 6, 0, Math.PI*2); ctx.fill();
+
+    // --- 6. Triple Crystal Wings (Animated) ---
+    const wingAngle = Math.sin(this.tick * 40) * 0.8;
+    ctx.translate(-40, -40);
+    ctx.rotate(wingAngle);
+    
+    // Front Wing
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.7)';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(20, -80, 30, 120, 0.3, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+    
+    // Middle Wing
+    ctx.rotate(-0.5);
+    ctx.beginPath();
+    ctx.ellipse(0, -90, 25, 110, 0, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+
+    // Back Wing
+    ctx.rotate(-0.4);
+    ctx.beginPath();
+    ctx.ellipse(-20, -70, 20, 90, -0.2, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+
+    ctx.restore();
+  }
+
   drawHoneyBeetle(ctx, screenX, screenY, width, height, enemy) {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 18;
     const h = 13;
 
@@ -117,8 +247,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = enemy.facing || 1;
 
     // Squashed on stomp
@@ -206,8 +336,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
 
     if (enemy.isDead) {
       ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
@@ -256,10 +386,10 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
+    const px = Number(screenX);
     // Gentle bobbing motion
-    const bob = Math.round(Math.sin(this.tick * 4) * 1.5);
-    const py = Math.round(screenY) + bob;
+    const bob = Number(Math.sin(this.tick * 4) * 1.5);
+    const py = Number(screenY) + bob;
 
     if (enemy.isDead) {
       ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
@@ -314,8 +444,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 14;
     const h = 11;
 
@@ -392,8 +522,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 16;
     const h = 14;
 
@@ -515,8 +645,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
 
     if (enemy.isDead) {
       ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
@@ -573,8 +703,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
 
     if (enemy.isDead) {
       ctx.globalAlpha = Math.max(0, 1 - enemy.defeatTimer / enemy.defeatDuration);
@@ -631,8 +761,8 @@ export class PixelEnemyRenderer {
    */
   drawForestKing(ctx, screenX, screenY, width, height, boss) {
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
 
     // Massive Ancient Oak Trunk with deep wood grain
     ctx.fillStyle = '#18110b';
@@ -709,8 +839,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 16;
     const h = 22;
 
@@ -781,8 +911,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 14;
     const h = 14;
 
@@ -840,8 +970,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 14;
     const h = 20;
 
@@ -895,8 +1025,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 18;
     const h = 24;
 
@@ -970,8 +1100,8 @@ export class PixelEnemyRenderer {
     if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 48;
     const h = 54;
 
@@ -1080,8 +1210,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 14;
     const h = 14;
 
@@ -1145,8 +1275,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 18;
     const h = 13;
 
@@ -1239,8 +1369,8 @@ export class PixelEnemyRenderer {
     if (enemy.isDead && enemy.defeatTimer > enemy.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = enemy.facing || 1;
 
     // Squashed on stomp
@@ -1318,8 +1448,8 @@ export class PixelEnemyRenderer {
     if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 48;
     const h = 36;
 
@@ -1433,8 +1563,8 @@ export class PixelEnemyRenderer {
     if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 48; // Scaled pixel width
     const h = 42; // Scaled pixel height
 
@@ -1588,10 +1718,10 @@ export class PixelEnemyRenderer {
     // Render Boss Projectiles & Shockwaves in world-to-screen coords
     if (boss.projectiles) {
       boss.projectiles.forEach(p => {
-        const sx = Math.round((p.x - (boss.x - screenX / (1 / 4.5))) * (1 / 4.5));
+        const sx = Number((p.x - (boss.x - screenX / (1 / 4.5))) * (1 / 4.5));
         // Simple direct draw using screenX offset
-        const prjX = Math.round(screenX + (p.x - boss.x) * (1 / 4.5));
-        const prjY = Math.round(screenY + (p.y - boss.y) * (1 / 4.5));
+        const prjX = Number(screenX + (p.x - boss.x) * (1 / 4.5));
+        const prjY = Number(screenY + (p.y - boss.y) * (1 / 4.5));
 
         if (p.type === 'tomato') {
           ctx.fillStyle = '#dc2626';
@@ -1610,8 +1740,8 @@ export class PixelEnemyRenderer {
 
     if (boss.shockwaves) {
       boss.shockwaves.forEach(sw => {
-        const swX = Math.round(screenX + (sw.x - boss.x) * (1 / 4.5));
-        const swY = Math.round(screenY + (sw.y - boss.y) * (1 / 4.5));
+        const swX = Number(screenX + (sw.x - boss.x) * (1 / 4.5));
+        const swY = Number(screenY + (sw.y - boss.y) * (1 / 4.5));
         ctx.fillStyle = '#eab308'; // Zesty mustard wave
         ctx.fillRect(swX - 6, swY - 8, 12, 8);
         ctx.fillStyle = '#fefce8'; // Creamy mayo crest
@@ -1627,8 +1757,8 @@ export class PixelEnemyRenderer {
     if (mummy.isDead) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = mummy.facing || 1;
 
     if (facing < 0) {
@@ -1681,8 +1811,8 @@ export class PixelEnemyRenderer {
     // Mustard projectiles
     if (mummy.mustardProjectiles) {
       mummy.mustardProjectiles.forEach(p => {
-        const prjX = Math.round(screenX + (p.x - mummy.x) * (1 / 4.5));
-        const prjY = Math.round(screenY + (p.y - mummy.y) * (1 / 4.5));
+        const prjX = Number(screenX + (p.x - mummy.x) * (1 / 4.5));
+        const prjY = Number(screenY + (p.y - mummy.y) * (1 / 4.5));
         ctx.fillStyle = '#ca8a04';
         ctx.fillRect(prjX - 3, prjY - 3, 6, 6);
         ctx.fillStyle = '#fde047';
@@ -1698,8 +1828,8 @@ export class PixelEnemyRenderer {
     if (scorpion.isDead) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = scorpion.facing || 1;
 
     if (facing < 0) {
@@ -1759,8 +1889,8 @@ export class PixelEnemyRenderer {
     if (bomber.isDead) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = bomber.facing || 1;
 
     if (facing < 0) {
@@ -1809,8 +1939,8 @@ export class PixelEnemyRenderer {
     // Brine bombs
     if (bomber.brineBombs) {
       bomber.brineBombs.forEach(b => {
-        const bx = Math.round(screenX + (b.x - bomber.x) * (1 / 4.5));
-        const by = Math.round(screenY + (b.y - bomber.y) * (1 / 4.5));
+        const bx = Number(screenX + (b.x - bomber.x) * (1 / 4.5));
+        const by = Number(screenY + (b.y - bomber.y) * (1 / 4.5));
         ctx.fillStyle = '#4ade80';
         ctx.fillRect(bx - 2, by - 2, 4, 4);
         ctx.fillStyle = '#ffffff';
@@ -1826,8 +1956,8 @@ export class PixelEnemyRenderer {
     if (bee.isDead && bee.defeatTimer > bee.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = bee.facing || 1;
 
     if (bee.isDead) {
@@ -1900,8 +2030,8 @@ export class PixelEnemyRenderer {
     // Render spinning brass gear dart projectiles
     if (bee.gearDarts) {
       bee.gearDarts.forEach(d => {
-        const dx = Math.round(screenX + (d.x - bee.x) * (1 / 4.5));
-        const dy = Math.round(screenY + (d.y - bee.y) * (1 / 4.5));
+        const dx = Number(screenX + (d.x - bee.x) * (1 / 4.5));
+        const dy = Number(screenY + (d.y - bee.y) * (1 / 4.5));
         ctx.save();
         ctx.translate(dx, dy);
         ctx.rotate(d.rotation || 0);
@@ -1925,8 +2055,8 @@ export class PixelEnemyRenderer {
     if (knight.isDead && knight.defeatTimer > knight.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = knight.facing || 1;
 
     if (knight.isDead) {
@@ -1940,7 +2070,7 @@ export class PixelEnemyRenderer {
       ctx.translate(px, py);
     }
 
-    const crouchOffset = knight.springCompression ? Math.round(knight.springCompression * 5) : 0;
+    const crouchOffset = knight.springCompression ? Number(knight.springCompression * 5) : 0;
 
     // 1. Heavy Armored Greaves & Boots
     ctx.fillStyle = '#78350f';
@@ -2009,13 +2139,13 @@ export class PixelEnemyRenderer {
     if (spider.isDead && spider.defeatTimer > spider.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const facing = spider.facing || 1;
 
     // Draw hanging chain tether up to ceiling anchor
     if (spider.chainLength > 2) {
-      const chainTopScrY = Math.round(screenY - (spider.chainLength * (1 / 4.5)));
+      const chainTopScrY = Number(screenY - (spider.chainLength * (1 / 4.5)));
       ctx.fillStyle = '#b45309';
       for (let cy = chainTopScrY; cy < py + 4; cy += 4) {
         ctx.fillRect(px + 10, cy, 2, 3);
@@ -2083,8 +2213,8 @@ export class PixelEnemyRenderer {
     if (boss.isDead && boss.defeatTimer > boss.defeatDuration) return;
 
     ctx.save();
-    const px = Math.round(screenX);
-    const py = Math.round(screenY);
+    const px = Number(screenX);
+    const py = Number(screenY);
     const w = 44;
     const h = 48;
 
@@ -2189,8 +2319,8 @@ export class PixelEnemyRenderer {
     // Render rolling cogs & falling gear rain projectiles
     if (boss.projectiles) {
       boss.projectiles.forEach(p => {
-        const px = Math.round(screenX + (p.x - boss.x) * (1 / 4.5));
-        const py = Math.round(screenY + (p.y - boss.y) * (1 / 4.5));
+        const px = Number(screenX + (p.x - boss.x) * (1 / 4.5));
+        const py = Number(screenY + (p.y - boss.y) * (1 / 4.5));
         ctx.save();
         ctx.translate(px, py);
         ctx.rotate(p.rotation || 0);
@@ -2208,9 +2338,9 @@ export class PixelEnemyRenderer {
     // Render chrono shockwaves
     if (boss.shockwaves) {
       boss.shockwaves.forEach(sw => {
-        const sx = Math.round(screenX + (sw.x - boss.x) * (1 / 4.5));
-        const sy = Math.round(screenY + (sw.y - boss.y) * (1 / 4.5));
-        const swW = Math.round(sw.width * (1 / 4.5));
+        const sx = Number(screenX + (sw.x - boss.x) * (1 / 4.5));
+        const sy = Number(screenY + (sw.y - boss.y) * (1 / 4.5));
+        const swW = Number(sw.width * (1 / 4.5));
         ctx.fillStyle = '#fde047';
         ctx.fillRect(sx, sy - 4, swW, 6);
         ctx.fillStyle = '#ffffff';

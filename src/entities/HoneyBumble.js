@@ -19,7 +19,7 @@ import { Collision } from '../physics/Collision.js';
  */
 export class HoneyBumble extends Enemy {
   constructor(x, y) {
-    super(x, y, 140, 110, {
+    super(x, 260, 400, 310, {
       name: 'Honey Bumble',
       species: 'honey_bumble',
       role: ENCOUNTER_ROLES.CONTROL,
@@ -40,8 +40,8 @@ export class HoneyBumble extends Enemy {
     });
 
     this.baseY = y;
-    this.arenaMinX = 9800;
-    this.arenaMaxX = 10600;
+    this.arenaMinX = 10000;
+    this.arenaMaxX = 11500;
     this.maxHealth = 6;
     this.health = 6;
 

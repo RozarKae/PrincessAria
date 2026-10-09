@@ -38,6 +38,9 @@ export class Player {
     this.isGrounded = false;
     this.isCrouching = false;
     this.isDashing = false;
+    this.isSliding = false;
+    this.slideTimer = 0;
+    this.slideCooldownTimer = 0;
     this.isClimbing = false;
     this.isHurt = false;
     this.isDead = false;
@@ -547,9 +550,15 @@ export class Player {
       !this.isDead &&
       !this.isDashing
     ) {
-      this.shoot(audio, level);
-      if (input && input.rumbleShoot) {
-        input.rumbleShoot();
+      if (this.gameState && typeof this.gameState.stars === 'number') {
+        if (this.gameState.stars > 0) {
+          this.gameState.stars--;
+          this.shoot(audio, level);
+          if (input && input.rumbleShoot) input.rumbleShoot();
+        }
+      } else {
+        this.shoot(audio, level);
+        if (input && input.rumbleShoot) input.rumbleShoot();
       }
     }
 
@@ -568,17 +577,42 @@ export class Player {
     }
 
     // --- 1. CROUCH HANDLING ---
-    const wantsCrouch = input.isDown('CROUCH') && this.isGrounded && !this.isDashing;
-    this.isCrouching = wantsCrouch;
-    this.height = this.isCrouching ? 54 : this.baseHeight;
+    if (this.slideCooldownTimer > 0) this.slideCooldownTimer -= dt;
+
+    if (this.isSliding) {
+      this.slideTimer -= dt;
+      this.isCrouching = true;
+      this.height = 54;
+      if (this.slideTimer <= 0) {
+        this.isSliding = false;
+        this.isCrouching = false;
+        this.height = this.baseHeight;
+      }
+    } else {
+      const wantsCrouch = input.isDown('CROUCH') && this.isGrounded && !this.isDashing;
+      if (input.justPressed('CROUCH') && this.isGrounded && !this.isDashing && Math.abs(this.vx) > 200 && this.slideCooldownTimer <= 0) {
+        this.isSliding = true;
+        this.slideTimer = 0.4;
+        this.slideCooldownTimer = 0.8;
+        this.isCrouching = true;
+        this.height = 54;
+        this.vx = Math.sign(this.vx) * PHYSICS.DASH_SPEED * 0.8;
+        if (level && level.spawnBurst) level.spawnBurst(this.x + this.width/2, this.y + this.height, 5, '#ffffff');
+      } else {
+        this.isCrouching = wantsCrouch;
+        this.height = this.isCrouching ? 54 : this.baseHeight;
+      }
+    }
 
     // --- 2. HORIZONTAL MOVEMENT & FACING ---
     let moveDir = 0;
-    if (input.isDown('LEFT')) moveDir -= 1;
-    if (input.isDown('RIGHT')) moveDir += 1;
+    if (!this.isSliding) {
+      if (input.isDown('LEFT')) moveDir -= 1;
+      if (input.isDown('RIGHT')) moveDir += 1;
+    }
 
     // Automatic direction flipping based on movement intent
-    if (moveDir !== 0 && !this.isDashing) {
+    if (moveDir !== 0 && !this.isDashing && !this.isSliding) {
       this.facing = moveDir;
       this.anim.setFacing(moveDir);
       this.rig.setFacing(moveDir);

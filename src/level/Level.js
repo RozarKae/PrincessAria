@@ -966,7 +966,8 @@ export class Level {
             player.vx = 0;
             this.spawnBurst(player.x + player.width / 2, player.y + player.height / 2, 20, '#c084fc');
             this.spawnSparkles(player.x + player.width / 2, player.y + player.height / 2, 16);
-            if (audio && audio.playCollect) audio.playCollect();
+            if (audio && audio.playPortal) audio.playPortal();
+            else if (audio && audio.playCollect) audio.playCollect();
             if (camera && camera.shake) camera.shake(6, 0.15);
           }
         }

@@ -23,7 +23,7 @@ export const WORLDS = {
         stage: 1,
         name: 'The Honeywood Kingdom: Glade to Sovereign Spire',
         worldName: 'Honeywood Kingdom',
-        width: 10800,
+        width: 12000,
         height: 1080,
         spawn: { x: 280, y: 790 },
 
@@ -214,10 +214,10 @@ export const WORLDS = {
           { x: 10200, y: 740, width: 120, height: 36, type: 'honey_geyser' },
 
           // 43. Grand Sovereign Throne Dais (Climax Arena Platform)
-          { x: 10320, y: 720, width: 480, height: 260, type: 'hex_platform' },
+          { x: 10320, y: 720, width: 1480, height: 260, type: 'hex_platform' },
 
           // 44. Batboy Sovereign Chrysalis Throne Altar Perch (Climax Goal)
-          { x: 10460, y: 580, width: 160, height: 40, type: 'hex_platform' },
+          { x: 11660, y: 580, width: 160, height: 40, type: 'hex_platform' },
         ],
 
         // Moving Platforms (Runestone Lifts & Hex Elevators)
@@ -372,7 +372,7 @@ export const WORLDS = {
           { type: 'honey_wisp', x: 8980, y: 600, amplitude: 50, frequency: 2.3 },
 
           // Encounter 8: Canonical Climax Boss — "Honey Bumble" (Giant Armored Bee of the Canyon)
-          { type: 'honey_bumble', x: 10100, y: 640 },
+          { type: 'honey_bumble', x: 10600, y: 640, isBoss: true },
         ],
 
         // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
@@ -386,7 +386,7 @@ export const WORLDS = {
         ],
 
         // Goal: The Sovereign Royal Chrysalis Throne & Batboy Sanctuary (Beat 20)
-        goal: { x: 10480, y: 520, width: 64, height: 64, type: 'batboy' },
+        goal: { x: 11680, y: 520, width: 64, height: 64, type: 'batboy' },
       },
     },
   },
@@ -401,7 +401,7 @@ export const WORLDS = {
         stage: 1,
         name: 'The Whispering Forest: Ancient Perimeter to the Heart of the Forest King',
         worldName: 'The Whispering Forest',
-        width: 10800,
+        width: 12000,
         height: 1080,
         spawn: { x: 260, y: 790 },
 
@@ -693,13 +693,13 @@ export const WORLDS = {
         ],
 
         // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
-        checkpoint: { x: 2520, y: 740, width: 40, height: 40 },
+        checkpoint: { x: 2700, y: 740, width: 40, height: 40 },
         checkpoints: [
-          { id: 2, x: 2520, y: 740, width: 40, height: 40 },
+          { id: 2, x: 2700, y: 740, width: 40, height: 40 },
           { id: 3, x: 4200, y: 680, width: 40, height: 40 },
           { id: 4, x: 5600, y: 700, width: 40, height: 40 },
-          { id: 5, x: 7400, y: 700, width: 40, height: 40 },
-          { id: 6, x: 8800, y: 720, width: 40, height: 40 },
+          { id: 5, x: 7520, y: 620, width: 40, height: 40 },
+          { id: 6, x: 8820, y: 600, width: 40, height: 40 },
         ],
 
         // Goal: Ancient Gateway / Portal to World 3 (The Castle of a Thousand Doors)
@@ -718,7 +718,7 @@ export const WORLDS = {
         stage: 1,
         name: 'The Castle of a Thousand Doors: Grand Vestibule to the Bastion Gate',
         worldName: 'The Castle of a Thousand Doors',
-        width: 10800,
+        width: 12000,
         height: 1080,
         spawn: { x: 260, y: 790 },
 
@@ -979,13 +979,13 @@ export const WORLDS = {
         ],
 
         // Checkpoints (5 Regional Checkpoints across the 10,800px Journey)
-        checkpoint: { x: 2520, y: 740, width: 40, height: 40 },
+        checkpoint: { x: 2700, y: 740, width: 40, height: 40 },
         checkpoints: [
-          { id: 2, x: 2520, y: 740, width: 40, height: 40 },
+          { id: 2, x: 2700, y: 740, width: 40, height: 40 },
           { id: 3, x: 4200, y: 680, width: 40, height: 40 },
           { id: 4, x: 5600, y: 700, width: 40, height: 40 },
-          { id: 5, x: 7400, y: 700, width: 40, height: 40 },
-          { id: 6, x: 8800, y: 720, width: 40, height: 40 },
+          { id: 5, x: 7520, y: 620, width: 40, height: 40 },
+          { id: 6, x: 8820, y: 600, width: 40, height: 40 },
         ],
 
         // Goal: Ancient Grand Portal to World 4 (The Volcano of Hot Honey)
@@ -1009,7 +1009,7 @@ export const WORLDS = {
         name: 'The Volcano of Hot Honey: Ash Caldera to the Heart of the Dragon',
         worldName: 'The Volcano of Hot Honey',
         biome: 'volcano',
-        width: 10800,
+        width: 12000,
         height: 1080,
         spawn: { x: 160, y: 820 },
         spawnPoint: { x: 160, y: 820 },
@@ -1278,7 +1278,7 @@ export const WORLDS = {
         name: 'The Desert of Endless Sandwiches: Bread Dunes to the Royal Deli Plateau',
         worldName: 'The Desert of Endless Sandwiches',
         biome: 'sandwich',
-        width: 10800,
+        width: 12000,
         height: 1080,
         spawn: { x: 280, y: 780 },
         spawnPoint: { x: 280, y: 780 },
@@ -1520,7 +1520,7 @@ export const WORLDS = {
         name: 'The Grand Chronometer Citadel',
         world: 6,
         stage: 1,
-        width: 10800,
+        width: 12000,
         height: 1080,
         totalShards: 40,
         spawnPoint: { x: 120, y: 840 },
